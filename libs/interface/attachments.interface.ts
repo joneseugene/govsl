@@ -3,7 +3,7 @@ export interface AttachmentInterface {
   title?: string;
   url?: string;
   page?: string;
-  filePath?: string;
-  fileSize?: string;
-  fileType?: string;
+  file_path?: string;
+  file_size?: string;
+  file_type?: string;
 }
