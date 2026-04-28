@@ -16,6 +16,7 @@ export function PressReleaseItem({
   className = '',
   showVerified = true,
 }: PressReleaseItemProps) {
+  // Params
   const id = item.id;
   const title = item.title ?? '';
   const description = item.description ?? '';
