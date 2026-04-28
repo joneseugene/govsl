@@ -14,6 +14,7 @@ export function AppointmentItem({
   className = '',
   showVerified = true,
 }: AppointmentItemProps) {
+  // Params
   const id = item.id;
   const date = item.appointment_date;
   const title = item.title;

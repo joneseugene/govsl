@@ -1,5 +1,3 @@
-// services/pressRelease.ts
-
 import { model } from '@/supabase/model';
 import { baseQuery } from './base.api';
 import { AppointmentInterface } from '../interface/appointments.interface';
