@@ -1,48 +1,38 @@
-import { formatDate } from "@/libs/functions"
+import { formatDate } from '@/libs/functions';
+import { PublicationInterface } from '@/libs/interface/publications.interface';
 
 interface PublicationItemProps {
-    publication: {
-        id: string | number
-        title: string
-        ministry: string
-        fileSize: string
-        date: string
-        fileType?: string
-        description?: string
-        downloadUrl?: string
-    }
-    onView: (id: string | number) => void
-    className?: string
-    showVerified?: boolean
-    variant?: 'default' | 'compact'
+  item: PublicationInterface;
+  onNavigate: (path: string) => void;
+  className?: string;
+  showVerified?: boolean;
 }
 
 export function PublicationItem({
-    publication,
-    onView,
-    className = '',
-    showVerified = true,
-    variant = 'default'
+  item,
+  onNavigate,
+  className = '',
+  showVerified = true,
 }: PublicationItemProps) {
-    const isCompact = variant === 'compact'
+  // Params
+  const id = item.id;
+  const title = item.title;
+  const ministry_name = item.mdas?.name;
+  const date = item?.date;
 
-    const handleClick = () => {
-        onView(publication.id)
-    }
-
-    return (
-        <div className={`group ${className}`}>
-            <button
-                type="button"
-                onClick={handleClick}
-                className="
-          w-full text-left
-          focus:outline-none focus-visible:ring-2
-          focus-visible:ring-[#1D70B8]/50 rounded
-        "
-            >
-                <h5
-                    className="
+  return (
+    <div className={`group ${className}`}>
+      <button
+        type="button"
+        onClick={() => onNavigate(`publication-${id}`)}
+        className="
+            w-full text-left
+            focus:outline-none focus-visible:ring-2
+            focus-visible:ring-[#1D70B8]/50 rounded
+            "
+      >
+        <h5
+          className="
                             text-[20px] sm:text-[18px] md:text-[20px] lg:text-[22px]
                             leading-tight
                             font-semibold
@@ -51,40 +41,42 @@ export function PublicationItem({
                             decoration-2 transition-colors
                             mb-3
                         "
-                >
-                    {publication.title}
-                </h5>
+        >
+          {title}
+        </h5>
 
-                <div className={`
-          flex flex-wrap items-center gap-x-3 gap-y-1.5
-          text-[15px] sm:text-[16px]
-          text-[#505A5F]
-        `}>
-                    <span className="font-medium text-[#333]">
-                        {publication.ministry}
-                    </span>
-                    <span className="text-gray-400 hidden sm:inline">•</span>
-                    <span>{publication.fileSize}</span>
-                    <span className="text-gray-400 hidden sm:inline">•</span>
-                    <time>Published {formatDate(publication.date)}</time>
-                </div>
-            </button>
+        <div
+          className="
+    flex flex-wrap items-center gap-x-3 gap-y-1.5
+    text-[15px] sm:text-[16px]
+    text-[#505A5F]
+  "
+        >
+          {ministry_name && <span className="font-medium text-[#333]">{ministry_name}</span>}
 
-            {showVerified && (
-                <div className="
-          mt-4 flex items-center gap-1.5
-          text-[15px] font-medium text-[#008A3C]
-        ">
-                    <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-                        <path
-                            fillRule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                            clipRule="evenodd"
-                        />
-                    </svg>
-                    Official & Verified
-                </div>
-            )}
+          {ministry_name && date && <span className="text-gray-400 hidden sm:inline">•</span>}
+
+          {date && <time>Published {formatDate(date)}</time>}
         </div>
-    )
+      </button>
+
+      {showVerified && (
+        <div
+          className="
+            mt-4 flex items-center gap-1.5
+            text-[15px] font-medium text-[#008A3C]
+            "
+        >
+          <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+            <path
+              fillRule="evenodd"
+              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+              clipRule="evenodd"
+            />
+          </svg>
+          Official & Verified
+        </div>
+      )}
+    </div>
+  );
 }
