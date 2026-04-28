@@ -8,15 +8,14 @@ import PublicationSectionServer from '@/components/section/HomeSection/Publicati
 import PopularServicesSectionServer from '@/components/section/HomeSection/PopularService/PopularServiceSection.server';
 import MoreSectionServer from '@/components/section/HomeSection/More/MoreSection.server';
 import MDASectionServer from '@/components/section/HomeSection/Mda/MdaSection.server';
+import Footer from '@/components/layout/footer/page';
 
 export default function Page() {
   return (
     <>
       {/* CLIENT ONLY COMPONENTS */}
       <Header links={homeNavLinks} />
-
       <HeroSection suggestions={[]} />
-
       {/* SERVER SECTIONS */}
       <PressReleaseSectionServer />
       <AppointmentSectionServer />
@@ -25,10 +24,8 @@ export default function Page() {
       <PopularServicesSectionServer />
       <MoreSectionServer />
       <MDASectionServer />
-      {/* 
-            <MdaSection />
-
-            <Footer /> */}
+      {/* END SERVER SECTIONS */}
+      <Footer /> *
     </>
   );
 }
