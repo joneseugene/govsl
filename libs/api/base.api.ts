@@ -1,23 +1,18 @@
-// lib/supabase/baseQuery.ts
 import { createServerSupabaseClient } from "@/supabase/server";
 
 type QueryOptions = {
   table: string;
   select?: string;
   filters?: Record<string, any>;
-  orderBy?: string;
+  orderBy?: string | "random";
   ascending?: boolean;
   page?: number;
   limit?: number;
 };
 
-export async function baseQuery<T = unknown>(options: {
-  table: string;
-  select?: string;
-  filters?: Record<string, any>;
-  page?: number;
-  limit?: number;
-}): Promise<T[]> {
+export async function baseQuery<T = unknown>(
+  options: QueryOptions
+): Promise<T[]> {
   const supabase = await createServerSupabaseClient();
 
   const page = options.page ?? 1;
@@ -28,9 +23,9 @@ export async function baseQuery<T = unknown>(options: {
 
   let query = supabase
     .from(options.table)
-    .select(options.select || "*")
-    .range(from, to);
+    .select(options.select || "*");
 
+  // Apply filters
   if (options.filters) {
     Object.entries(options.filters).forEach(([key, value]) => {
       if (value !== undefined && value !== null && value !== "") {
@@ -38,6 +33,18 @@ export async function baseQuery<T = unknown>(options: {
       }
     });
   }
+
+  // Apply ordering
+  if (options.orderBy === "random") {
+    query = query.order("random");
+  } else if (options.orderBy) {
+    query = query.order(options.orderBy, {
+      ascending: options.ascending ?? true,
+    });
+  }
+
+  // Apply pagination
+  query = query.range(from, to);
 
   const { data, error } = await query;
 
