@@ -1,17 +1,21 @@
 // services/pressRelease.ts
 
-import { model } from "@/supabase/model";
-import { baseQuery } from "./base.api";
-import { AppointmentInterface } from "../interface/appointments.interface";
+import { model } from '@/supabase/model';
+import { baseQuery } from './base.api';
+import { AppointmentInterface } from '../interface/appointments.interface';
 
-export async function getAppointments(params?: {
-  status?: string;
-  page?: number;
-  limit?: number;
-}) {
+export async function getAppointments(params?: { status?: string; page?: number; limit?: number }) {
   return baseQuery<AppointmentInterface>({
     table: model.appointments,
-    select: "*",
+    select: `
+      *,
+      mdas (
+        id,
+        name,
+        acronym,
+        type
+      )
+    `,
     filters: {
       status: params?.status,
     },
