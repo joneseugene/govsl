@@ -1,75 +1,91 @@
+import { AnnouncementInterface } from '@/libs/interface/announcements.interface';
+
 interface MoreItemProps {
-    item: {
-        name: string
-        page: string
-        description: string
-    }
-    onClick: (item: { name: string; page: string; description: string; }) => void
-    className?: string
-    variant?: 'default' | 'compact'
+  item: AnnouncementInterface;
+  onNavigate: (path: string) => void;
+  className?: string;
+  variant?: 'default' | 'compact';
 }
 
-export function MoreItem({
-    item,
-    onClick,
-    className = '',
-    variant = 'default'
-}: MoreItemProps) {
-    const isCompact = variant === 'compact'
+export function MoreItem({ item, onNavigate, className = '', variant = 'default' }: MoreItemProps) {
+  const isCompact = variant === 'compact';
 
-    return (
-        <div>
-            <button
-                type="button"
-                onClick={() => onClick(item)}
-                className={`
-          group text-left
-          ${isCompact ? 'p-4 sm:p-6' : 'p-6 sm:p-8'}
-          rounded-xl
-          transition-all duration-300
-          ease-out
+  const title = item.title;
+  const description = item.description;
+
+  return (
+    <div className="h-full">
+      <button
+        type="button"
+        onClick={() => onNavigate(`/publication/${item.id}`)}
+        className={`
+          group w-full h-full text-left
+          rounded-2xl
           bg-white
-          flex flex-col
-          h-full
+          transition-all duration-300 ease-out
+          flex flex-col justify-between
+          
+          /* spacing */
+          p-4 sm:p-5 md:p-6
+          
+          /* hover */
+          hover:shadow-md hover:-translate-y-0.5
+          
           ${className}
         `}
-            >
-                <h6
-                    className={`
+      >
+        {/* TITLE */}
+        <h6
+          className={`
             font-semibold
-            text-[20px] sm:text-[18px] md:text-[20px] lg:text-[22px]
-            text-[#003366] group-hover:text-[#003366]
-            mb-3 lg:mb-4
-            transition-colors duration-200
-            leading-tight
-            flex items-center
-            ${isCompact ? 'text-lg sm:text-xl' : 'text-xl sm:text-2xl lg:text-2xl'}
-          `}
-                >
-                    {item.name}
-                    <span className="
-            inline-block
-            ml-3
-            opacity-0
-            -translate-x-2
-            group-hover:opacity-100
-            group-hover:translate-x-0
-            transition-all duration-200
             text-[#003366]
-          ">
-                        →
-                    </span>
-                </h6>
+            leading-tight
+            transition-colors duration-200
 
-                <p className={`
-          text-gray-600
-          leading-relaxed
-          mb-4
-          ${isCompact ? 'text-sm sm:text-base' : 'text-base sm:text-lg'}
-        `}>
-                    {item.description}
-                </p>
-            </button>
-        </div>
-    )
+            /* responsive typography */
+            text-base sm:text-lg md:text-xl lg:text-[21px]
+
+            /* spacing */
+            mb-2 sm:mb-3 md:mb-4
+
+            /* truncate long titles nicely */
+            line-clamp-2
+          `}
+        >
+          {title}
+        </h6>
+
+        {/* DESCRIPTION */}
+        <p
+          className={`
+            text-gray-600
+            leading-relaxed
+
+            /* responsive text */
+            text-sm sm:text-base md:text-[15px]
+
+            /* spacing */
+            mb-2 sm:mb-3
+
+            /* clamp for consistency */
+            line-clamp-3
+          `}
+        >
+          {description}
+        </p>
+
+        {/* OPTIONAL CTA (helps UX) */}
+        <span
+          className="
+            text-sm font-medium text-[#003366]
+            mt-auto
+            opacity-0 group-hover:opacity-100
+            transition-opacity duration-200
+          "
+        >
+          View details →
+        </span>
+      </button>
+    </div>
+  );
 }
