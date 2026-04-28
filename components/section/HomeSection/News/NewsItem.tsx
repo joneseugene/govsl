@@ -21,6 +21,7 @@ export function NewsItem({
 }: NewsItemProps) {
   const isCompact = variant === 'compact';
 
+  // Params
   const id = item.id;
   const mda_name = item.mdas?.name;
   const date = item.date;

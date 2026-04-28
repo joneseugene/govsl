@@ -8,7 +8,7 @@ import { NewsItem } from './NewsItem';
 import { useRouter } from 'next/navigation';
 import { NewsArticleInterface } from '@/libs/interface/news.articles.interface';
 
-export default function NewsArticleSectionClient({ news }: { news: NewsArticleInterface[] }) {
+export default function NewsArticleSectionClient({ items }: { items: NewsArticleInterface[] }) {
   const router = useRouter();
 
   return (
@@ -20,7 +20,7 @@ export default function NewsArticleSectionClient({ news }: { news: NewsArticleIn
           description="Official updates from ministries, departments, and agencies"
         />
 
-        {news.length === 0 ? (
+        {items.length === 0 ? (
           <div
             className="
             text-center py-16
@@ -31,7 +31,7 @@ export default function NewsArticleSectionClient({ news }: { news: NewsArticleIn
           </div>
         ) : (
           <div className="space-y-12 sm:space-y-14">
-            {news.map((item) => (
+            {items.map((item) => (
               <NewsItem key={item.id} item={item} onNavigate={(path) => router.push(path)} />
             ))}
           </div>
