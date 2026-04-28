@@ -1,4 +1,4 @@
-import { MDAInterface } from "./mda/mdas.interface";
+import { MDASummary } from './mda/mda.summary.interface';
 
 export interface AppointmentInterface {
   id: string;
@@ -16,8 +16,7 @@ export interface AppointmentInterface {
   signatory_title?: string;
   copy_to?: string[];
   ministry_id?: string;
-  category?: "executive" | "ministerial" | "board" | "diplomatic" | null;
-  mdas?: MDAInterface;
+  category?: 'executive' | 'ministerial' | 'board' | 'diplomatic' | null;
+  mdas?: MDASummary;
   status?: string;
-  date?: string;
 }

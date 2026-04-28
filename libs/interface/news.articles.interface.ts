@@ -1,5 +1,5 @@
-import { AttachmentInterface } from "./attachments.interface";
-import { MDAInterface } from "./mda/mdas.interface";
+import { AttachmentInterface } from './attachments.interface';
+import { MDASummary } from './mda/mda.summary.interface';
 
 export interface NewsArticleInterface {
   id: string;
@@ -10,7 +10,7 @@ export interface NewsArticleInterface {
   status?: string;
   category?: string;
   tags?: string[];
-  date?: Date;
+  date?: string;
   location?: string;
   author?: string;
   ministry_address?: string;
@@ -20,6 +20,6 @@ export interface NewsArticleInterface {
   authorized_signature?: string;
   signatory_title_field?: string;
   ministry_id?: string;
-  ministry?: Pick<MDAInterface, "id" | "name" | "contact"> | null;
+  mdas?: MDASummary | null;
   relatedLinks?: AttachmentInterface[];
 }

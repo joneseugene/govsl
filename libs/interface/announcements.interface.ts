@@ -1,5 +1,6 @@
-import { AttachmentInterface } from "./attachments.interface";
-import { MDAInterface } from "./mda/mdas.interface";
+import { AttachmentInterface } from './attachments.interface';
+import { MDASummary } from './mda/mda.summary.interface';
+import { MDAInterface } from './mda/mdas.interface';
 
 export interface AnnouncementInterface {
   id: string;
@@ -8,7 +9,7 @@ export interface AnnouncementInterface {
   description?: string;
   content?: string;
   status?: string;
-  date?: Date;
+  date?: string;
   deadline?: Date;
   location?: string;
   attachment?: AttachmentInterface[];
@@ -21,14 +22,14 @@ export interface AnnouncementInterface {
   how_to_apply?: string;
   contact_email?: string;
   contact_phone?: string;
-  event_date?: Date;
+  event_date?: string;
   event_time?: string;
-  end_date?: Date;
+  end_date?: string;
   end_time?: string;
   event_type?: string;
   notice_type?: string;
   expiry_date?: string;
   contact_info?: string;
   ministry_id?: string;
-  ministry?: Pick<MDAInterface, "id" | "name" | "contact"> | null;
+  mdas?: MDASummary | null;
 }

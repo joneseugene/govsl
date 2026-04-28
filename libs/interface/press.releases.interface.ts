@@ -1,7 +1,6 @@
-import { AttachmentInterface } from "./attachments.interface";
-import { MDAInterface } from "./mda/mdas.interface";
+import { AttachmentInterface } from './attachments.interface';
+import { MDASummary } from './mda/mda.summary.interface';
 
-//ALL
 export interface PressReleaseInterface {
   id: string;
   title?: string;
@@ -12,5 +11,6 @@ export interface PressReleaseInterface {
   attachments?: AttachmentInterface[];
   status?: string;
   ministry_id?: string;
-  ministry?: Pick<MDAInterface, "id" | "name" | "contact"> | null;
+  mdas?: MDASummary | null;
+  date?: string;
 }
