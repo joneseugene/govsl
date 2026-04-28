@@ -1,28 +1,31 @@
-import { mockPopularCategories } from "@/libs/sampleData"
+import { ServicesInterface } from '@/libs/interface/service/services.interface';
 
 interface PopularCategoryItemProps {
-  category: string
-  description?: string
-  onClick: (category: string) => void
-  className?: string
-  showUnderline?: boolean
-  variant?: 'default' | 'compact'
+  item: ServicesInterface;
+  onNavigate: (path: string) => void;
+  className?: string;
+  showUnderline?: boolean;
+  variant?: 'default' | 'compact';
 }
 
 export function PopularCategoryItem({
-  category,
-  description,
-  onClick,
+  item,
+  onNavigate,
   className = '',
   showUnderline = true,
-  variant = 'default'
+  variant = 'default',
 }: PopularCategoryItemProps) {
-  const isCompact = variant === 'compact'
+  const isCompact = variant === 'compact';
+
+  // Params
+  const id = item.id;
+  const name = item.name;
+  const description = item.description;
 
   return (
     <button
       type="button"
-      onClick={() => onClick(category)}
+      onClick={() => onNavigate(`service-${id}`)}
       className={`
         group block w-full text-left
         focus:outline-none focus-visible:ring-2
@@ -42,15 +45,17 @@ export function PopularCategoryItem({
           ${isCompact ? 'text-lg sm:text-xl' : 'text-[20px] sm:text-[18px]'}
         `}
       >
-        {category}
+        {name}
       </h5>
 
-      <p className={`
+      <p
+        className={`
         leading-[1.58] text-[#505A5F]
         ${isCompact ? 'text-base' : 'text-[19px]'}
-      `}>
+      `}
+      >
         {description}
       </p>
     </button>
-  )
+  );
 }
