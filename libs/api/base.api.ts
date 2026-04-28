@@ -1,18 +1,16 @@
-import { createServerSupabaseClient } from "@/supabase/server";
+import { createServerSupabaseClient } from '@/supabase/server';
 
 type QueryOptions = {
   table: string;
   select?: string;
-  filters?: Record<string, any>;
-  orderBy?: string | "random";
+  filters?: Record<string, unknown>;
+  orderBy?: string | 'random';
   ascending?: boolean;
   page?: number;
   limit?: number;
 };
 
-export async function baseQuery<T = unknown>(
-  options: QueryOptions
-): Promise<T[]> {
+export async function baseQuery<T = unknown>(options: QueryOptions): Promise<T[]> {
   const supabase = await createServerSupabaseClient();
 
   const page = options.page ?? 1;
@@ -21,22 +19,20 @@ export async function baseQuery<T = unknown>(
   const from = (page - 1) * limit;
   const to = from + limit - 1;
 
-  let query = supabase
-    .from(options.table)
-    .select(options.select || "*");
+  let query = supabase.from(options.table).select(options.select || '*');
 
   // Apply filters
   if (options.filters) {
     Object.entries(options.filters).forEach(([key, value]) => {
-      if (value !== undefined && value !== null && value !== "") {
+      if (value !== undefined && value !== null && value !== '') {
         query = query.eq(key, value);
       }
     });
   }
 
   // Apply ordering
-  if (options.orderBy === "random") {
-    query = query.order("random");
+  if (options.orderBy === 'random') {
+    query = query.order('random');
   } else if (options.orderBy) {
     query = query.order(options.orderBy, {
       ascending: options.ascending ?? true,
