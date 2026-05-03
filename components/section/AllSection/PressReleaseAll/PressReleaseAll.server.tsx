@@ -1,32 +1,40 @@
 import { getPressReleases } from '@/libs/api/press.releases.api';
 import PressReleasesAllClient from './PreaseReleaseAll.client';
+import { getAllMDAs } from '@/libs/api/mdas.api';
+
+type SearchParams = {
+  page?: string;
+  search?: string;
+  ministryId?: string;
+};
 
 export default async function AllPressReleasesSectionServer({
   searchParams,
 }: {
-  searchParams?: {
-    page?: string;
-  };
+  searchParams?: SearchParams; // ✅ NOT a Promise
 }) {
-  const safePage = Math.max(1, Number(searchParams?.page ?? 1) || 1);
+  const params = searchParams ?? {};
+
+  const safePage = Math.max(1, Number(params.page ?? 1) || 1);
 
   const { data, total } = await getPressReleases({
     status: 'approved',
     page: safePage,
     limit: 5,
+    search: params.search,
+    ministryId: params.ministryId,
   });
 
-  // ✅ DEBUG LOGS (server-side)
-  console.log('===== PRESS RELEASE PAGINATION DEBUG =====');
-  console.log('Requested page:', safePage);
-  console.log('Items returned:', data.length);
-  console.log('Total items in DB:', total);
-  console.log('Pages (calculated):', Math.ceil((total ?? 0) / 5));
-  console.log(
-    'IDs on this page:',
-    data.map((d) => d.id),
-  );
-  console.log('==========================================');
+  const ministries = await getAllMDAs();
 
-  return <PressReleasesAllClient items={data} total={total ?? 0} currentPage={safePage} />;
+  return (
+    <PressReleasesAllClient
+      items={data}
+      total={total ?? 0}
+      currentPage={safePage}
+      search={params.search}
+      ministryId={params.ministryId}
+      ministries={ministries}
+    />
+  );
 }

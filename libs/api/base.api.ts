@@ -16,7 +16,12 @@ type QueryResult<T> = {
   total?: number;
 };
 
-export async function baseQuery<T = unknown>(options: QueryOptions): Promise<QueryResult<T>> {
+export async function baseQuery<T = unknown>(
+  options: QueryOptions & {
+    search?: string;
+    ministry?: string;
+  },
+): Promise<QueryResult<T>> {
   const supabase = await createServerSupabaseClient();
 
   const page = options.page ?? 1;
@@ -27,7 +32,7 @@ export async function baseQuery<T = unknown>(options: QueryOptions): Promise<Que
 
   let query = supabase.from(options.table).select(options.select || '*', { count: 'exact' });
 
-  // Filters
+  // STANDARD FILTERS
   if (options.filters) {
     Object.entries(options.filters).forEach(([key, value]) => {
       if (value !== undefined && value !== null && value !== '') {
@@ -36,7 +41,19 @@ export async function baseQuery<T = unknown>(options: QueryOptions): Promise<Que
     });
   }
 
-  // Ordering
+  // SEARCH (push into DB instead of JS filtering)
+  if (options.search) {
+    const q = options.search;
+
+    query = query.or(`title.ilike.%${q}%,description.ilike.%${q}%,content.ilike.%${q}%`);
+  }
+
+  // MINISTRY FILTER
+  if (options.ministry && options.ministry !== 'all') {
+    query = query.eq('ministry_id', options.ministry);
+  }
+
+  // ORDERING
   if (options.orderBy === 'random') {
     query = query.order('id', { ascending: false });
   } else if (options.orderBy) {
@@ -45,7 +62,7 @@ export async function baseQuery<T = unknown>(options: QueryOptions): Promise<Que
     });
   }
 
-  // Pagination
+  // PAGINATION (always last)
   query = query.range(from, to);
 
   const { data, error, count } = await query;

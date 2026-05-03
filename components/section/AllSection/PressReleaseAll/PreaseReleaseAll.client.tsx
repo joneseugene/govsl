@@ -1,8 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-
 import { HomeSection } from '@/components/ui/HomeSections';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { FilterDropdown } from '@/components/ui/FilterDropdown';
@@ -10,70 +8,75 @@ import { Search2 } from '@/components/ui/SearchUI2';
 import { PressReleaseAllCard } from '@/components/section/AllSection/PressReleaseAll/PressReleaseAllCard';
 import { Pagination } from '@/components/ui/PaginationUI';
 import { PressReleaseInterface } from '@/libs/interface/press.releases.interface';
+import { useEffect, useMemo, useState } from 'react';
+import { useDebounce } from '@/libs/hook/useDebounce';
 
 export default function PressReleasesAllClient({
   items,
   total,
   currentPage,
+  search,
+  ministryId,
+  ministries,
 }: {
   items: PressReleaseInterface[];
   total: number;
   currentPage: number;
+  search?: string;
+  ministryId?: string;
+  ministries: { id: string; name: string }[];
 }) {
   const router = useRouter();
 
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedMinistry, setSelectedMinistry] = useState('all');
+  const [searchQuery, setSearchQuery] = useState(search ?? '');
+  const [selectedMinistry, setSelectedMinistry] = useState(ministryId ?? 'all');
 
-  const itemsPerPage = 2;
+  const debouncedSearch = useDebounce(searchQuery, 500);
+  const itemsPerPage = 5;
 
-  // =========================
-  // SORT ONLY CURRENT PAGE DATA
-  // =========================
-  const sorted = useMemo(() => {
-    return [...items].sort((a, b) => {
-      const dateA = a.date ? new Date(a.date).getTime() : 0;
-      const dateB = b.date ? new Date(b.date).getTime() : 0;
-      return dateB - dateA;
-    });
-  }, [items]);
+  const totalPages = Math.ceil(total / itemsPerPage);
 
-  // =========================
-  // FILTER ONLY CURRENT PAGE DATA
-  // =========================
-  const filtered = useMemo(() => {
-    const q = searchQuery.toLowerCase().trim();
+  const ministryOptions = useMemo(() => {
+    if (!ministries) return [{ value: 'all', label: 'All Ministries' }];
 
-    return sorted.filter((item) => {
-      const matchesSearch =
-        item.title?.toLowerCase().includes(q) ||
-        item.mdas?.name?.toLowerCase().includes(q) ||
-        item.description?.toLowerCase().includes(q) ||
-        item.content?.toLowerCase().includes(q);
-
-      const matchesMinistry = selectedMinistry === 'all' || item.mdas?.name === selectedMinistry;
-
-      return matchesSearch && matchesMinistry;
-    });
-  }, [sorted, searchQuery, selectedMinistry]);
-
-  // =========================
-  // MINISTRIES (from current page only)
-  // =========================
-  const ministries = useMemo(() => {
     return [
-      'all',
-      ...Array.from(new Set(items.map((p) => p.mdas?.name).filter(Boolean) as string[])),
+      { value: 'all', label: 'All Ministries' },
+      ...ministries.map((m) => ({
+        value: m.id,
+        label: m.name,
+      })),
     ];
-  }, [items]);
+  }, [ministries]);
 
-  // =========================
-  // SERVER-DRIVEN PAGINATION
-  // =========================
-  const totalPages = Math.ceil((total ?? 0) / itemsPerPage);
+  //Debounce on Search
+  useEffect(() => {
+    const params = new URLSearchParams();
+
+    params.set('page', '1');
+
+    if (debouncedSearch) {
+      params.set('search', debouncedSearch);
+    }
+
+    if (selectedMinistry && selectedMinistry !== 'all') {
+      params.set('ministryId', selectedMinistry);
+    }
+
+    router.push(`/press-release?${params.toString()}`);
+  }, [debouncedSearch, selectedMinistry]);
 
   const updatePage = (page: number) => {
-    router.push(`/press-release?page=${page}`);
+    const params = new URLSearchParams();
+
+    params.set('page', page.toString());
+    if (searchQuery) params.set('search', searchQuery);
+    if (selectedMinistry && selectedMinistry !== 'all') {
+      params.set('ministryId', selectedMinistry);
+    }
+
+    if (router) {
+      router.push(`/press-release?${params.toString()}`, { scroll: false });
+    }
   };
 
   return (
@@ -90,12 +93,7 @@ export default function PressReleasesAllClient({
         {/* FILTERS */}
         <div className="mb-6 flex flex-col gap-4 sm:flex-row">
           <div className="flex-1">
-            <Search2
-              onSearch={(q) => {
-                setSearchQuery(q);
-                updatePage(1);
-              }}
-            />
+            <Search2 value={searchQuery} onSearch={(q) => setSearchQuery(q)} />
           </div>
 
           <div className="flex-1">
@@ -103,33 +101,29 @@ export default function PressReleasesAllClient({
               value={selectedMinistry}
               onChange={(v) => {
                 setSelectedMinistry(v);
-                updatePage(1);
               }}
-              options={ministries.map((m) => ({
-                value: m,
-                label: m === 'all' ? 'All Ministries' : m,
-              }))}
+              options={ministryOptions}
             />
           </div>
         </div>
 
         {/* RESULTS */}
         <p className="mb-6 text-sm text-gray-600">
-          Showing {items.length} of {total} items
+          Showing {items.length} of {total} results
         </p>
 
         {/* LIST */}
         <div className="space-y-5">
-          {filtered.length === 0 ? (
+          {items.length === 0 ? (
             <div className="rounded-xl bg-white p-10 text-center text-gray-500">
-              No matching press releases found.
+              No press releases found.
             </div>
           ) : (
-            filtered.map((release) => <PressReleaseAllCard key={release.id} release={release} />)
+            items.map((release) => <PressReleaseAllCard key={release.id} release={release} />)
           )}
         </div>
 
-        {/* PAGINATION (SERVER CONTROLLED ONLY) */}
+        {/* PAGINATION */}
         {totalPages > 1 && (
           <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={updatePage} />
         )}

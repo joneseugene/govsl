@@ -7,7 +7,7 @@ export async function getPressReleases(params?: {
   page?: number;
   limit?: number;
   search?: string;
-  ministry?: string;
+  ministryId?: string;
 }) {
   const result = await baseQuery<PressReleaseInterface>({
     table: model.press_releases,
@@ -23,32 +23,11 @@ export async function getPressReleases(params?: {
     filters: {
       status: params?.status,
     },
+    search: params?.search,
+    ministry: params?.ministryId,
     page: params?.page ?? 1,
     limit: params?.limit ?? 5,
   });
 
-  let data = result.data;
-
-  // SEARCH FILTER
-  if (params?.search) {
-    const q = params.search.toLowerCase();
-
-    data = data.filter(
-      (item) =>
-        item.title?.toLowerCase().includes(q) ||
-        item.description?.toLowerCase().includes(q) ||
-        item.content?.toLowerCase().includes(q) ||
-        item.mdas?.name?.toLowerCase().includes(q),
-    );
-  }
-
-  // MINISTRY FILTER
-  if (params?.ministry && params.ministry !== 'all') {
-    data = data.filter((item) => item.mdas?.name === params.ministry);
-  }
-
-  return {
-    data,
-    total: result.total,
-  };
+  return result;
 }
