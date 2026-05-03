@@ -1,6 +1,7 @@
 import { getPressReleases } from '@/libs/api/press.releases.api';
 import PressReleasesAllClient from './PreaseReleaseAll.client';
-import { getAllMDAs } from '@/libs/api/mdas.api';
+import { getMDAOptions} from '@/libs/api/mdas.api';
+import ErrorUI from '@/components/ui/ErrorUI';
 
 type SearchParams = {
   page?: string;
@@ -17,7 +18,7 @@ export default async function AllPressReleasesSectionServer({
 
   const safePage = Math.max(1, Number(params.page ?? 1) || 1);
 
-  const { data, total } = await getPressReleases({
+  const result = await getPressReleases({
     status: 'approved',
     page: safePage,
     limit: 5,
@@ -25,12 +26,22 @@ export default async function AllPressReleasesSectionServer({
     ministryId: params.ministryId,
   });
 
-  const ministries = await getAllMDAs();
+  const ministries = await getMDAOptions();
+
+  if (result.error) {
+    return (
+      <ErrorUI
+        title="Failed to load press releases"
+        message={result.error || 'Something went wrong'}
+        retryPath="/press-release"
+      />
+    );
+  }
 
   return (
     <PressReleasesAllClient
-      items={data}
-      total={total ?? 0}
+      items={result.data}
+      total={result.total ?? 0}
       currentPage={safePage}
       search={params.search}
       ministryId={params.ministryId}

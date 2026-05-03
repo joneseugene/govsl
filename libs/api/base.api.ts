@@ -14,6 +14,7 @@ type QueryOptions = {
 type QueryResult<T> = {
   data: T[];
   total?: number;
+  error?: string;
 };
 
 export async function baseQuery<T = unknown>(
@@ -22,6 +23,7 @@ export async function baseQuery<T = unknown>(
     ministry?: string;
   },
 ): Promise<QueryResult<T>> {
+   try {
   const supabase = await createServerSupabaseClient();
 
   const page = options.page ?? 1;
@@ -73,4 +75,12 @@ export async function baseQuery<T = unknown>(
     data: (data ?? []) as T[],
     total: count ?? 0,
   };
+} catch (err: any) {
+    // 🔥 THIS catches "fetch failed"
+    return {
+      data: [],
+      total: 0,
+      error: err?.message || 'Network error occurred',
+    };
+  }
 }

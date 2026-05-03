@@ -16,7 +16,7 @@ export default function PressReleaseSectionClient({ items }: { items: PressRelea
       <div className="max-w-5xl mx-auto">
         <SectionHeading
           level="h2"
-          title="Latest Updates"
+          title="Press Releases & Announcements"
           description="Official communications from Government of Sierra Leone"
         />
 
@@ -39,7 +39,7 @@ export default function PressReleaseSectionClient({ items }: { items: PressRelea
         </div>
 
         <ViewAllButton onClick={() => router.push(homeSections.pressRelease.routes.all)}>
-          See all Press Releases
+          See all Press Releases & Announcements
         </ViewAllButton>
       </div>
     </HomeSection>
