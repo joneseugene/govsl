@@ -4,5 +4,5 @@ import PublicationSectionClient from './PublicationSection.client';
 export default async function PublicationSectionServer() {
   const publications = await getPublications();
 
-  return <PublicationSectionClient items={publications} />;
+  return <PublicationSectionClient items={publications.data} />;
 }

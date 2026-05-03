@@ -8,9 +8,15 @@ type QueryOptions = {
   ascending?: boolean;
   page?: number;
   limit?: number;
+  withCount?: boolean;
 };
 
-export async function baseQuery<T = unknown>(options: QueryOptions): Promise<T[]> {
+type QueryResult<T> = {
+  data: T[];
+  total?: number;
+};
+
+export async function baseQuery<T = unknown>(options: QueryOptions): Promise<QueryResult<T>> {
   const supabase = await createServerSupabaseClient();
 
   const page = options.page ?? 1;
@@ -19,9 +25,9 @@ export async function baseQuery<T = unknown>(options: QueryOptions): Promise<T[]
   const from = (page - 1) * limit;
   const to = from + limit - 1;
 
-  let query = supabase.from(options.table).select(options.select || '*');
+  let query = supabase.from(options.table).select(options.select || '*', { count: 'exact' });
 
-  // Apply filters
+  // Filters
   if (options.filters) {
     Object.entries(options.filters).forEach(([key, value]) => {
       if (value !== undefined && value !== null && value !== '') {
@@ -30,21 +36,24 @@ export async function baseQuery<T = unknown>(options: QueryOptions): Promise<T[]
     });
   }
 
-  // Apply ordering
+  // Ordering
   if (options.orderBy === 'random') {
-    query = query.order('random');
+    query = query.order('id', { ascending: false });
   } else if (options.orderBy) {
     query = query.order(options.orderBy, {
       ascending: options.ascending ?? true,
     });
   }
 
-  // Apply pagination
+  // Pagination
   query = query.range(from, to);
 
-  const { data, error } = await query;
+  const { data, error, count } = await query;
 
   if (error) throw new Error(error.message);
 
-  return (data ?? []) as T[];
+  return {
+    data: (data ?? []) as T[],
+    total: count ?? 0,
+  };
 }

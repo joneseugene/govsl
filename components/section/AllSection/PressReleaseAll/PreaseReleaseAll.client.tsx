@@ -1,75 +1,84 @@
-'use client'
+'use client';
 
-import { useState, useMemo } from 'react'
-import { useRouter } from 'next/navigation'
+import { useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
-import { HomeSection } from '@/components/ui/HomeSections'
-import { SectionHeading } from '@/components/ui/SectionHeading'
-import { FilterDropdown } from '@/components/ui/FilterDropdown'
-import { Search2 } from '@/components/ui/SearchUI2'
-import { PressReleaseAllCard } from '@/components/section/AllSection/PressReleaseAll/PressReleaseAllCard'
-import { Pagination } from '@/components/ui/PaginationUI'
-import { PressReleaseInterface } from '@/libs/interface/press.releases.interface'
+import { HomeSection } from '@/components/ui/HomeSections';
+import { SectionHeading } from '@/components/ui/SectionHeading';
+import { FilterDropdown } from '@/components/ui/FilterDropdown';
+import { Search2 } from '@/components/ui/SearchUI2';
+import { PressReleaseAllCard } from '@/components/section/AllSection/PressReleaseAll/PressReleaseAllCard';
+import { Pagination } from '@/components/ui/PaginationUI';
+import { PressReleaseInterface } from '@/libs/interface/press.releases.interface';
 
 export default function PressReleasesAllClient({
-  initialData,
+  items,
+  total,
+  currentPage,
 }: {
-  initialData: PressReleaseInterface[]
+  items: PressReleaseInterface[];
+  total: number;
+  currentPage: number;
 }) {
-  const [searchQuery, setSearchQuery] = useState('')
-  const [selectedMinistry, setSelectedMinistry] = useState('all')
-  const [currentPage, setCurrentPage] = useState(1)
+  const router = useRouter();
 
-  const itemsPerPage = 5
-  const router = useRouter()
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedMinistry, setSelectedMinistry] = useState('all');
 
-  // Sort once
-  const pressReleases = useMemo(() => {
-    return [...initialData].sort(
-      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-    )
-  }, [initialData])
+  const itemsPerPage = 2;
 
-  // Filter
+  // =========================
+  // SORT ONLY CURRENT PAGE DATA
+  // =========================
+  const sorted = useMemo(() => {
+    return [...items].sort((a, b) => {
+      const dateA = a.date ? new Date(a.date).getTime() : 0;
+      const dateB = b.date ? new Date(b.date).getTime() : 0;
+      return dateB - dateA;
+    });
+  }, [items]);
+
+  // =========================
+  // FILTER ONLY CURRENT PAGE DATA
+  // =========================
   const filtered = useMemo(() => {
-    const q = searchQuery.toLowerCase().trim()
+    const q = searchQuery.toLowerCase().trim();
 
-    return pressReleases.filter((item) => {
+    return sorted.filter((item) => {
       const matchesSearch =
         item.title?.toLowerCase().includes(q) ||
         item.mdas?.name?.toLowerCase().includes(q) ||
         item.description?.toLowerCase().includes(q) ||
-        item.content?.toLowerCase().includes(q)
+        item.content?.toLowerCase().includes(q);
 
-      const matchesMinistry =
-        selectedMinistry === 'all' ||
-        item.mdas?.name === selectedMinistry
+      const matchesMinistry = selectedMinistry === 'all' || item.mdas?.name === selectedMinistry;
 
-      return matchesSearch && matchesMinistry
-    })
-  }, [pressReleases, searchQuery, selectedMinistry])
+      return matchesSearch && matchesMinistry;
+    });
+  }, [sorted, searchQuery, selectedMinistry]);
 
-  // Pagination (CLIENT ONLY)
-  const totalPages = Math.ceil(filtered.length / itemsPerPage)
-
-  const paginated = useMemo(() => {
-    const start = (currentPage - 1) * itemsPerPage
-    return filtered.slice(start, start + itemsPerPage)
-  }, [filtered, currentPage])
-
+  // =========================
+  // MINISTRIES (from current page only)
+  // =========================
   const ministries = useMemo(() => {
     return [
       'all',
-      ...Array.from(
-        new Set(pressReleases.map((p) => p.mdas?.name).filter(Boolean))
-      ),
-    ]
-  }, [pressReleases])
+      ...Array.from(new Set(items.map((p) => p.mdas?.name).filter(Boolean) as string[])),
+    ];
+  }, [items]);
+
+  // =========================
+  // SERVER-DRIVEN PAGINATION
+  // =========================
+  const totalPages = Math.ceil((total ?? 0) / itemsPerPage);
+
+  const updatePage = (page: number) => {
+    router.push(`/press-release?page=${page}`);
+  };
 
   return (
     <HomeSection>
       <div className="mx-auto max-w-5xl">
-
         <SectionHeading
           level="h2"
           title="Press Releases & Official Announcements"
@@ -78,14 +87,13 @@ export default function PressReleasesAllClient({
           onBack={() => router.push('/')}
         />
 
-        {/* Filters */}
+        {/* FILTERS */}
         <div className="mb-6 flex flex-col gap-4 sm:flex-row">
-
           <div className="flex-1">
             <Search2
               onSearch={(q) => {
-                setSearchQuery(q)
-                setCurrentPage(1)
+                setSearchQuery(q);
+                updatePage(1);
               }}
             />
           </div>
@@ -94,8 +102,8 @@ export default function PressReleasesAllClient({
             <FilterDropdown
               value={selectedMinistry}
               onChange={(v) => {
-                setSelectedMinistry(v)
-                setCurrentPage(1)
+                setSelectedMinistry(v);
+                updatePage(1);
               }}
               options={ministries.map((m) => ({
                 value: m,
@@ -103,39 +111,29 @@ export default function PressReleasesAllClient({
               }))}
             />
           </div>
-
         </div>
 
-        {/* Results */}
+        {/* RESULTS */}
         <p className="mb-6 text-sm text-gray-600">
-          Showing {paginated.length} of {filtered.length} items
+          Showing {items.length} of {total} items
         </p>
 
+        {/* LIST */}
         <div className="space-y-5">
-          {paginated.length === 0 ? (
+          {filtered.length === 0 ? (
             <div className="rounded-xl bg-white p-10 text-center text-gray-500">
               No matching press releases found.
             </div>
           ) : (
-            paginated.map((release) => (
-              <PressReleaseAllCard
-                key={release.id}
-                release={release}
-              />
-            ))
+            filtered.map((release) => <PressReleaseAllCard key={release.id} release={release} />)
           )}
         </div>
 
-        {/* Pagination */}
+        {/* PAGINATION (SERVER CONTROLLED ONLY) */}
         {totalPages > 1 && (
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={setCurrentPage}
-          />
+          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={updatePage} />
         )}
-
       </div>
     </HomeSection>
-  )
+  );
 }

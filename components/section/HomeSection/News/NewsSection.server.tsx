@@ -4,5 +4,5 @@ import NewsArticleSectionClient from './NewsSection.client';
 export default async function NewsSectionServer() {
   const news = await getNewsArticles();
 
-  return <NewsArticleSectionClient items={news} />;
+  return <NewsArticleSectionClient items={news.data} />;
 }
