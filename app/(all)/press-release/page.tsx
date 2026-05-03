@@ -5,6 +5,5 @@ export default function AllPressReleasesPage({
 }: {
   searchParams?: { page?: string };
 }) {
-  console.log('PAGE searchParams:', searchParams);
   return <AllPressReleasesSectionServer searchParams={searchParams} />;
 }

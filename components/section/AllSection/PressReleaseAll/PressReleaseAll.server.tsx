@@ -11,7 +11,7 @@ type SearchParams = {
 export default async function AllPressReleasesSectionServer({
   searchParams,
 }: {
-  searchParams?: SearchParams; // ✅ NOT a Promise
+  searchParams?: SearchParams;
 }) {
   const params = searchParams ?? {};
 
