@@ -1,6 +1,6 @@
 import PressReleaseSectionClient from '@/components/section/HomeSection/PressRelease/PressReleaseSection.client';
-import ErrorUI from '@/components/ui/ErrorUI';
 import { getPressReleases } from '@/libs/api/press.releases.api';
+import { redirect } from 'next/navigation';
 
 export default async function PressReleaseSectionServer() {
   const result = await getPressReleases({
@@ -9,15 +9,8 @@ export default async function PressReleaseSectionServer() {
     limit: 5,
   });
 
-  // Handle Error
   if (result.error) {
-    return (
-      <ErrorUI
-        title="Unable to load Press Releases"
-        message={result.error}
-        retryPath="/"
-      />
-    );
+    redirect(`/error?message=${encodeURIComponent(result.error)}`);
   }
 
   return <PressReleaseSectionClient items={result.data} />;

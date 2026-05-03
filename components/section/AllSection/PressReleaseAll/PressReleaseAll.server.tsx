@@ -1,7 +1,7 @@
 import { getPressReleases } from '@/libs/api/press.releases.api';
 import PressReleasesAllClient from './PreaseReleaseAll.client';
-import { getMDAOptions} from '@/libs/api/mdas.api';
-import ErrorUI from '@/components/ui/ErrorUI';
+import { getMDAOptions } from '@/libs/api/mdas.api';
+import { redirect } from 'next/navigation';
 
 type SearchParams = {
   page?: string;
@@ -29,13 +29,7 @@ export default async function AllPressReleasesSectionServer({
   const ministries = await getMDAOptions();
 
   if (result.error) {
-    return (
-      <ErrorUI
-        title="Failed to load press releases"
-        message={result.error || 'Something went wrong'}
-        retryPath="/press-release"
-      />
-    );
+    redirect(`/error?message=${encodeURIComponent(result.error)}`);
   }
 
   return (

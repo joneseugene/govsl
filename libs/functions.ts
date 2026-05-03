@@ -65,3 +65,12 @@ export function shuffleArray<T>(array: T[]): T[] {
 
 export const getQRCode = (url: string) =>
   `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(url)}`;
+
+/**
+ * SERVER ERROR
+ */
+import { redirect } from 'next/navigation';
+
+export function handleServerError(error: string, retryPath: string = '/') {
+  redirect(`/error?message=${encodeURIComponent(error)}&retry=${encodeURIComponent(retryPath)}`);
+}
