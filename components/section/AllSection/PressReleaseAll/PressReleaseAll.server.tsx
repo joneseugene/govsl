@@ -11,9 +11,9 @@ type SearchParams = {
 export default async function AllPressReleasesSectionServer({
   searchParams,
 }: {
-  searchParams?: SearchParams;
+  searchParams: Promise<SearchParams>;
 }) {
-  const params = searchParams ?? {};
+  const params = await searchParams;
 
   const safePage = Math.max(1, Number(params.page ?? 1) || 1);
 

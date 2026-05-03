@@ -58,3 +58,10 @@ export function shuffleArray<T>(array: T[]): T[] {
 
   return result;
 }
+
+/**
+ * QR FUNCTIONS
+ */
+
+export const getQRCode = (url: string) =>
+  `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(url)}`;

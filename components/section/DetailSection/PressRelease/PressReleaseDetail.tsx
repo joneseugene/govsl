@@ -1,50 +1,61 @@
-'use client'
+'use client';
 
-import { useEffect, useState } from 'react'
-import { formatDateSafe } from '@/libs/functions'
-import { PressReleaseDetail } from '@/libs/interface/press.releases.interface'
-import { CustomBackIcon } from '../../../ui/CustomBackIcon'
-import { CustomDivider } from '../../../ui/CustomDivider'
-import ReactMarkdown from 'react-markdown'
+import { useEffect, useState } from 'react';
+import { CustomBackIcon } from '../../../ui/CustomBackIcon';
+import { CustomDivider } from '../../../ui/CustomDivider';
+import ReactMarkdown from 'react-markdown';
+import { formatDate, getQRCode } from '@/libs/functions';
+import { PressReleaseInterface } from '@/libs/interface/press.releases.interface';
+import { useRouter } from 'next/navigation';
 
 interface PressReleaseDetailUIProps {
-  pressRelease: PressReleaseDetail
-  pdfUrl?: string
-  onBack?: () => void
+  pressRelease: PressReleaseInterface;
+  pdfUrl?: string;
+  onBack?: () => void;
 }
 
 export function PressReleaseDetailUI({ pressRelease, pdfUrl, onBack }: PressReleaseDetailUIProps) {
-  const { mda, title, content, id, type, refNumber, contact, externalLink, date } = pressRelease
-  const docType = type === 'Vacancy' ? 'VACANCY ANNOUNCEMENT' : 'ANNOUNCEMENT'
-  const ministry = mda?.name || 'Government of Sierra Leone'
-  const acronym = mda?.acronym || 'GoSL'
-  const [qrUrl, setQrUrl] = useState<string | null>(null)
-  const [loadingPDF, setLoadingPDF] = useState(false)
+  const { id, title, mdas, content, legacy_id, contact_info, date } = pressRelease;
+  const ministry = mdas?.name || 'Government of Sierra Leone';
+  const acronym = mdas?.acronym || 'GoSL';
+  const reference = legacy_id || 'reference_no';
+  const [qrUrl, setQrUrl] = useState<string | null>(null);
+  const [loadingPDF, setLoadingPDF] = useState(false);
+  const router = useRouter();
+
+  const handleBack = () => {
+    if (window.history.length > 1) {
+      router.back();
+    } else {
+      router.push('/press-release');
+    }
+  };
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const url = pdfUrl || `${window.location.origin}/${id}`
-      setQrUrl(`https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(url)}`)
+      const url = pdfUrl || `${window.location.origin}/${id}`;
+      setQrUrl(getQRCode(url));
     }
-  }, [id, pdfUrl])
+  }, [id, pdfUrl]);
 
   //Handle PDF
   const handleGeneratePDF = async () => {
-    setLoadingPDF(true)
-    const { PressReleasePDF } = await import('./PressReleasePDF')
-    PressReleasePDF.download(pressRelease)
-    setLoadingPDF(false)
-  }
+    setLoadingPDF(true);
+    const { PressReleasePDF } = await import('./PressReleasePDF');
+    PressReleasePDF.download(pressRelease);
+    setLoadingPDF(false);
+  };
 
   return (
     <div className="bg-white min-h-screen">
       {/* Action Buttons */}
       <div className="no-print max-w-4xl mx-auto px-4 py-6 flex gap-4">
-        {onBack && (
-          <button onClick={onBack} className="px-4 py-2 bg-[#003366] text-white text-lg flex items-center gap-2">
-            <CustomBackIcon size={20} className="text-white" /> Back
-          </button>
-        )}
+        <button
+          onClick={handleBack}
+          className="px-4 py-2 bg-[#003366] text-white text-lg flex items-center gap-2 cursor-pointer"
+        >
+          <CustomBackIcon size={20} className="text-white" /> Back
+        </button>
 
         <button
           onClick={handleGeneratePDF}
@@ -65,30 +76,29 @@ export function PressReleaseDetailUI({ pressRelease, pdfUrl, onBack }: PressRele
             <p className="text-sm mt-1">Republic of Sierra Leone, West Africa</p>
           </div>
           <div className="text-right text-sm font-medium">
-            <div>{formatDateSafe(date)}</div>
-            {refNumber && <div>Ref: {refNumber}</div>}
+            <div>{formatDate(date)}</div>
+            {reference && <div>Ref: {reference}</div>}
           </div>
         </header>
 
         <CustomDivider />
 
-        <h2 className="text-xl font-bold text-[#003366] mb-6 text-center tracking-[2px]">{docType}</h2>
-        <h3 className="text-lg font-bold text-[#003366] mb-6 text-center">{title || 'Untitled'}</h3>
+        <h3 className="text-lg font-bold text-[#003366] mb-6 text-center max-w-2xl mx-auto px-4 leading-snug">
+          {title || 'Untitled'}
+        </h3>
 
         <CustomDivider />
 
-        <div className="text-sm leading-7 mb-6"><ReactMarkdown>{content}</ReactMarkdown></div>
+        <div className="text-sm leading-7 mb-6">
+          <ReactMarkdown>{content}</ReactMarkdown>
+        </div>
 
-        {externalLink && (
+        {contact_info && (
           <p className="mb-4">
-            <strong>External Link: </strong>
-            <a href={externalLink} target="_blank" rel="noopener noreferrer" className="text-blue-800 hover:underline">
-              {externalLink}
-            </a>
+            <strong>Contact: </strong>
+            {contact_info}
           </p>
         )}
-
-        {contact && <p className="mb-4"><strong>Contact: </strong>{contact}</p>}
 
         <CustomDivider />
         <footer className="mt-16 pt-8">
@@ -104,9 +114,9 @@ export function PressReleaseDetailUI({ pressRelease, pdfUrl, onBack }: PressRele
               </div>
             )}
           </div>
-          <CustomDivider className='mt-5' />
+          <CustomDivider className="mt-5" />
         </footer>
       </div>
     </div>
-  )
+  );
 }

@@ -1,6 +1,7 @@
 import { model } from '@/supabase/model';
 import { baseQuery } from './base.api';
 import { PressReleaseInterface } from '../interface/press.releases.interface';
+import { createServerSupabaseClient } from '@/supabase/server';
 
 export async function getPressReleases(params?: {
   status?: string;
@@ -30,4 +31,16 @@ export async function getPressReleases(params?: {
   });
 
   return result;
+}
+
+export async function getPressReleaseById(id: string) {
+  const result = await baseQuery<PressReleaseInterface>({
+    table: model.press_releases,
+    select: `*, mdas(id,name,acronym,type)`,
+    filters: { id },
+    limit: 1,
+    page: 1,
+  });
+
+  return result.data[0] ?? null;
 }

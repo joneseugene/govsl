@@ -1,35 +1,17 @@
-// 'use client'
+import { getPressReleaseById } from '@/libs/api/press.releases.api';
+import { PressReleaseDetailUI } from '@/components/section/DetailSection/PressRelease/PressReleaseDetail';
+import { notFound } from 'next/navigation';
 
-// import { useRouter, useParams } from 'next/navigation'
-// import { PressReleaseDetailUI } from '@/components/section/DetailSection/PressRelease/PressReleaseDetail'
+type PageProps = {
+  params: Promise<{ id: string }>;
+};
 
-// export default function PressReleasePage() {
-//   const router = useRouter()
-//   const { id } = useParams<{ id: string }>()
+export default async function PressReleasePage({ params }: PageProps) {
+  const { id } = await params;
 
-//   const pressRelease = mockPressReleaseDetails[id]
+  const pressRelease = await getPressReleaseById(id);
 
-//   if (!pressRelease) {
-//     return (
-//       <div className="max-w-4xl mx-auto px-6 py-20 text-center">
-//         <h1 className="text-2xl font-bold mb-4">Document not found</h1>
-//         <p className="mb-6 text-gray-600">
-//           The requested document could not be located.
-//         </p>
-//         <button
-//           onClick={() => router.push('/')}
-//           className="px-6 py-3 bg-[#003366] text-white rounded"
-//         >
-//           Go back home
-//         </button>
-//       </div>
-//     )
-//   }
+  if (!pressRelease) return notFound();
 
-//   return (
-//     <PressReleaseDetailUI
-//       pressRelease={pressRelease}
-//       onBack={() => router.back()}
-//     />
-//   )
-// }
+  return <PressReleaseDetailUI pressRelease={pressRelease} />;
+}
