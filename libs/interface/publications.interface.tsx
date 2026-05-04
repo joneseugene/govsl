@@ -1,5 +1,4 @@
 import { MDASummary } from './mda/mda.summary.interface';
-import { MDAInterface } from './mda/mdas.interface';
 
 export interface PublicationInterface {
   id: string;
