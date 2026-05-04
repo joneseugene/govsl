@@ -10,6 +10,7 @@ import { Search2 } from '@/components/ui/SearchUI2';
 import { Pagination } from '@/components/ui/PaginationUI';
 
 import { useDebounce } from '@/libs/hook/useDebounce';
+import { ServiceCard } from './ServiceCard';
 
 type ServiceCategory = {
   category: string;
@@ -46,17 +47,13 @@ export default function AllServicesClient({
 
     return items.filter((item) => {
       const matchesSearch = item.category.toLowerCase().includes(q);
-      const matchesCategory =
-        selectedCategory === 'all' || item.category === selectedCategory;
+      const matchesCategory = selectedCategory === 'all' || item.category === selectedCategory;
 
       return matchesSearch && matchesCategory;
     });
   }, [items, searchQuery, selectedCategory]);
 
-  const paginated = filtered.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+  const paginated = filtered.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   /* ---------------- Categories ---------------- */
   const categoryOptions = useMemo(() => {
@@ -130,31 +127,20 @@ export default function AllServicesClient({
         </p>
 
         {/* Grid */}
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 auto-rows-fr">
           {paginated.length === 0 ? (
             <div className="rounded-xl bg-white p-10 text-center text-gray-500">
               No services found.
             </div>
           ) : (
             paginated.map((item) => (
-              <div
-                key={item.category}
-                className="border rounded-lg p-4 bg-white shadow-sm hover:shadow-md transition"
-              >
-                <h3 className="font-semibold text-blue-950">
-                  {item.category}
-                </h3>
-
-                <p className="text-sm text-gray-500 mt-1">
-                  {item.count} service{item.count !== 1 ? 's' : ''}
-                </p>
-
-                <button
+              <div key={item.category} className="h-full">
+                <ServiceCard
+                  name={item.category}
+                  description={`${item.count} service${item.count !== 1 ? 's' : ''} available`}
+                  category={item.category}
                   onClick={() => handleView(item)}
-                  className="mt-3 w-full bg-blue-950 text-white py-2 rounded-md hover:bg-blue-700 hover:cursor-pointer"
-                >
-                  View Services
-                </button>
+                />
               </div>
             ))
           )}
