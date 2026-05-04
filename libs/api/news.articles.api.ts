@@ -9,7 +9,7 @@ export async function getNewsArticles(params?: {
   search?: string;
   ministryId?: string;
 }) {
-  const result = await baseQuery<NewsArticleInterface>({
+  return baseQuery<NewsArticleInterface>({
     table: model.news_articles,
     select: `
       *,
@@ -20,18 +20,29 @@ export async function getNewsArticles(params?: {
         type
       )
     `,
+
+    // filters
     filters: {
       status: params?.status,
     },
+
+    // search
     search: params?.search,
+
+    searchFields: [
+      'title',
+      'headline',
+      'excerpt',
+      'content',
+    ],
+
+    // ministry filter
     ministry: params?.ministryId,
+
     page: params?.page ?? 1,
     limit: params?.limit ?? 5,
   });
-
-  return result;
 }
-
 
 export async function getNewsArticleById(id: string) {
   const result = await baseQuery<NewsArticleInterface>({
