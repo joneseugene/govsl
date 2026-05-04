@@ -9,9 +9,9 @@ export default async function PressReleaseSectionServer() {
     limit: 5,
   });
 
-  if (result.error) {
-    redirect(`/error?message=${encodeURIComponent(result.error)}`);
-  }
+  // if (result.error) {
+  //   redirect(`/error?message=${encodeURIComponent(result.error)}`);
+  // }
 
   return <PressReleaseSectionClient items={result.data} />;
 }

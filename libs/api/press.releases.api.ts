@@ -24,6 +24,7 @@ export async function getPressReleases(params?: {
       status: params?.status,
     },
     search: params?.search,
+    searchFields: ['title', 'description', 'legacy_id'],
     ministry: params?.ministryId,
     page: params?.page ?? 1,
     limit: params?.limit ?? 5,
