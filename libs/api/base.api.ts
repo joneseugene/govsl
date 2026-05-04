@@ -9,6 +9,7 @@ type QueryOptions = {
   page?: number;
   limit?: number;
   withCount?: boolean;
+  searchFields?: string[];
 };
 
 type QueryResult<T> = {
@@ -32,7 +33,9 @@ export async function baseQuery<T = unknown>(
     const from = (page - 1) * limit;
     const to = from + limit - 1;
 
-    let query = supabase.from(options.table).select(options.select || '*', { count: 'exact' });
+    let query = supabase
+      .from(options.table)
+      .select(options.select || '*', { count: 'exact' });
 
     // STANDARD FILTERS
     if (options.filters) {
@@ -43,11 +46,20 @@ export async function baseQuery<T = unknown>(
       });
     }
 
-    // SEARCH (push into DB instead of JS filtering)
-    if (options.search) {
-      const q = options.search;
+    // SEARCH
+    if (
+      options.search &&
+      options.search.trim() !== '' &&
+      options.searchFields &&
+      options.searchFields.length > 0
+    ) {
+      const q = options.search.trim();
 
-      query = query.or(`title.ilike.%${q}%,description.ilike.%${q}%,content.ilike.%${q}%`);
+      const searchQuery = options.searchFields
+        .map((field) => `${field}.ilike.%${q}%`)
+        .join(',');
+
+      query = query.or(searchQuery);
     }
 
     // MINISTRY FILTER
@@ -64,7 +76,7 @@ export async function baseQuery<T = unknown>(
       });
     }
 
-    // PAGINATION (always last)
+    // PAGINATION (ALWAYS LAST)
     query = query.range(from, to);
 
     const { data, error, count } = await query;
@@ -76,7 +88,8 @@ export async function baseQuery<T = unknown>(
       total: count ?? 0,
     };
   } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : 'Network error occurred';
+    const message =
+      err instanceof Error ? err.message : 'Network error occurred';
 
     return {
       data: [],

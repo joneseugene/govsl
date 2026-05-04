@@ -24,6 +24,12 @@ export async function getAppointments(params?: {
       status: params?.status,
     },
     search: params?.search,
+    searchFields: [
+      'title',
+      'position',
+      'appointee_name',
+      'office_name',
+    ], 
     ministry: params?.ministryId,
     page: params?.page ?? 1,
     limit: params?.limit ?? 5,
