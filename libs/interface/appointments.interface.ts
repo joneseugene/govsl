@@ -16,7 +16,6 @@ export interface AppointmentInterface {
   signatory_title?: string;
   copy_to?: string[];
   ministry_id?: string;
-  category?: 'executive' | 'ministerial' | 'board' | 'diplomatic' | null;
   mdas?: MDASummary;
   status?: string;
 }
