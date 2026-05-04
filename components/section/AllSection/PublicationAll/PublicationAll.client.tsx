@@ -11,6 +11,7 @@ import { Pagination } from "@/components/ui/PaginationUI";
 import { PublicationCard } from "@/components/section/AllSection/PublicationAll/PublicationCard";
 
 import { useDebounce } from "@/libs/hook/useDebounce";
+import { PublicationInterface } from "@/libs/interface/publications.interface";
 
 export default function AllPublicationsClient({
     items,
@@ -20,7 +21,7 @@ export default function AllPublicationsClient({
     ministryId,
     ministries
 }: {
-    items: any[];
+    items: PublicationInterface[];
     total: number;
     currentPage: number;
     search?: string;
@@ -123,11 +124,9 @@ export default function AllPublicationsClient({
                                 key={pub.id}
                                 id={pub.id}
                                 ministry={pub.mdas?.name ?? ""}
-                                date={pub.created_at}
+                                date={pub.date}
                                 title={pub.title}
-                                file_size={pub.file_size}
                                 description={pub.description}
-                                category={pub.category}
                                 onReadMore={(id) => router.push(`/publication/${id}`)}
                             />
                         ))

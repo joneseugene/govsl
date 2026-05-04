@@ -7,7 +7,7 @@ interface PublicationCardProps {
     id: string
     title: string
     ministry: string
-    date: string
+    date?: string
     file_size?: string
     category?: string
     description?: string

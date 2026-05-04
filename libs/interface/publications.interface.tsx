@@ -3,7 +3,7 @@ import { MDAInterface } from './mda/mdas.interface';
 
 export interface PublicationInterface {
   id: string;
-  title?: string;
+  title: string;
   description?: string;
   content?: string;
   file_url?: string;
