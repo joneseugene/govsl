@@ -1,5 +1,6 @@
 'use client'
 
+import { formatDate } from '@/libs/functions'
 import { useState, useEffect } from 'react'
 
 interface PublicationCardProps {
@@ -7,9 +8,9 @@ interface PublicationCardProps {
     title: string
     ministry: string
     date: string
-    fileSize?: string
+    file_size?: string
     category?: string
-    summary?: string
+    description?: string
     onReadMore: (id: string) => void
 }
 
@@ -18,9 +19,9 @@ export function PublicationCard({
     title,
     ministry,
     date,
-    fileSize,
+    file_size,
     category,
-    summary,
+    description,
     onReadMore
 }: PublicationCardProps) {
     const [showFull, setShowFull] = useState(false)
@@ -30,14 +31,14 @@ export function PublicationCard({
         setMounted(true)
     }, [])
 
-    const snippet = summary ? summary.slice(0, 120) : ''
+    const snippet = description ? description.slice(0, 120) : ''
 
     if (!mounted) {
         // Render fallback to match server HTML
         return (
             <article className="group rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
                 <h2 className="text-xl font-semibold">{title}</h2>
-                <p className="text-gray-500">{ministry} • {date}</p>
+                <p className="text-gray-500">{ministry} • {formatDate(date)}</p>
             </article>
         )
     }
@@ -59,22 +60,22 @@ export function PublicationCard({
 
             {/* File Size and Date */}
             <div className="flex items-center gap-2 mb-3 text-sm text-gray-500">
-                {fileSize && (
+                {file_size && (
                     <span className="px-2 py-1 text-xs font-medium bg-gray-50 text-gray-700 rounded-full">
-                        {fileSize}
+                        {file_size}
                     </span>
                 )}
-                <time dateTime={date}>{date}</time>
+                <time dateTime={date}>{formatDate(date)}</time>
             </div>
 
-            {/* Summary */}
-            {summary && (
+            {/* description */}
+            {description && (
                 <p className="text-gray-700 mb-3">
-                    {showFull ? summary : snippet + (summary.length > 120 ? '...' : '')}
+                    {showFull ? description : snippet + (description.length > 120 ? '...' : '')}
                 </p>
             )}
 
-            {summary && summary.length > 120 && (
+            {description && description.length > 120 && (
                 <button
                     onClick={() => setShowFull(!showFull)}
                     className="mt-2 px-3 py-1 text-sm text-[#003366] underline hover:text-blue-950"
@@ -82,6 +83,7 @@ export function PublicationCard({
                     {showFull ? 'Show Less' : 'Read Full'}
                 </button>
             )}
+            <br />
 
             {/* Open Button */}
             <button

@@ -1,6 +1,7 @@
-import { model } from '@/supabase/model';
-import { baseQuery } from './base.api';
-import { PublicationInterface } from '../interface/publications.interface';
+// libs/api/publications.api.ts
+import { model } from "@/supabase/model";
+import { baseQuery } from "./base.api";
+import { PublicationInterface } from "../interface/publications.interface";
 
 export async function getPublications(params?: {
   status?: string;
@@ -8,8 +9,9 @@ export async function getPublications(params?: {
   limit?: number;
   search?: string;
   ministryId?: string;
+  category?: string;
 }) {
-  const result = await baseQuery<PublicationInterface>({
+  return baseQuery<PublicationInterface>({
     table: model.publications,
     select: `
       *,
@@ -20,16 +22,20 @@ export async function getPublications(params?: {
         type
       )
     `,
+
     filters: {
       status: params?.status,
     },
+
     search: params?.search,
+
+    searchFields: ["title", "summary", "content"],
+
     ministry: params?.ministryId,
+
     page: params?.page ?? 1,
     limit: params?.limit ?? 5,
   });
-
-  return result;
 }
 
 
