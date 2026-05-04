@@ -1,7 +1,7 @@
-import { model } from "@/supabase/model";
-import { baseQuery } from "./base.api";
-import { ServicesInterface } from "../interface/service/services.interface";
-import { createServerSupabaseClient } from "@/supabase/server";
+import { model } from '@/supabase/model';
+import { baseQuery } from './base.api';
+import { ServicesInterface } from '../interface/service/services.interface';
+import { createServerSupabaseClient } from '@/supabase/server';
 
 export async function getServices(params?: {
   status?: string;
@@ -12,7 +12,7 @@ export async function getServices(params?: {
 }) {
   const result = await baseQuery<ServicesInterface>({
     table: model.services,
-    select: "*",
+    select: '*',
     filters: {
       status: params?.status,
     },
@@ -28,7 +28,7 @@ export async function getServices(params?: {
 export async function getServiceById(id: string) {
   const result = await baseQuery<ServicesInterface>({
     table: model.services,
-    select: "*",
+    select: '*',
     filters: { id },
     limit: 1,
     page: 1,
@@ -37,7 +37,6 @@ export async function getServiceById(id: string) {
   return result.data[0] ?? null;
 }
 
-
 // Service Count By Category
 export type ServiceCategoryCount = {
   category: string;
@@ -45,38 +44,36 @@ export type ServiceCategoryCount = {
   count: number;
 };
 
-export async function getServiceCategoryCounts(params?: {
-  status?: string;
-  ministryId?: string;
-}) {
+function isServiceCategoryRow(
+  item: unknown,
+): item is { category?: string; category_page?: string } {
+  return typeof item === 'object' && item !== null;
+}
+
+export async function getServiceCategoryCounts(params?: { status?: string; ministryId?: string }) {
   try {
     const supabase = await createServerSupabaseClient();
 
-    let query = supabase
-      .from(model.services)
-      .select("category, category_page");
+    let query = supabase.from(model.services).select('category, category_page');
 
-    // filters
     if (params?.status) {
-      query = query.eq("status", params.status);
+      query = query.eq('status', params.status);
     }
 
-    if (params?.ministryId && params.ministryId !== "all") {
-      query = query.eq("ministry_id", params.ministryId);
+    if (params?.ministryId && params.ministryId !== 'all') {
+      query = query.eq('ministry_id', params.ministryId);
     }
 
     const { data, error } = await query;
 
     if (error) throw new Error(error.message);
 
-    // ✅ Proper grouping
-    const grouped: Record<
-      string,
-      { count: number; category_page?: string }
-    > = {};
+    const grouped: Record<string, { count: number; category_page?: string }> = {};
 
-    (data || []).forEach((item: any) => {
-      const category = item.category ?? "uncategorized";
+    (data ?? []).forEach((item: unknown) => {
+      if (!isServiceCategoryRow(item)) return;
+
+      const category = item.category ?? 'uncategorized';
       const page = item.category_page;
 
       if (!grouped[category]) {
@@ -87,20 +84,17 @@ export async function getServiceCategoryCounts(params?: {
       } else {
         grouped[category].count += 1;
 
-        // optionally keep first non-null page
         if (!grouped[category].category_page && page) {
           grouped[category].category_page = page;
         }
       }
     });
 
-    const result: ServiceCategoryCount[] = Object.entries(grouped).map(
-      ([category, value]) => ({
-        category,
-        category_page: value.category_page,
-        count: value.count,
-      })
-    );
+    const result: ServiceCategoryCount[] = Object.entries(grouped).map(([category, value]) => ({
+      category,
+      category_page: value.category_page,
+      count: value.count,
+    }));
 
     result.sort((a, b) => b.count - a.count);
 
@@ -112,7 +106,7 @@ export async function getServiceCategoryCounts(params?: {
     return {
       data: [],
       total: 0,
-      error: err instanceof Error ? err.message : "Unknown error",
+      error: err instanceof Error ? err.message : 'Unknown error',
     };
   }
 }
