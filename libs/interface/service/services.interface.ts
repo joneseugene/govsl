@@ -1,5 +1,12 @@
-import { MDAInterface } from "../mda/mdas.interface";
-import { RelatedServices, ServiceApplicationSteps, ServiceDocuments, ServiceFAQs, ServiceFees, ServiceLocations } from "./service.helpers";
+import { MDASummary } from '../mda/mda.summary.interface';
+import {
+  RelatedServices,
+  ServiceApplicationSteps,
+  ServiceDocuments,
+  ServiceFAQs,
+  ServiceFees,
+  ServiceLocations,
+} from './service.helpers';
 
 export interface ServicesInterface {
   id: string;
@@ -13,9 +20,9 @@ export interface ServicesInterface {
   service_provider?: string;
   availability?: string;
   online_application_url?: string;
-  verified: boolean;
+  verified?: boolean;
   ministry_id?: string;
-  ministry?: Pick<MDAInterface, "id" | "name" | "contact"> | null;
+  mdas?: MDASummary | null;
   who_can_apply?: [];
   eligibility_requirements?: [];
   documents_required?: ServiceDocuments[];
@@ -25,6 +32,6 @@ export interface ServicesInterface {
   faqs?: ServiceFAQs[];
   related_services?: RelatedServices[];
   important_notes?: [];
-  has_detail_page: boolean;
-  active: boolean;
+  has_detail_page?: boolean;
+  active?: boolean;
 }

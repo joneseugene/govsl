@@ -1,6 +1,6 @@
-import { model } from "@/supabase/model";
-import { baseQuery } from "./base.api";
-import { ServiceDetailsInterface } from "../interface/service/service.details.interface";
+import { model } from '@/supabase/model';
+import { baseQuery } from './base.api';
+import { ServicesInterface } from '../interface/service/services.interface';
 
 export async function getServiceDetails(params?: {
   status?: string;
@@ -9,9 +9,9 @@ export async function getServiceDetails(params?: {
   search?: string;
   ministryId?: string;
 }) {
-  const result = await baseQuery<ServiceDetailsInterface>({
+  const result = await baseQuery<ServicesInterface>({
     table: model.service_details,
-    select: "*",
+    select: '*',
     filters: {
       status: params?.status,
     },
@@ -25,9 +25,9 @@ export async function getServiceDetails(params?: {
 }
 
 export async function getServiceDetailById(id: string) {
-  const result = await baseQuery<ServiceDetailsInterface>({
+  const result = await baseQuery<ServicesInterface>({
     table: model.service_details,
-    select: "*",
+    select: '*',
     filters: { id },
     limit: 1,
     page: 1,
