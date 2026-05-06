@@ -1,13 +1,15 @@
-import AllServicesServer from "@/components/section/AllSection/ServiceAll/ServiceAll.server";
+import AllServicesServer from '@/components/section/AllSection/Services/ServiceAll/ServiceAll.server';
 
-export default function ServicesPage({
-  searchParams,
-}: {
-  searchParams: Promise<{
+type SearchParams = {
     page?: string;
     search?: string;
-    category?: string;
-  }>;
-}) {
-  return <AllServicesServer searchParams={searchParams} />;
+    ministryId?: string;
+};
+
+type PageProps = {
+    searchParams: Promise<SearchParams>;
+};
+
+export default function PublicationsPage({ searchParams }: PageProps) {
+    return <AllServicesServer searchParams={searchParams} />;
 }

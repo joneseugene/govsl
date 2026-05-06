@@ -1,35 +1,43 @@
-import { getServiceCategoryCounts } from "@/libs/api/services.api";
+import Link from 'next/link';
+import { getServicesByCategorySlug } from '@/libs/api/services.api';
 
 export default async function TestSection() {
-  const result = await getServiceCategoryCounts();
+  const result = await getServicesByCategorySlug({
+    categoryPage: 'category-agriculture',
+  });
 
   return (
-    <div className="p-6">
-      <h1 className="text-xl font-semibold mb-4">
-        Service Category Test
-      </h1>
+    <div className="p-6 space-y-6 max-w-4xl mx-auto">
+      {/* Header */}
+      <div>
+        <h1 className="text-4xl font-bold text-blue-950">{result.meta.name}</h1>
+        <p className="text-gray-600 mt-1 text-lg">{result.meta.description}</p>
+      </div>
 
-      <div className="space-y-3">
+      {/* Services List */}
+      <div>
         {result.data.length === 0 ? (
-          <p className="text-gray-500">No data found</p>
+          <div className="p-6 text-center text-gray-500">No services found for this category.</div>
         ) : (
-          result.data.map((item) => (
-            <div
-              key={item.category}
-              className="flex items-center justify-between rounded-lg border p-3"
-            >
-              <div>
-                <p className="font-medium">{item.category}</p>
-                {item.category_page && (
-                  <p className="text-sm text-gray-500">
-                    {item.category_page}
-                  </p>
-                )}
-              </div>
+          result.data.map((service) => (
+            <div key={service.id} className="p-4 hover:bg-gray-50 transition">
+              {/* Clickable Title */}
+              <Link
+                href={`/service/${service.id}`}
+                className="
+            text-lg font-semibold text-blue-950
+            hover:underline hover:text-blue-800
+            transition
+          "
+              >
+                {service.name}
+              </Link>
 
-              <span className="rounded-full bg-blue-100 px-3 py-1 text-sm">
-                {item.count}
-              </span>
+              {/* Description */}
+              {service.description && (
+                <p className="text-sm text-gray-600 mt-1 line-clamp-2">{service.description}</p>
+              )}
+              
             </div>
           ))
         )}

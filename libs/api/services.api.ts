@@ -2,6 +2,7 @@ import { model } from '@/supabase/model';
 import { baseQuery } from './base.api';
 import { ServicesInterface } from '../interface/service/services.interface';
 import { createServerSupabaseClient } from '@/supabase/server';
+import { SERVICE_CATEGORY_DESCRIPTIONS } from '../consts/general.const';
 
 export async function getServices(params?: {
   status?: string;
@@ -106,6 +107,52 @@ export async function getServiceCategoryCounts(params?: { status?: string; minis
     return {
       data: [],
       total: 0,
+      error: err instanceof Error ? err.message : 'Unknown error',
+    };
+  }
+}
+
+
+//Services by Category
+export async function getServicesByCategorySlug(params: {
+  categoryPage: string;
+}) {
+  try {
+    const supabase = await createServerSupabaseClient();
+
+    const { data, error } = await supabase
+      .from(model.services)
+      .select('*', { count: 'exact' })
+      .eq('category_page', params.categoryPage);
+
+    if (error) throw new Error(error.message);
+
+    // get category name from first record
+    const categoryName =
+      data && data.length > 0 ? data[0].category ?? 'Unknown' : 'Unknown';
+
+    // get description from static map
+    const categoryDescription =
+      SERVICE_CATEGORY_DESCRIPTIONS[params.categoryPage] ??
+      'No description available';
+
+    return {
+      data: (data ?? []) as ServicesInterface[],
+
+      meta: {
+        name: categoryName,
+        description: categoryDescription,
+        category_page: params.categoryPage,
+      },
+    };
+  } catch (err: unknown) {
+    return {
+      data: [],
+      meta: {
+        title: 'Unknown',
+        description: 'No description available',
+        category_page: params.categoryPage,
+      },
       error: err instanceof Error ? err.message : 'Unknown error',
     };
   }

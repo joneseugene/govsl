@@ -27,13 +27,13 @@ export default function AllLayout({
 
   return (
     <>
-      {/* ✅ HEADER */}
+      {/* HEADER */}
       <Header links={homeNavLinks} onNavigate={handleNavigate} />
 
-      {/* ✅ PAGE CONTENT */}
+      {/* PAGE CONTENT */}
       <main>{children}</main>
 
-      {/* ✅ FOOTER */}
+      {/* FOOTER */}
       <Footer onNavigate={handleNavigate} />
     </>
   )

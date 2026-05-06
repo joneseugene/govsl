@@ -9,7 +9,7 @@ import {
 } from './service.helpers';
 
 export interface ServicesInterface {
-  id: string;
+  id?: string;
   name?: string;
   category?: string;
   page?: string;
@@ -33,5 +33,6 @@ export interface ServicesInterface {
   related_services?: RelatedServices[];
   important_notes?: [];
   has_detail_page?: boolean;
+  updated_at?: boolean;
   active?: boolean;
 }

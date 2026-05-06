@@ -1,3 +1,5 @@
+'use client'
+
 import { ArrowBigLeftIcon } from 'lucide-react'
 import { ReactNode } from 'react'
 

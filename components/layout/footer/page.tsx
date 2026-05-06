@@ -4,21 +4,12 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { footerNavLinks, LOGO } from '@/libs/consts/nav.const';
 
-export default function Footer() {
-  const router = useRouter();
+interface FooterProps {
+  onNavigate: (page: string) => void;
+}
 
-  const onNavigate = (page: string) => {
-    if (page === 'home') {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      return;
-    }
 
-    if (page.startsWith('/')) {
-      router.push(page);
-    } else {
-      router.push(`/${page}`);
-    }
-  };
+export default function Footer({ onNavigate }: FooterProps) {
 
   return (
     <footer className="bg-[#f8f8f8] border-t-2 border-[#003366]/20 text-[#0b0c0c]">

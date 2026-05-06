@@ -1,8 +1,8 @@
-import { getServiceDetails } from '@/libs/api/service_details.api';
+import { getServices } from '@/libs/api/services.api';
 import PopularServicesSectionClient from './PopularServiceSection.client';
 
 export default async function PopularServicesSectionServer() {
-  const service_details = await getServiceDetails();
+  const service = await getServices();
 
-  return <PopularServicesSectionClient items={service_details.data} />;
+  return <PopularServicesSectionClient items={service.data} />;
 }

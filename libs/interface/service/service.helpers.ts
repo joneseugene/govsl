@@ -28,6 +28,6 @@ export interface ServiceFAQs {
 }
 
 export interface RelatedServices {
-  name: string;
-  page: string;
+  name?: string;
+  page?: string;
 }
