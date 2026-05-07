@@ -1,7 +1,8 @@
 export type Suggestion = {
-    id: string
-    title: string
-    type: string
-    category?: string
-    ministry?: string
-}
+  id?: string;
+  title?: string;
+  name?: string;
+  type?: string;
+  category?: string;
+  ministry?: string;
+};

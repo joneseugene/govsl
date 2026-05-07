@@ -43,7 +43,6 @@ export default function AllMDAClient({
       const matchesSearch =
         mda.name.toLowerCase().includes(q) ||
         mda.acronym?.toLowerCase().includes(q) ||
-        mda.acronym?.toLowerCase().includes(q) ||
         mda.type?.toLowerCase().includes(q);
 
       const matchesType = selectedType === 'all' || mda.type === selectedType;

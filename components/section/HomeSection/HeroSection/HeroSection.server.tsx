@@ -1,9 +1,10 @@
 import { SectionHeading } from "@/components/ui/SectionHeading"
 import HeroSearch from "./HeroSection.client"
+import { Suggestion } from "@/libs/interface/searchInterface";
 
 
 interface HeroProps {
-    suggestions: any[]
+    suggestions: Suggestion[]
     isLoading?: boolean
     lastUpdated?: string
 }

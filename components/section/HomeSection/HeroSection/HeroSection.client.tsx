@@ -1,10 +1,11 @@
 'use client'
 
 import Search from "@/components/ui/SearchUI"
+import { Suggestion } from "@/libs/interface/searchInterface";
 import { useRouter } from "next/navigation"
 
 interface HeroSearchProps {
-    suggestions: []
+    suggestions: Suggestion[]
     isLoading?: boolean
 }
 
@@ -20,8 +21,8 @@ export default function HeroSectionClient({
         router.push(`/search?q=${encodeURIComponent(query)}`)
     }
 
-    const handleSelect = (suggestion: any) => {
-        router.push(`/search?q=${encodeURIComponent(suggestion.title)}`)
+    const handleSelect = (suggestion: Suggestion) => {
+        router.push(`/search?q=${encodeURIComponent(suggestion.title ?? "")}`)
     }
 
     return (
