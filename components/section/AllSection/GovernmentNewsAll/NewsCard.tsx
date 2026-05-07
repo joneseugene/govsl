@@ -12,6 +12,13 @@ export interface NewsCardProps {
 }
 
 export function NewsCard({ id, ministry, date, title, summary, onReadMore }: NewsCardProps) {
+  const formattedDate = date
+    ? new Date(date).toLocaleDateString('en-GB', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      })
+    : null;
   return (
     <article
       className="
@@ -28,9 +35,13 @@ export function NewsCard({ id, ministry, date, title, summary, onReadMore }: New
       <div className="mb-3 flex flex-wrap items-center gap-3 text-sm">
         <span className="font-medium text-gray-800">{ministry}</span>
 
-        <span className="text-gray-500">•</span>
+        {ministry && formattedDate && (
+          <span className="text-gray-500">•</span>
+        )}
 
-        <time className="text-gray-600">{date}</time>
+        {formattedDate && (
+          <time className="text-gray-600">{formattedDate}</time>
+        )}
       </div>
 
       {/* Headline */}

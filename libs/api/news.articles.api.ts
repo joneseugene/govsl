@@ -9,7 +9,7 @@ export async function getNewsArticles(params?: {
   search?: string;
   ministryId?: string;
 }) {
-  return baseQuery<NewsArticleInterface>({
+  const result = await baseQuery<NewsArticleInterface>({
     table: model.news_articles,
     select: `
       *,
@@ -21,27 +21,30 @@ export async function getNewsArticles(params?: {
       )
     `,
 
-    // filters
     filters: {
       status: params?.status,
     },
 
-    // search
     search: params?.search,
 
-    searchFields: [
-      'title',
-      'headline',
-      'excerpt',
-      'content',
-    ],
+    searchFields: ['title', 'headline', 'excerpt', 'content'],
 
-    // ministry filter
     ministry: params?.ministryId,
 
     page: params?.page ?? 1,
     limit: params?.limit ?? 5,
   });
+
+  // 🔥 NORMALIZE DATE HERE (IMPORTANT FIX)
+  const data = result.data.map((item: any) => ({
+    ...item,
+    date: item.date ?? item.created_at ?? null,
+  }));
+
+  return {
+    ...result,
+    data,
+  };
 }
 
 export async function getNewsArticleById(id: string) {
