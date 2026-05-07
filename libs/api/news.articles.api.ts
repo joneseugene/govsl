@@ -38,7 +38,7 @@ export async function getNewsArticles(params?: {
   // NORMALIZE DATE
   const data = result.data.map((item: NewsArticleInterface) => ({
     ...item,
-    date: item.date ?? (item as any).created_at ?? null,
+    date: item.date ?? (item as NewsArticleInterface).date ?? null,
   }));
 
   return {
