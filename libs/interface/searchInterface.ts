@@ -1,8 +1,13 @@
-export type Suggestion = {
-  id?: string;
-  title?: string;
+export interface Suggestion {
+  id: string;
+  title: string;
   name?: string;
-  type?: string;
-  category?: string;
+  type: 'news' | 'press_release' | 'announcement' | 'publication' | 'appointment' | 'mda';
+
+  acronym?: string;
   ministry?: string;
-};
+  link: string;
+
+  summary?: string;
+  created_at?: string;
+}

@@ -1,39 +1,79 @@
-'use client'
+'use client';
 
-import Search from "@/components/ui/SearchUI"
-import { Suggestion } from "@/libs/interface/searchInterface";
-import { useRouter } from "next/navigation"
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
-interface HeroSearchProps {
-    suggestions: Suggestion[]
-    isLoading?: boolean
-}
+import Search from '@/components/ui/SearchUI';
+import { Suggestion } from '@/libs/interface/searchInterface';
+import { getSearchSuggestions } from '@/libs/api/global.search.api';
 
-export default function HeroSectionClient({
-    suggestions,
-    isLoading = false,
-}: HeroSearchProps) {
-    const router = useRouter()
+export default function HeroSectionClient() {
+  const router = useRouter();
 
-    const handleSearch = (query: string) => {
-        // You can either:
-        // 1. redirect to search page
-        router.push(`/search?q=${encodeURIComponent(query)}`)
+  const [query, setQuery] = useState('');
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  /**
+   * 🔎 AUTOCOMPLETE (debounced)
+   */
+  useEffect(() => {
+    const timeout = setTimeout(async () => {
+      const q = query.trim();
+
+      if (q.length < 2) {
+        setSuggestions([]);
+        return;
+      }
+
+      setLoading(true);
+
+      try {
+        const data = await getSearchSuggestions(q);
+        setSuggestions(data);
+      } catch (error) {
+        console.error('Search error:', error);
+        setSuggestions([]);
+      } finally {
+        setLoading(false);
+      }
+    }, 400);
+
+    return () => clearTimeout(timeout);
+  }, [query]);
+
+  /**
+   * 🔍 FULL SEARCH
+   */
+  const handleSearch = (value: string) => {
+    const q = value.trim();
+    if (!q) return;
+
+    router.push(`/search?q=${encodeURIComponent(q)}`);
+  };
+
+  /**
+   * 🧠 SELECT SUGGESTION
+   */
+  const handleSelect = (item: Suggestion) => {
+    if (item.link) {
+      router.push(item.link);
+    } else {
+      router.push(`/search?q=${encodeURIComponent(item.title)}`);
     }
+  };
 
-    const handleSelect = (suggestion: Suggestion) => {
-        router.push(`/search?q=${encodeURIComponent(suggestion.title ?? "")}`)
-    }
-
-    return (
-        <div className="max-w-2xl mx-auto md:mx-0">
-            <Search
-                onSearch={handleSearch}
-                onSelect={handleSelect}
-                suggestions={suggestions}
-                isLoading={isLoading}
-                placeholder="Search government services, news, policies..."
-            />
-        </div>
-    )
+  return (
+    <div className="max-w-2xl mx-auto md:mx-0">
+      <Search
+        value={query}
+        onChange={setQuery}
+        onSearch={handleSearch}
+        onSelect={handleSelect}
+        suggestions={suggestions}
+        isLoading={loading}
+        placeholder="Search government services, news, policies..."
+      />
+    </div>
+  );
 }
