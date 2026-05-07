@@ -38,6 +38,7 @@ export default function AllMDAClient({
   /* ---------------- Filter ---------------- */
   const filtered = useMemo(() => {
     const q = searchQuery.toLowerCase().trim();
+    const a = acronym?.toLowerCase();
 
     return items.filter((mda) => {
       const matchesSearch =
@@ -47,11 +48,11 @@ export default function AllMDAClient({
 
       const matchesType = selectedType === 'all' || mda.type === selectedType;
 
-      const matchesAcronym = !acronym || mda.acronym?.toLowerCase() === acronym.toLowerCase();
+      const matchesAcronym = !a || mda.acronym?.toLowerCase() === a;
 
       return matchesSearch && matchesType && matchesAcronym;
     });
-  }, [items, searchQuery, selectedType]);
+  }, [items, searchQuery, selectedType, acronym]);
 
   /* ---------------- Pagination ---------------- */
   const totalPages = Math.ceil(filtered.length / itemsPerPage);
