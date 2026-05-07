@@ -19,7 +19,7 @@ export function ServiceCard({ name, description, category, onClick }: ServiceCar
     >
       {/* Content */}
       <div className="text-left">
-        <h3 className="text-base sm:text-lg font-semibold text-[#003366] line-clamp-2 min-h-[48px]">
+        <h3 className="text-base sm:text-lg font-semibold text-[#003366] line-clamp-2 min-h-12">
           {name}
         </h3>
 

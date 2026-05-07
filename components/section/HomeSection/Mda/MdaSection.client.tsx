@@ -32,7 +32,7 @@ export default function MDASectionClient({ items }: { items: MDAInterface[] }) {
         {/* View All */}
         <div className="mt-6 text-center">
           <ViewAllButton onClick={() => router.push(homeSections.mda.routes.all)}>
-            See all Ministries, Departments & Agencies →
+            See all Ministries, Departments & Agencies
           </ViewAllButton>
         </div>
       </div>
