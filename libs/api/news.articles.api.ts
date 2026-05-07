@@ -35,10 +35,10 @@ export async function getNewsArticles(params?: {
     limit: params?.limit ?? 5,
   });
 
-  // 🔥 NORMALIZE DATE HERE (IMPORTANT FIX)
-  const data = result.data.map((item: any) => ({
+  // NORMALIZE DATE
+  const data = result.data.map((item: NewsArticleInterface) => ({
     ...item,
-    date: item.date ?? item.created_at ?? null,
+    date: item.date ?? (item as any).created_at ?? null,
   }));
 
   return {
