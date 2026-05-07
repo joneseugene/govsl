@@ -34,9 +34,7 @@ export default function AllGovernmentNewsClient({
   const router = useRouter();
 
   const [searchQuery, setSearchQuery] = useState(search ?? '');
-  const [selectedMinistry, setSelectedMinistry] = useState(
-    ministryId ?? 'all'
-  );
+  const [selectedMinistry, setSelectedMinistry] = useState(ministryId ?? 'all');
 
   const debouncedSearch = useDebounce(searchQuery, 500);
 
@@ -109,7 +107,7 @@ export default function AllGovernmentNewsClient({
           title="Government News"
           description="Latest official news and updates from ministries and agencies"
           showBack
-          onBack={() => router.push('/')}
+          onBack={() => router.back()}
         />
 
         {/* Filters */}
@@ -146,7 +144,7 @@ export default function AllGovernmentNewsClient({
                 ministry={item.mdas?.name}
                 date={item.date}
                 title={item.title}
-                summary={item.summary ?? ""}
+                summary={item.summary ?? ''}
                 onReadMore={(id) => router.push(`/news/${id}`)}
               />
             ))

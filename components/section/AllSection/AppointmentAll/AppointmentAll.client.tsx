@@ -111,7 +111,7 @@ export default function AppointmentAllClient({
           title="Appointment Notices"
           description="Official notices of government appointments"
           showBack
-          onBack={() => router.push('/')}
+          onBack={() => router.back()}
         />
 
         {/* FILTERS */}

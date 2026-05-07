@@ -117,7 +117,7 @@ export default function AllServicesClient({
           title="Government Services"
           description="Browse government services by category"
           showBack
-          onBack={() => router.push('/')}
+          onBack={() => router.back()}
         />
 
         {/* Filters */}

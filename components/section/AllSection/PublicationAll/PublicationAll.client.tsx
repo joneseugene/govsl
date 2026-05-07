@@ -103,7 +103,7 @@ export default function AllPublicationsClient({
           title="All Publications & Reports"
           description="Policy documents, white papers, and official government reports"
           showBack
-          onBack={() => router.push('/')}
+          onBack={() => router.back()}
         />
 
         {/* Filters */}

@@ -23,30 +23,30 @@ export default function ServicesSlugClient({ result }: Props) {
   return (
     <div className="p-6 space-y-6 max-w-6xl mx-auto">
       {/* Breadcrumb */}
-        <Breadcrumb
-          items={[
-            {
-              label: 'Home',
-              page: '/',
-            },
-            {
-              label: 'Categories',
-              page: '/service'
-            },
-            {
-              label: 'Services'
-            },
-          ]}
-          onNavigate={(page) => router.push(page)}
-          variant="government"
-        />
+      <Breadcrumb
+        items={[
+          {
+            label: 'Home',
+            page: '/',
+          },
+          {
+            label: 'Categories',
+            page: '/service',
+          },
+          {
+            label: 'Services',
+          },
+        ]}
+        onNavigate={(page) => router.push(page)}
+        variant="government"
+      />
 
       <SectionHeading
         level="h2"
         title={result?.meta?.name || 'Category'}
         description={result?.meta?.description || ''}
         showBack
-        onBack={() => router.push('/')}
+        onBack={() => router.back()}
       />
 
       {/* Services List */}

@@ -102,7 +102,7 @@ export default function PressReleasesAllClient({
           title="Press Releases & Official Announcements"
           description="Official communications from the Government of Sierra Leone"
           showBack
-          onBack={() => router.push('/')}
+          onBack={() => router.back()}
         />
 
         {/* FILTERS */}

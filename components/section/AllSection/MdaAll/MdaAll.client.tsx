@@ -132,7 +132,7 @@ export default function AllMDAClient({
           title="Ministries, Departments & Agencies"
           description="Browse government MDAs of Sierra Leone"
           showBack
-          onBack={() => router.push('/mda')}
+          onBack={() => router.back()}
         />
 
         {/* Filters */}
