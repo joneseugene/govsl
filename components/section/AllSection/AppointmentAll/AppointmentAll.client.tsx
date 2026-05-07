@@ -73,7 +73,7 @@ export default function AppointmentAllClient({
     if (selectedMinistry !== 'all') params.set('ministryId', selectedMinistry);
 
     router.push(`/appointment?${params.toString()}`);
-  }, [debouncedSearch, selectedCategory, selectedMinistry]);
+  }, [debouncedSearch, selectedCategory, selectedMinistry, router]);
 
   // 🔹 Pagination
   const updatePage = (page: number) => {

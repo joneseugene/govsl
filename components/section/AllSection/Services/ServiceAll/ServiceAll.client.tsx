@@ -21,13 +21,11 @@ type ServiceCategory = {
 
 export default function AllServicesClient({
   items,
-  total,
   currentPage,
   search,
   category,
 }: {
   items: ServiceCategory[];
-  total: number;
   currentPage: number;
   search?: string;
   category?: string;
@@ -77,7 +75,7 @@ export default function AllServicesClient({
     if (selectedCategory !== 'all') params.set('category', selectedCategory);
 
     router.replace(`/service?${params.toString()}`);
-  }, [debouncedSearch, selectedCategory]);
+  }, [debouncedSearch, selectedCategory, router]);
 
   const updatePage = (page: number) => {
     const params = new URLSearchParams();

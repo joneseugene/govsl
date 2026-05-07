@@ -54,7 +54,7 @@ export default function AllPublicationsClient({
     }
 
     router.push(`/publication?${params.toString()}`);
-  }, [debouncedSearch, selectedMinistry]);
+  }, [debouncedSearch, selectedMinistry, router]);
 
   const updatePage = (page: number) => {
     const params = new URLSearchParams();

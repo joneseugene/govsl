@@ -48,7 +48,9 @@ export default function AllMDAClient({
 
       const matchesType = selectedType === 'all' || mda.type === selectedType;
 
-      return matchesSearch && matchesType;
+      const matchesAcronym = !acronym || mda.acronym?.toLowerCase() === acronym.toLowerCase();
+
+      return matchesSearch && matchesType && matchesAcronym;
     });
   }, [items, searchQuery, selectedType]);
 
@@ -80,7 +82,7 @@ export default function AllMDAClient({
     }
 
     router.replace(`/mda?${params.toString()}`);
-  }, [debouncedSearch, selectedType]);
+  }, [debouncedSearch, selectedType, router]);
 
   /* ---------------- Change Page ---------------- */
   const updatePage = (page: number) => {
@@ -117,13 +119,13 @@ export default function AllMDAClient({
               page: '/',
             },
             {
-              label: 'MDAs'
+              label: 'MDAs',
             },
           ]}
           onNavigate={(page) => router.push(page)}
           variant="government"
         />
-        
+
         {/* Heading */}
         <SectionHeading
           level="h2"

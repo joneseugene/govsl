@@ -64,7 +64,7 @@ export default function PressReleasesAllClient({
     }
 
     router.push(`/press-release?${params.toString()}`);
-  }, [debouncedSearch, selectedMinistry]);
+  }, [debouncedSearch, selectedMinistry, router]);
 
   const updatePage = (page: number) => {
     const params = new URLSearchParams();

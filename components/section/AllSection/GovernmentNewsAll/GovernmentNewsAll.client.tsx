@@ -12,9 +12,10 @@ import { NewsCard } from '@/components/section/AllSection/GovernmentNewsAll/News
 
 import { useDebounce } from '@/libs/hook/useDebounce';
 import { Breadcrumb } from '@/components/ui/Breadcrumb';
+import { NewsArticleInterface } from '@/libs/interface/news.articles.interface';
 
 type Props = {
-  items: any[];
+  items: NewsArticleInterface[];
   total: number;
   currentPage: number;
   search?: string;
@@ -142,10 +143,10 @@ export default function AllGovernmentNewsClient({
               <NewsCard
                 key={item.id}
                 id={item.id}
-                ministry={item.mdas?.name ?? item.ministry}
+                ministry={item.mdas?.name}
                 date={item.date}
                 title={item.title}
-                summary={item.summary}
+                summary={item.summary ?? ""}
                 onReadMore={(id) => router.push(`/news/${id}`)}
               />
             ))

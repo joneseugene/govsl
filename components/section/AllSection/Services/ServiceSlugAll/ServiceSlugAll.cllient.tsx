@@ -2,11 +2,20 @@
 
 import { Breadcrumb } from '@/components/ui/Breadcrumb';
 import { SectionHeading } from '@/components/ui/SectionHeading';
+import { ServicesInterface } from '@/libs/interface/service/services.interface';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
+interface ServicesSlugResult {
+  meta?: {
+    name?: string;
+    description?: string;
+  };
+  data?: ServicesInterface[];
+}
+
 interface Props {
-  result: any;
+  result: ServicesSlugResult;
 }
 
 export default function ServicesSlugClient({ result }: Props) {
@@ -45,7 +54,7 @@ export default function ServicesSlugClient({ result }: Props) {
         {result?.data?.length === 0 ? (
           <div className="p-6 text-center text-gray-500">No services found for this category.</div>
         ) : (
-          result?.data?.map((service: any) => (
+          result?.data?.map((service: ServicesInterface) => (
             <div key={service.id} className="p-4 hover:bg-gray-50 transition">
               <Link
                 href={`/service/detail/${service.id}`}

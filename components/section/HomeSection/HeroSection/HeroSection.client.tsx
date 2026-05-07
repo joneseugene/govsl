@@ -4,7 +4,7 @@ import Search from "@/components/ui/SearchUI"
 import { useRouter } from "next/navigation"
 
 interface HeroSearchProps {
-    suggestions: any[]
+    suggestions: []
     isLoading?: boolean
 }
 
