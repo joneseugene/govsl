@@ -10,6 +10,7 @@ import { Pagination } from '@/components/ui/PaginationUI';
 import { PressReleaseInterface } from '@/libs/interface/press.releases.interface';
 import { useEffect, useMemo, useState } from 'react';
 import { useDebounce } from '@/libs/hook/useDebounce';
+import { Breadcrumb } from '@/components/ui/Breadcrumb';
 
 export default function PressReleasesAllClient({
   items,
@@ -82,6 +83,20 @@ export default function PressReleasesAllClient({
   return (
     <HomeSection>
       <div className="mx-auto max-w-5xl">
+        {/* Breadcrumb */}
+        <Breadcrumb
+          items={[
+            {
+              label: 'Home',
+              page: '/',
+            },
+            {
+              label: 'Press Releases',
+            },
+          ]}
+          onNavigate={(page) => router.push(page)}
+          variant="government"
+        />
         <SectionHeading
           level="h2"
           title="Press Releases & Official Announcements"

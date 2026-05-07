@@ -11,6 +11,7 @@ import { Pagination } from '@/components/ui/PaginationUI';
 import { NewsCard } from '@/components/section/AllSection/GovernmentNewsAll/NewsCard';
 
 import { useDebounce } from '@/libs/hook/useDebounce';
+import { Breadcrumb } from '@/components/ui/Breadcrumb';
 
 type Props = {
   items: any[];
@@ -88,6 +89,20 @@ export default function AllGovernmentNewsClient({
   return (
     <HomeSection>
       <div className="mx-auto max-w-5xl">
+        {/* Breadcrumb */}
+        <Breadcrumb
+          items={[
+            {
+              label: 'Home',
+              page: '/',
+            },
+            {
+              label: 'News and Articles',
+            },
+          ]}
+          onNavigate={(page) => router.push(page)}
+          variant="government"
+        />
         <SectionHeading
           level="h2"
           title="Government News"

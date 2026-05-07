@@ -1,6 +1,7 @@
 // components/section/DetailSection/MdaDetail/MdaDetailPage.tsx
 'use client';
 
+import { Breadcrumb } from '@/components/ui/Breadcrumb';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { MDAInterface } from '@/libs/interface/mda/mdas.interface';
 import { useRouter } from 'next/navigation';
@@ -17,21 +18,23 @@ export default function MdaDetailPage({ mda, relatedAgencies }: Props) {
     <section className="bg-[#F8F8F8] min-h-screen">
       <div className="mx-auto max-w-6xl px-4 py-8 lg:px-6">
         {/* Breadcrumb */}
-        <div className="mb-6 flex flex-wrap items-center gap-2 text-sm text-gray-600">
-          <button onClick={() => router.push('/')} className="hover:text-blue-700">
-            Home
-          </button>
-
-          <span>/</span>
-
-          <button onClick={() => router.push('/mda')} className="hover:text-blue-700">
-            MDAs
-          </button>
-
-          <span>/</span>
-
-          <span className="text-[#003366] font-medium">{mda.acronym || mda.name}</span>
-        </div>
+        <Breadcrumb
+          items={[
+            {
+              label: 'Home',
+              page: '/',
+            },
+            {
+              label: 'MDAs',
+              page: '/mda',
+            },
+            {
+              label: mda.acronym || mda.name,
+            },
+          ]}
+          onNavigate={(page) => router.push(page)}
+          variant="government"
+        />
 
         {/* Hero */}
         <div className="rounded-2xl bg-white border border-gray-200 shadow-sm p-6 lg:p-10">

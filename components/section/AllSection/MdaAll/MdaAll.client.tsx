@@ -11,6 +11,7 @@ import { Pagination } from '@/components/ui/PaginationUI';
 import { useDebounce } from '@/libs/hook/useDebounce';
 import { MDACard } from './MdaCard';
 import { MDAInterface } from '@/libs/interface/mda/mdas.interface';
+import { Breadcrumb } from '@/components/ui/Breadcrumb';
 
 export default function AllMDAClient({
   items,
@@ -108,6 +109,21 @@ export default function AllMDAClient({
   return (
     <HomeSection>
       <div className="mx-auto max-w-5xl">
+        {/* Breadcrumb */}
+        <Breadcrumb
+          items={[
+            {
+              label: 'Home',
+              page: '/',
+            },
+            {
+              label: 'MDAs'
+            },
+          ]}
+          onNavigate={(page) => router.push(page)}
+          variant="government"
+        />
+        
         {/* Heading */}
         <SectionHeading
           level="h2"

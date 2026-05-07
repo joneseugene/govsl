@@ -1,5 +1,6 @@
 'use client';
 
+import { Breadcrumb } from '@/components/ui/Breadcrumb';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -12,6 +13,25 @@ export default function ServicesSlugClient({ result }: Props) {
   const router = useRouter();
   return (
     <div className="p-6 space-y-6 max-w-6xl mx-auto">
+      {/* Breadcrumb */}
+        <Breadcrumb
+          items={[
+            {
+              label: 'Home',
+              page: '/',
+            },
+            {
+              label: 'Categories',
+              page: '/service'
+            },
+            {
+              label: 'Services'
+            },
+          ]}
+          onNavigate={(page) => router.push(page)}
+          variant="government"
+        />
+
       <SectionHeading
         level="h2"
         title={result?.meta?.name || 'Category'}

@@ -11,6 +11,7 @@ import { FilterDropdown } from '@/components/ui/FilterDropdown';
 import { AppointmentInterface } from '@/libs/interface/appointments.interface';
 import { useEffect, useMemo, useState } from 'react';
 import { useDebounce } from '@/libs/hook/useDebounce';
+import { Breadcrumb } from '@/components/ui/Breadcrumb';
 
 const CATEGORY_OPTIONS = [
   { value: 'all', label: 'All' },
@@ -90,6 +91,21 @@ export default function AppointmentAllClient({
   return (
     <HomeSection>
       <div className="mx-auto max-w-5xl">
+        {/* Breadcrumb */}
+        <Breadcrumb
+          items={[
+            {
+              label: 'Home',
+              page: '/',
+            },
+            {
+              label: 'Appointments',
+            },
+          ]}
+          onNavigate={(page) => router.push(page)}
+          variant="government"
+        />
+
         <SectionHeading
           level="h2"
           title="Appointment Notices"
