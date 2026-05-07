@@ -2,6 +2,10 @@ import { model } from '@/supabase/model';
 import { NewsArticleInterface } from '../interface/news.articles.interface';
 import { baseQuery } from './base.api';
 
+type NewsRow = NewsArticleInterface & {
+  created_at?: string | null;
+};
+
 export async function getNewsArticles(params?: {
   status?: string;
   page?: number;
@@ -9,7 +13,7 @@ export async function getNewsArticles(params?: {
   search?: string;
   ministryId?: string;
 }) {
-  const result = await baseQuery<NewsArticleInterface>({
+  const result = await baseQuery<NewsRow>({
     table: model.news_articles,
     select: `
       *,
@@ -20,25 +24,20 @@ export async function getNewsArticles(params?: {
         type
       )
     `,
-
     filters: {
       status: params?.status,
     },
-
     search: params?.search,
-
     searchFields: ['title', 'headline', 'excerpt', 'content'],
-
     ministry: params?.ministryId,
-
     page: params?.page ?? 1,
     limit: params?.limit ?? 5,
   });
 
-  // NORMALIZE DATE
-  const data = result.data.map((item: NewsArticleInterface) => ({
+  const data: NewsArticleInterface[] = result.data.map((item) => ({
     ...item,
-    date: item.date ?? (item as NewsArticleInterface).date ?? null,
+    // normalize correctly
+    date: item.date ?? item.created_at ?? undefined,
   }));
 
   return {
