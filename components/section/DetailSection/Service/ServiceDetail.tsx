@@ -1,5 +1,6 @@
 'use client';
 
+import { Breadcrumb } from '@/components/ui/Breadcrumb';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { ServicesInterface } from '@/libs/interface/service/services.interface';
 import { ChevronDown } from 'lucide-react';
@@ -18,6 +19,23 @@ export default function ServiceDetailUI({ service, onNavigate }: ServiceDetailUI
   return (
     <section className="bg-white py-16 px-4">
       <div className="max-w-4xl mx-auto">
+        <Breadcrumb
+          items={[
+            {
+              label: 'Home',
+              page: '/',
+            },
+            {
+              label: 'Service',
+              page: '/service',
+            },
+            {
+              label: `${service.name}`,
+            },
+          ]}
+          onNavigate={(page) => router.push(page)}
+          variant="government"
+        />
         {/* TITLE */}
         <SectionHeading
           level="h2"

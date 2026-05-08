@@ -27,7 +27,7 @@ export function MdaItem({
   return (
     <button
       type="button"
-      onClick={() => onNavigate(`/mdas/${id}`)}
+      onClick={() => onNavigate(`/mda/${id}`)}
       className={`
         group block w-full text-left
         focus:outline-none focus-visible:ring-2

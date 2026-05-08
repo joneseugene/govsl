@@ -15,7 +15,7 @@ export default function HeroSectionClient() {
   const [loading, setLoading] = useState(false);
 
   /**
-   * 🔎 AUTOCOMPLETE (debounced)
+   * AUTOCOMPLETE (debounced)
    */
   useEffect(() => {
     const timeout = setTimeout(async () => {
@@ -43,7 +43,7 @@ export default function HeroSectionClient() {
   }, [query]);
 
   /**
-   * 🔍 FULL SEARCH
+   * FULL SEARCH
    */
   const handleSearch = (value: string) => {
     const q = value.trim();

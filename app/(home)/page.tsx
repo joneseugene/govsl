@@ -1,5 +1,5 @@
 import Header from '@/components/layout/header/page';
-import { homeNavLinks } from '@/libs/consts/nav.const';
+import { footerNavLinks, homeNavLinks } from '@/libs/consts/nav.const';
 import HeroSection from '@/components/section/HomeSection/HeroSection/HeroSection.server';
 import PressReleaseSectionServer from '@/components/section/HomeSection/PressRelease/PressReleaseSection.server';
 import AppointmentSectionServer from '@/components/section/HomeSection/Appointment/AppointmentSection.server';
@@ -15,7 +15,7 @@ export default function Page() {
     <>
       {/* CLIENT ONLY COMPONENTS */}
       <Header links={homeNavLinks} />
-      <HeroSection suggestions={[]} />
+      <HeroSection />
       {/* SERVER SECTIONS */}
       <PressReleaseSectionServer />
       <AppointmentSectionServer />
@@ -25,7 +25,7 @@ export default function Page() {
       <MoreSectionServer />
       <MDASectionServer />
       {/* END SERVER SECTIONS */}
-      <Footer /> *
+      <Footer />
     </>
   );
 }

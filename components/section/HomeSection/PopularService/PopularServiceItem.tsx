@@ -25,7 +25,7 @@ export function PopularCategoryItem({
   return (
     <button
       type="button"
-      onClick={() => onNavigate(`service-${id}`)}
+      onClick={() => onNavigate(`/service/detail/${id}`)}
       className={`
         group block w-full text-left
         focus:outline-none focus-visible:ring-2

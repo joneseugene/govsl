@@ -99,7 +99,7 @@ export default function PressReleasesAllClient({
         />
         <SectionHeading
           level="h2"
-          title="Press Releases & Official Announcements"
+          title="Press Releases"
           description="Official communications from the Government of Sierra Leone"
           showBack
           onBack={() => router.back()}

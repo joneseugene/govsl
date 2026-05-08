@@ -1,89 +1,82 @@
-import { AnnouncementInterface } from '@/libs/interface/announcements.interface';
+import { AnnouncementTypeMappedInterface } from '@/libs/api/announcements.api';
 
 interface MoreItemProps {
-  item: AnnouncementInterface;
+  item: AnnouncementTypeMappedInterface;
   onNavigate: (path: string) => void;
   className?: string;
-  variant?: 'default' | 'compact';
 }
 
-export function MoreItem({ item, onNavigate, className = '', variant = 'default' }: MoreItemProps) {
-  const isCompact = variant === 'compact';
+export function MoreItem({ item, onNavigate, className = '' }: MoreItemProps) {
+  const type = item.announcement_type?.toLowerCase();
 
-  const title = item.title;
-  const description = item.description;
+  const typeLabel =
+    type === 'vacancy'
+      ? 'Job Vacancies'
+      : type === 'notice'
+        ? 'Public Notices & Tenders'
+        : type === 'event'
+          ? 'Government Events'
+          : 'All Announcements';
+
+  const typeColor =
+    type === 'vacancy'
+      ? 'bg-blue-50 text-blue-700'
+      : type === 'notice'
+        ? 'bg-amber-50 text-amber-700'
+        : type === 'event'
+          ? 'bg-green-50 text-green-700'
+          : 'bg-gray-100 text-gray-700';
+
+  const handleClick = () => {
+    const params = new URLSearchParams();
+
+    params.set('page', '1');
+
+    if (type && type !== 'all') {
+      params.set('category', type);
+    }
+
+    onNavigate(`/announcement?${params.toString()}`);
+  };
 
   return (
     <div className="h-full">
       <button
         type="button"
-        onClick={() => onNavigate(`/publication/${item.id}`)}
+        onClick={handleClick}
         className={`
-          group w-full h-full text-left
-          rounded-2xl
+          group flex h-full w-full flex-col justify-between
+          rounded-2xl border border-slate-200
           bg-white
-          transition-all duration-300 ease-out
-          flex flex-col justify-between
-          
-          /* spacing */
-          p-4 sm:p-5 md:p-6
-          
-          /* hover */
-          hover:shadow-md hover:-translate-y-0.5
-          
+          p-5 sm:p-6
+          text-left
+          transition-all duration-300
+          hover:-translate-y-1
+          hover:border-[#003366]/20
+          hover:shadow-lg
           ${className}
         `}
       >
-        {/* TITLE */}
-        <h6
-          className={`
-            font-semibold
-            text-[#003366]
-            leading-tight
-            transition-colors duration-200
-
-            /* responsive typography */
-            text-base sm:text-lg md:text-xl lg:text-[21px]
-
-            /* spacing */
-            mb-2 sm:mb-3 md:mb-4
-
-            /* truncate long titles nicely */
-            line-clamp-2
-          `}
+        {/* TYPE BADGE */}
+        <span
+          className={`mb-4 inline-flex rounded-full px-3 py-1 text-xs font-semibold ${typeColor}`}
         >
-          {title}
-        </h6>
+          {typeLabel}
+        </span>
+
+        {/* TITLE */}
+        <h3 className="mb-3 text-xl font-bold text-[#003366]">{item.title}</h3>
 
         {/* DESCRIPTION */}
-        <p
-          className={`
-            text-gray-600
-            leading-relaxed
+        <p className="text-sm text-gray-600">{item.description}</p>
 
-            /* responsive text */
-            text-sm sm:text-base md:text-[15px]
+        {/* COUNT */}
+        <span className="mt-5 inline-flex w-fit rounded-full bg-[#F3F2F1] px-3 py-1 text-xs font-semibold text-[#003366]">
+          {item.total} items
+        </span>
 
-            /* spacing */
-            mb-2 sm:mb-3
-
-            /* clamp for consistency */
-            line-clamp-3
-          `}
-        >
-          {description}
-        </p>
-
-        {/* OPTIONAL CTA (helps UX) */}
-        <span
-          className="
-            text-sm font-medium text-[#003366]
-            mt-auto
-            opacity-0 group-hover:opacity-100
-            transition-opacity duration-200
-          "
-        >
-          View details →
+        <span className="mt-4 text-sm font-medium text-[#003366] opacity-100">
+          Browse category →
         </span>
       </button>
     </div>

@@ -4,19 +4,19 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { footerNavLinks, LOGO } from '@/libs/consts/nav.const';
 
-interface FooterProps {
-  onNavigate: (page: string) => void;
-}
+export default function Footer() {
+  const router = useRouter();
 
-
-export default function Footer({ onNavigate }: FooterProps) {
+  const onNavigate = (page: string) => {
+    router.push(`/${page}`);
+  };
 
   return (
-    <footer className="bg-[#f8f8f8] border-t-2 border-[#003366]/20 text-[#0b0c0c]">
+    <footer className="border-t-2 border-[#003366]/20 bg-[#f8f8f8] text-[#0b0c0c]">
       <div className="mx-auto max-w-6xl px-5 py-14 md:py-16">
         {/* Branding */}
         <div className="mb-12 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-          <button onClick={() => onNavigate('home')} className="flex items-center gap-4">
+          <button onClick={() => router.push('/')} className="flex items-center gap-4">
             {/* Coat of Arms */}
             <div className="relative h-12 w-12 sm:h-14 sm:w-14">
               <Image
@@ -50,7 +50,7 @@ export default function Footer({ onNavigate }: FooterProps) {
             <button
               key={page}
               onClick={() => onNavigate(page)}
-              className="text-left text-[#1e60aa] hover:text-[#003366] transition"
+              className="text-left text-[#1e60aa] transition hover:text-[#003366]"
             >
               {label}
             </button>

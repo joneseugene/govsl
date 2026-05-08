@@ -24,7 +24,7 @@ export function PublicationItem({
     <div className={`group ${className}`}>
       <button
         type="button"
-        onClick={() => onNavigate(`publication-${id}`)}
+        onClick={() => onNavigate(`publication/${id}`)}
         className="
             w-full text-left
             focus:outline-none focus-visible:ring-2

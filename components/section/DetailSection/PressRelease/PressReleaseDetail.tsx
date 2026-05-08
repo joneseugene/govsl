@@ -7,6 +7,7 @@ import ReactMarkdown from 'react-markdown';
 import { formatDate, getQRCode } from '@/libs/functions';
 import { PressReleaseInterface } from '@/libs/interface/press.releases.interface';
 import { useRouter } from 'next/navigation';
+import { Breadcrumb } from '@/components/ui/Breadcrumb';
 
 interface PressReleaseDetailUIProps {
   pressRelease: PressReleaseInterface;
@@ -48,48 +49,91 @@ export function PressReleaseDetailUI({ pressRelease, pdfUrl, onBack }: PressRele
 
   return (
     <div className="bg-white min-h-screen">
-      {/* Action Buttons */}
-      <div className="no-print max-w-4xl mx-auto px-4 py-6 flex gap-4">
-        <button
-          onClick={handleBack}
-          className="px-4 py-2 bg-[#003366] text-white text-lg flex items-center gap-2 cursor-pointer"
-        >
-          <CustomBackIcon size={20} className="text-white" /> Back
-        </button>
+      {/* TOP BAR */}
+      <div className="no-print border-b border-slate-200 bg-slate-50">
+        <div className="mx-auto flex max-w-4xl flex-col gap-4 px-4 py-5 lg:flex-row lg:items-center lg:justify-between">
+          {/* LEFT */}
+          <div className="min-w-0 flex-1">
+            <Breadcrumb
+              items={[
+                {
+                  label: 'Home',
+                  page: '/',
+                },
+                {
+                  label: 'Press Release',
+                  page: '/press-release',
+                },
+                {
+                  label: `${pressRelease.legacy_id}`,
+                },
+              ]}
+              onNavigate={(page) => router.push(page)}
+              variant="government"
+            />
+          </div>
 
-        <button
-          onClick={handleGeneratePDF}
-          className="px-4 py-2 bg-[#008A3C] text-white text-lg flex items-center gap-2"
-        >
-          {loadingPDF ? 'Generating...' : 'Generate PDF'}
-        </button>
+          {/* RIGHT */}
+          <div className="flex flex-wrap items-center gap-3">
+            <button
+              onClick={handleBack}
+              className="
+              inline-flex items-center justify-center gap-2
+              rounded-md bg-[#003366]
+              px-4 py-2
+              text-sm font-medium text-white
+              transition hover:bg-[#002244]
+            "
+            >
+              Back
+            </button>
+
+            <button
+              onClick={handleGeneratePDF}
+              className="
+              inline-flex items-center justify-center
+              rounded-md bg-[#008A3C]
+              px-4 py-2
+              text-sm font-medium text-white
+              transition hover:bg-[#006D2F]
+            "
+            >
+              {loadingPDF ? 'Generating...' : 'Generate PDF'}
+            </button>
+          </div>
+        </div>
       </div>
 
       {/* Document Content */}
-      <div className="max-w-4xl mx-auto px-6 pb-20">
+      <div className="max-w-4xl mx-auto px-6 pb-20 pt-8">
         {/* Header */}
-        <header className="mb-5 pb-6 flex justify-between items-start">
+        <header className="mb-5 flex items-start justify-between pb-6">
           <div className="text-left">
             <div className="text-2xl font-bold text-[#0033A0]">{acronym}</div>
-            <h1 className="text-lg font-bold uppercase mt-1">{ministry}</h1>
-            <p className="text-sm mt-1">Public Relations Unit</p>
-            <p className="text-sm mt-1">Republic of Sierra Leone, West Africa</p>
+
+            <h1 className="mt-1 text-lg font-bold uppercase">{ministry}</h1>
+
+            <p className="mt-1 text-sm">Public Relations Unit</p>
+
+            <p className="mt-1 text-sm">Republic of Sierra Leone, West Africa</p>
           </div>
+
           <div className="text-right text-sm font-medium">
             <div>{formatDate(date)}</div>
+
             {reference && <div>Ref: {reference}</div>}
           </div>
         </header>
 
         <CustomDivider />
 
-        <h3 className="text-lg font-bold text-[#003366] mb-6 text-center max-w-2xl mx-auto px-4 leading-snug">
+        <h3 className="mx-auto mb-6 max-w-2xl px-4 text-center text-lg font-bold leading-snug text-[#003366]">
           {title || 'Untitled'}
         </h3>
 
         <CustomDivider />
 
-        <div className="text-sm leading-7 mb-6">
+        <div className="mb-6 text-sm leading-7">
           <ReactMarkdown>{content}</ReactMarkdown>
         </div>
 
@@ -101,19 +145,24 @@ export function PressReleaseDetailUI({ pressRelease, pdfUrl, onBack }: PressRele
         )}
 
         <CustomDivider />
+
         <footer className="mt-16 pt-8">
-          <div className="flex justify-between items-end">
-            <div className="text-xs max-w-sm">
-              <p className="font-bold mb-1">Government of Sierra Leone</p>
+          <div className="flex items-end justify-between">
+            <div className="max-w-sm text-xs">
+              <p className="mb-1 font-bold">Government of Sierra Leone</p>
+
               <p>This is an official document. Scan the QR code to verify.</p>
             </div>
+
             {qrUrl && (
               <div className="border-2 p-3">
                 <img src={qrUrl} alt="QR Code" width={100} height={100} />
-                <div className="text-[9px] text-center mt-1">Scan to verify</div>
+
+                <div className="mt-1 text-center text-[9px]">Scan to verify</div>
               </div>
             )}
           </div>
+
           <CustomDivider className="mt-5" />
         </footer>
       </div>

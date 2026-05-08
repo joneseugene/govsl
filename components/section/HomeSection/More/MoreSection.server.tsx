@@ -1,12 +1,24 @@
-import { getAnnouncements } from '@/libs/api/announcements.api';
+import {
+  getAnnouncementTypes,
+  AnnouncementTypeMappedInterface,
+} from '@/libs/api/announcements.api';
+
 import MoreSectionClient from './MoreSection.client';
 
 export default async function MoreSectionServer() {
-  const announcements = await getAnnouncements();
+  const items = await getAnnouncementTypes();
 
-  const filtered = announcements.data.filter(
-    (item) => item.announcement_type === 'notice' || item.announcement_type === 'vacancy',
-  );
+  const data: AnnouncementTypeMappedInterface[] = [
+    ...items,
 
-  return <MoreSectionClient items={filtered} />;
+    {
+      announcement_type: 'all',
+      total: items.reduce((acc, item) => acc + item.total, 0),
+      title: 'All Announcements',
+      description: 'Browse complete announcement archive',
+      route: '/announcement',
+    },
+  ];
+
+  return <MoreSectionClient items={data} />;
 }

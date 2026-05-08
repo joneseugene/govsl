@@ -1,71 +1,92 @@
-import { Components } from "react-markdown";
+import { Components } from 'react-markdown';
 
 export const markdownComponents: Partial<Components> = {
-    p: ({ children }) => (
-        <span className="text-[19px] leading-[1.58] text-gray-700 block mb-3 last:mb-0">
-            {children}
-        </span>
-    ),
-    strong: ({ ...props }) => (
-        <strong className="font-semibold text-[#003366]" {...props} />
-    ),
-    em: ({ ...props }) => <em className="text-gray-700" {...props} />,
-    a: ({ ...props }) => (
-        <a
-            className="text-[#1D70B8] underline decoration-[#1D70B8]/40 hover:decoration-[#1D70B8]/70"
-            {...props}
-        />
-    ),
-}
+  p: ({ children }) => (
+    <span className="text-[19px] leading-[1.58] text-gray-700 block mb-3 last:mb-0">
+      {children}
+    </span>
+  ),
+  strong: ({ ...props }) => <strong className="font-semibold text-[#003366]" {...props} />,
+  em: ({ ...props }) => <em className="text-gray-700" {...props} />,
+  a: ({ ...props }) => (
+    <a
+      className="text-[#1D70B8] underline decoration-[#1D70B8]/40 hover:decoration-[#1D70B8]/70"
+      {...props}
+    />
+  ),
+};
 
 // Category Description
-
 export const SERVICE_CATEGORY_DESCRIPTIONS: Record<string, string> = {
-  "category-business":
-    "Business registration, company incorporation, trade licenses, and commercial permits.",
+  'category-business':
+    'Business registration, company incorporation, trade licenses, and commercial permits.',
 
-  "category-agriculture":
-    "Agriculture, Fisheries & Natural Resources",
+  'category-agriculture': 'Agriculture, Fisheries & Natural Resources',
 
-  "category-driving":
-    "Apply for licenses, register vehicles, and manage transport-related services",
+  'category-driving':
+    'Apply for licenses, register vehicles, and manage transport-related services',
 
-  "category-education":
-    "Education & Training",
+  'category-education': 'Education & Training',
 
-  "category-employment":
-    "Employment & Labour",
+  'category-employment': 'Employment & Labour',
 
-  "category-energy":
-    "Energy, Water & Environment",
+  'category-energy': 'Energy, Water & Environment',
 
-  "category-finance":
-    "Tax registration, filing, payment, customs duties, and revenue services.",
+  'category-finance': 'Tax registration, filing, payment, customs duties, and revenue services.',
 
-  "category-governance":
-    "Public Service & Governance",
+  'category-governance': 'Public Service & Governance',
 
-  "category-health":
-    "Health insurance, medical certificates, pharmacy licenses, and healthcare facility registration.",
+  'category-health':
+    'Health insurance, medical certificates, pharmacy licenses, and healthcare facility registration.',
 
-  "category-identification":
-    "Services for national identification, birth and death registration, marriage certificates, and other civil documentation.",
+  'category-identification':
+    'Services for national identification, birth and death registration, marriage certificates, and other civil documentation.',
 
-  "category-justice":
-    "Justice & Legal Affairs",
+  'category-justice': 'Justice & Legal Affairs',
 
-  "category-lands":
-    "Lands, Housing & Urban Planning",
+  'category-lands': 'Lands, Housing & Urban Planning',
 
-  "category-security":
-    "Security & Public Safety",
+  'category-security': 'Security & Public Safety',
 
-  "category-technology":
-    "Technology, Communication & Innovation",
+  'category-technology': 'Technology, Communication & Innovation',
 
-  "category-transport":
+  'category-transport':
     "Driver's licenses, vehicle registration, road worthiness certificates, and road safety services.",
 
-  "category-travel":
-    "Passport services, visas, work permits, residence permits, and travel documentation for Sierra Leone",
+  'category-travel':
+    'Passport services, visas, work permits, residence permits, and travel documentation for Sierra Leone',
+};
+
+// Announcement Types
+export const announcementTypeMap: Record<
+  string,
+  {
+    title: string;
+    description: string;
+    route: string;
+  }
+> = {
+  vacancy: {
+    title: 'Job Vacancies',
+    description: 'Public sector employment opportunities',
+    route: '/announcement/vacancy',
+  },
+
+  notice: {
+    title: 'Public Notices & Tenders',
+    description: 'Government procurement and official notices',
+    route: '/announcement/notice',
+  },
+
+  event: {
+    title: 'Government Events',
+    description: 'Upcoming public events and ceremonies',
+    route: '/announcement/event',
+  },
+
+  all: {
+    title: 'All Announcements',
+    description: 'Browse complete announcement archive',
+    route: '/announcement',
+  },
 };
