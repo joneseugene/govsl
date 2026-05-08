@@ -2,32 +2,31 @@ import { getServiceCategoryCounts } from '@/libs/api/services.api';
 import AllServicesClient from './ServiceAll.client';
 
 type SearchParams = {
-    page?: string;
-    search?: string;
-    category?: string;
+  page?: string;
+  search?: string;
+  category?: string;
 };
 
 export default async function AllServicesServer({
-    searchParams,
+  searchParams,
 }: {
-    searchParams: Promise<SearchParams>;
+  searchParams: Promise<SearchParams>;
 }) {
-    const params = await searchParams;
+  const params = await searchParams;
 
-    const safePage = Math.max(1, Number(params.page ?? 1) || 1);
+  const safePage = Math.max(1, Number(params.page ?? 1) || 1);
 
-    const search = params.search?.trim() || undefined;
+  const search = params.search?.trim() || undefined;
 
-    // Fetch grouped categories
-    const result = await getServiceCategoryCounts();
+  // Fetch grouped categories
+  const result = await getServiceCategoryCounts();
 
-    return (
-        <AllServicesClient
-            items={result.data}
-            total={result.total ?? 0}
-            currentPage={safePage}
-            search={search}
-            category={params.category ?? 'all'}
-        />
-    );
+  return (
+    <AllServicesClient
+      items={result.data}
+      currentPage={safePage}
+      search={search}
+      category={params.category ?? 'all'}
+    />
+  );
 }
