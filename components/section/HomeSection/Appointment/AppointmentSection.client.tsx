@@ -6,37 +6,59 @@ import { homeSections } from '@/libs/consts/home.const';
 import { ViewAllButton } from '../../../ui/ViewAllUI';
 import { AppointmentItem } from './AppointmentItem';
 import { useRouter } from 'next/navigation';
-import { AppointmentInterface } from '@/libs/interface/appointments.interface';
+import { AppointmentSummaryInterface } from '@/libs/interface/appointments.interface';
 
-export default function AppointmentSectionClient({ items }: { items: AppointmentInterface[] }) {
+export default function AppointmentSectionClient({
+  items,
+}: {
+  items: AppointmentSummaryInterface[];
+}) {
   const router = useRouter();
 
   return (
-    <HomeSection id={homeSections.appointment.id}>
-      <div className="max-w-5xl mx-auto">
+    <HomeSection id={homeSections.appointment.id} className="bg-[#F8FAFC]">
+      <div className="mx-auto max-w-6xl">
         <SectionHeading
           level="h2"
           title="Appointment Notices"
-          description="Official government appointments and designations"
+          description="Official government appointments, designations and public service notices."
         />
 
         {/* CONTENT */}
         {items.length === 0 ? (
-          <div className="text-center py-16 text-[19px] text-[#505A5F] italic">
-            No recent appointment notices to display.
+          <div
+            className="
+              rounded-2xl border border-slate-200
+              bg-white py-16 text-center
+              text-[18px] italic text-[#505A5F]
+              shadow-sm
+            "
+          >
+            No recent appointment notices available.
           </div>
         ) : (
-          <div className="space-y-12 sm:space-y-14">
+          <div
+            className="
+              grid grid-cols-1
+              gap-5 lg:gap-6
+            "
+          >
             {items.map((item) => (
-              <AppointmentItem key={item.id} item={item} onNavigate={(path) => router.push(path)} />
+              <AppointmentItem
+                key={item.appointment_date}
+                item={item}
+                onNavigate={(path) => router.push(path)}
+              />
             ))}
           </div>
         )}
 
         {/* VIEW ALL */}
-        <ViewAllButton onClick={() => router.push(homeSections.appointment.routes.all)}>
-          See all Appointments
-        </ViewAllButton>
+        <div className="mt-1 flex">
+          <ViewAllButton onClick={() => router.push(homeSections.appointment.routes.all)}>
+            See all Appointment Notices
+          </ViewAllButton>
+        </div>
       </div>
     </HomeSection>
   );

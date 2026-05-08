@@ -19,3 +19,17 @@ export interface AppointmentInterface {
   mdas?: MDASummary;
   status?: string;
 }
+
+export interface AppointmentSummaryInterface {
+  appointment_date: string;
+  signatory_name?: string;
+  signatory_title?: string;
+  total_appointments: number;
+  summary_text: string;
+  appointee_names?: string;
+  positions?: string;
+  reference_numbers?: string;
+  ministry_name?: string;
+  ministry_id?: string;
+  category?: string;
+}

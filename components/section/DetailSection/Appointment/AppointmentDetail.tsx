@@ -1,164 +1,168 @@
-'use client'
+'use client';
 
-import { Printer } from 'lucide-react'
-import { mockAppointments } from '@/libs/sampleData'
-import { useEffect, useState } from 'react'
-import Image from 'next/image'
-import { LOGO } from '@/libs/consts/nav.const'
+import { Printer } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+
+import { LOGO } from '@/libs/consts/nav.const';
+import { AppointmentInterface } from '@/libs/interface/appointments.interface';
+import { formatDate, getQRCode } from '@/libs/functions';
 
 interface AppointmentDetailProps {
-    noticeId: string
-    onNavigate: (page: string) => void
+  notices: AppointmentInterface[];
+  date: string;
 }
 
-export function AppointmentDetail({ noticeId, onNavigate }: AppointmentDetailProps) {
-    const notice = mockAppointments.find(n => n.id === noticeId)
-    const [qrUrl, setQrUrl] = useState<string | null>(null)
+export function AppointmentDetail({ notices, date }: AppointmentDetailProps) {
+  const router = useRouter();
+  const [qrUrl, setQrUrl] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
-        if (!notice) return
+  useEffect(() => {
+    if (!date) return;
+    setQrUrl(getQRCode(window.location.href));
+  }, [date]);
 
-        const url = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(
-            window.location.origin + '/' + notice.id
-        )}`
-
-        setQrUrl(url)
-    }, [notice])
-
-    if (!notice) {
-        return (
-            <div className="py-20 text-center">
-                <h1 className="text-4xl font-bold mb-4">Appointment Notice Not Found</h1>
-                <button
-                    onClick={() => onNavigate('appointments-all')}
-                    className="underline text-blue-700"
-                >
-                    View all appointment notices
-                </button>
-            </div>
-        )
-    }
-
+  if (!notices?.length) {
     return (
-        <div className="bg-white">
-            {/* Document */}
-            <div
-                style={{
-                    maxWidth: '210mm',
-                    margin: '0 auto',
-                    padding: '25mm 20mm',
-                    minHeight: '297mm',
-                    position: 'relative'
-                }}
-            >
-                {/* Actions */}
-                <div className="no-print max-w-240 mx-auto py-6 flex gap-4">
-                    <button
-                        onClick={() => onNavigate('home')}
-                        className="px-6 py-3 bg-[#003366] text-white"
-                    >
-                        Back
-                    </button>
+      <div className="py-24 text-center">
+        <h1 className="text-4xl font-bold text-[#003366]">Appointment Not Found</h1>
 
-                    <button
-                        onClick={() => window.print()}
-                        className="px-6 py-3 bg-[#008A3C] text-white flex items-center gap-2"
-                    >
-                        <Printer size={20} />
-                        Print
-                    </button>
-                </div>
-                {/* Header */}
-                <div className="flex justify-between items-start text-[12px] mb-10">
-                    {/* Left: Reference */}
-                    <strong>Ref: {notice.referenceNumber}</strong>
+        <button
+          onClick={() => router.push('/appointment')}
+          className="mt-4 text-[#1D70B8] underline"
+        >
+          Back to list
+        </button>
+      </div>
+    );
+  }
 
-                    {/* Right: Office details */}
-                    {(notice.office || notice.officeAddress?.length) && (
-                        <div className="text-right uppercase font-bold leading-5">
-                            {notice.office && <div>{notice.office}</div>}
-                            {notice.officeAddress?.map((line, i) => (
-                                <div key={i}>{line}</div>
-                            ))}
-                            {notice.date && <div>{notice.date}</div>}
-                        </div>
-                    )}
-                </div>
+  const first = notices[0];
 
+  // ✅ FLATTEN ALL APPOINTEES INTO ONE LIST (THIS IS THE FIX)
+  const allAppointees = notices.flatMap((n) => {
+    const names = n.appointee_name?.split(',').map((x) => x.trim()) || [];
 
-                {/* Coat of Arms */}
-                <div className="text-center mb-12">
-                    <Image
-                        src={LOGO.coatOfArms.src}
-                        alt={LOGO.coatOfArms.alt}
-                        width={45}
-                        height={45}
-                        className="mx-auto w-25"
-                        priority
-                    />
-                    <div className="font-bold tracking-widest text-sm mt-2">
-                        GOVERNMENT OF SIERRA LEONE
-                    </div>
-                </div>
+    const positions = n.position?.split(',').map((x) => x.trim()) || [];
 
-                {/* Recipient Information */}
-                {notice.recipientName && (
-                    <div className="mb-8 text-sm">
-                        <div className="font-bold">{notice.recipientName}</div>
-                        {notice.recipientAddress && (
-                            <div>{notice.recipientAddress}</div>
-                        )}
-                    </div>
-                )}
+    return names.map((name, i) => ({
+      name,
+      position: positions[i] || '',
+    }));
+  });
 
-                {/* Salutation */}
-                {notice.recipientName && (
-                    <div className="mb-8 text-sm">
-                        Dear{' '}
-                        {notice.recipientName.trim().includes(' ')
-                            ? `Sir/Madam.`
-                            : 'Sir/Madam.'},
-                    </div>
-                )}
+  const handlePDF = async () => {
+    setLoading(true);
+    const { AppointmentPDF } = await import('./AppointmentPDF');
+    await AppointmentPDF.download(notices, date);
+    setLoading(false);
+  };
 
+  return (
+    <div className="bg-[#F5F7FA] py-8">
+      {/* ACTIONS */}
+      <div className="no-print mx-auto mb-6 flex max-w-4xl flex-wrap items-center justify-between gap-3 px-12">
+        <button
+          onClick={() => router.push('/appointment')}
+          className="inline-flex items-center justify-center rounded-md bg-[#003366] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#002244]"
+        >
+          Back
+        </button>
 
+        <button
+          onClick={handlePDF}
+          className="inline-flex items-center justify-center gap-2 rounded-md bg-[#008A3C] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#006D2F]"
+        >
+          <Printer size={16} />
+          {loading ? 'Generating...' : 'Download PDF'}
+        </button>
+      </div>
 
-                {/* Title */}
-                <h2 className="text-center font-bold underline tracking-wide mb-10 text-base">
-                    {notice.title}
-                </h2>
-
-                {/* Content */}
-                <div className="text-sm leading-[1.8] text-justify mb-16">
-                    {notice.content?.split('\n\n').map((p, i) => (
-                        <p key={i} className="mb-4">{p}</p>
-                    ))}
-                </div>
-
-                {/* Signature */}
-                <div className="text-left mb-16">
-                    <div className="font-bold uppercase">{notice.signatory.name}</div>
-                    <div className="uppercase text-sm">{notice.signatory.title}</div>
-                </div>
-
-                {/* Copy */}
-                {notice.copyTo?.length && (
-                    <div className="text-xs">
-                        <strong>Copy:</strong>
-                        {notice.copyTo.map((c, i) => (
-                            <div key={i} className="ml-10">"{c}"</div>
-                        ))}
-                    </div>
-                )}
-
-                {/* QR */}
-                {qrUrl && (
-                    <div className="absolute bottom-[20mm] right-[20mm] text-center">
-                        <img src={qrUrl} width={80} />
-                        <div className="text-[9px] mt-1">Scan to verify authenticity</div>
-                    </div>
-                )}
-            </div>
+      {/* DOCUMENT */}
+      <div
+        className="relative mx-auto bg-white shadow-xl"
+        style={{
+          maxWidth: '210mm',
+          minHeight: '297mm',
+          padding: '25mm 22mm',
+        }}
+      >
+        {/* HEADER */}
+        <div className="mb-10 flex justify-between text-[13px]">
+          <p className="font-semibold text-slate-700">Ref: {first.reference_number || 'N/A'}</p>
         </div>
-    )
+
+        {/* HEADER CENTER */}
+        <div className="mb-14 text-center">
+          <Image
+            src={LOGO.coatOfArms.src}
+            alt="Coat of Arms"
+            width={90}
+            height={90}
+            className="mx-auto mb-4 w-24"
+          />
+
+          <div className="text-sm font-bold uppercase tracking-[0.18em] text-[#003366]">
+            <div>Government of Sierra Leone</div>
+            <div>{first.office_name}</div>
+            <div>State House</div>
+          </div>
+        </div>
+
+        {/* BODY (FIXED: NO DUPLICATE LOOPING) */}
+        <div className="mb-8 border-b border-slate-200 pb-8">
+          <p className="text-sm leading-7 text-slate-700">{first.description}</p>
+
+          {/* ✅ ONLY APPOINTEES LOOP */}
+          <div className="mt-6 space-y-3">
+            {allAppointees.map((a, index) => (
+              <div key={index} className="rounded-md bg-slate-50 px-4 py-3">
+                <p className="font-medium text-[#003366]">
+                  {index + 1}. {a.name}
+                </p>
+
+                {a.position && <p className="mt-1 text-sm text-slate-600">{a.position}</p>}
+              </div>
+            ))}
+          </div>
+
+          {/* SIGNATURE + DATE */}
+          <div className="mt-16 flex items-end justify-between gap-10">
+            <div>
+              <div className="mb-3 h-px w-60 bg-slate-300" />
+
+              <p className="font-bold uppercase text-[#003366]">{first.signatory_name}</p>
+
+              <p className="text-sm uppercase text-slate-500">{first.signatory_title}</p>
+            </div>
+
+            <p className="text-right text-sm text-slate-600">{formatDate(date)}</p>
+          </div>
+
+          {/* COPY */}
+          {first.copy_to?.length ? (
+            <div className="mt-6 text-sm">
+              <p className="mb-2 font-bold text-slate-700">Copy:</p>
+
+              <div className="space-y-1 text-slate-600">
+                {first.copy_to.map((c, idx) => (
+                  <p key={idx}>• {c}</p>
+                ))}
+              </div>
+            </div>
+          ) : null}
+        </div>
+
+        {/* QR */}
+        {qrUrl && (
+          <div className="absolute bottom-[22mm] right-[22mm] text-center">
+            <img src={qrUrl} width={90} />
+            <p className="mt-1 text-[10px] text-slate-500">Scan to verify</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }

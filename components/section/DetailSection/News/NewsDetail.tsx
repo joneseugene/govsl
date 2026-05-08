@@ -4,6 +4,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { Breadcrumb } from '@/components/ui/Breadcrumb';
+import { getQRCode } from '@/libs/functions';
 
 interface Props {
   id: string;
@@ -178,12 +179,7 @@ export default function NewsDetailClient({
 
             {qrUrl && (
               <div className="border-2 border-[#0B0C0C] p-3">
-                <img
-                  src={`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(qrUrl)}`}
-                  alt="QR Code"
-                  width={120}
-                  height={120}
-                />
+                <img src={getQRCode(qrUrl)} alt="QR Code" width={120} height={120} />
 
                 <div className="mt-2 text-center text-[11px] text-[#505A5F]">Scan to verify</div>
               </div>

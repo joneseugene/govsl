@@ -1,79 +1,138 @@
-'use client'
+'use client';
 
-import { useRouter } from "next/navigation"
+import { AppointmentSummaryInterface } from '@/libs/interface/appointments.interface';
+import { formatDate } from '@/libs/functions';
+import { ArrowRight } from 'lucide-react';
 
-
-export interface AppointmentNoticeCardProps {
-    id: string
-    category?: string | null
-    office: string
-    date: string
-    recipientName: string
-    title: string | null
-    excerpt?: string
-    onReadMore: (id: string) => void
+interface AppointmentNoticeCardProps {
+  item: AppointmentSummaryInterface;
+  onNavigate: (path: string) => void;
+  className?: string;
 }
 
 export function AppointmentNoticeCard({
-    id,
-    category,
-    office,
-    date,
-    recipientName,
-    title,
-    excerpt,
-    onReadMore,
+  item,
+  onNavigate,
+  className = '',
 }: AppointmentNoticeCardProps) {
-    const router = useRouter()
-    return (
-        <div
-            className="
-        group cursor-pointer bg-white
-        border-l-4 border-[#003366]
-        p-6 sm:p-8
-        transition-all duration-200
-        hover:bg-slate-50 hover:border-[#008A3C]
-      "
+  const date = item.appointment_date;
+  const total = item.total_appointments;
+
+  return (
+    <button
+      type="button"
+      onClick={() => onNavigate(`/appointment/${date}`)}
+      className={`
+        group relative overflow-hidden
+        rounded-2xl border border-slate-200
+        bg-white p-6 sm:p-7
+        text-left shadow-sm
+        transition-all duration-300
+        hover:-translate-y-1
+        hover:border-[#003366]/20
+        hover:shadow-xl
+        focus:outline-none
+        focus-visible:ring-2
+        focus-visible:ring-[#1D70B8]/40
+        ${className}
+      `}
+    >
+      {/* Accent line */}
+      <div
+        className="
+          absolute left-0 top-0 h-full w-1
+          bg-[#003366]
+          transition-all duration-300
+          group-hover:bg-[#008A3C]
+        "
+      />
+
+      {/* Meta */}
+      <div
+        className="
+          mb-5 flex flex-wrap items-center
+          gap-3 text-sm sm:text-[15px]
+          text-slate-500
+        "
+      >
+        <span
+          className="
+            rounded-full bg-slate-100
+            px-3 py-1
+            font-medium text-slate-700
+          "
         >
-            {/* Meta */}
-            <div className="mb-2 flex flex-wrap items-center gap-2 text-sm text-slate-600">
-                {category && (
-                    <span className="
-            rounded-sm bg-slate-100 px-3 py-1
-            text-xs font-bold uppercase text-[#003366]
-          ">
-                        {category}
-                    </span>
-                )}
-                <span>
-                    {office} • {date}
-                </span>
+          Appointment Notice
+        </span>
+
+        <span className="text-slate-300">•</span>
+
+        <time className="font-medium text-slate-600">{formatDate(date)}</time>
+      </div>
+
+      {/* Main Content */}
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h2
+            className="
+              text-[24px] leading-tight
+              font-bold tracking-tight
+              text-[#003366]
+              transition-colors duration-300
+              group-hover:text-[#1D70B8]
+            "
+          >
+            {total} Official Appointment
+            {total > 1 ? 's' : ''}
+          </h2>
+
+          <p
+            className="
+              mt-3 max-w-2xl
+              text-[15px] leading-relaxed
+              text-slate-600
+            "
+          >
+            Published government appointment notices and official public service designations for
+            this date.
+          </p>
+
+          {(item.signatory_name || item.signatory_title) && (
+            <div className="mt-5">
+              <p className="text-sm font-semibold text-slate-800">{item.signatory_name}</p>
+
+              <p className="text-sm text-slate-500">{item.signatory_title}</p>
             </div>
-
-            {/* Appointee */}
-            <h2 className="mb-1 text-xl sm:text-2xl font-bold text-[#003366]">
-                {recipientName}
-            </h2>
-
-            {/* Title / Position */}
-            <div className="mb-3 text-base font-semibold text-slate-900">
-                {title}
-            </div>
-
-            {/* Excerpt */}
-            {excerpt && (
-                <p className="mb-4 text-sm sm:text-base text-slate-800 leading-relaxed">
-                    {excerpt}
-                </p>
-            )}
-
-            {/* CTA */}
-            <button
-                onClick={() => router.push(`/appointment/${id}`)}
-                className="mt-4 px-4 py-2 bg-blue-950 text-white text-sm rounded hover:bg-blue-800 transition"
-            >
-                Open
-            </button>
+          )}
         </div>
-    )
+
+        {/* Arrow */}
+        <div
+          className="
+            hidden sm:flex h-11 w-11 shrink-0
+            items-center justify-center
+            rounded-full border border-slate-200
+            bg-slate-50 text-slate-500
+            transition-all duration-300
+            group-hover:border-[#1D70B8]
+            group-hover:bg-[#1D70B8]
+            group-hover:text-white
+          "
+        >
+          <ArrowRight className="h-5 w-5" />
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div
+        className="
+          mt-6 flex items-center gap-2
+          text-sm font-medium text-[#008A3C]
+        "
+      >
+        <div className="h-2 w-2 rounded-full bg-[#008A3C]" />
+        Official & Verified
+      </div>
+    </button>
+  );
 }

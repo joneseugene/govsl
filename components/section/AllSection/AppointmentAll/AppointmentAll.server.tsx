@@ -1,11 +1,14 @@
+// AppointmentAll.server.tsx
+
 import AppointmentAllClient from './AppointmentAll.client';
-import { getAppointments } from '@/libs/api/appointments.api';
+import { getAppointmentSummary } from '@/libs/api/appointments.api';
 import { getMDAOptions } from '@/libs/api/mdas.api';
 
 type SearchParams = {
   page?: string;
   search?: string;
   ministryId?: string;
+  category?: string;
 };
 
 export default async function AppointmentAllServer({
@@ -17,19 +20,19 @@ export default async function AppointmentAllServer({
 
   const safePage = Math.max(1, Number(params.page ?? 1) || 1);
 
-  // Normalize search
   const search = params.search?.trim() || undefined;
 
-  // Normalize ministry
   const ministryId =
     params.ministryId && params.ministryId !== 'all' ? params.ministryId : undefined;
 
-  const result = await getAppointments({
-    status: 'published',
+  const category = params.category && params.category !== 'all' ? params.category : undefined;
+
+  const result = await getAppointmentSummary({
     page: safePage,
-    limit: 5,
+    limit: 10,
     search,
     ministryId,
+    category,
   });
 
   const ministries = await getMDAOptions();
@@ -41,6 +44,7 @@ export default async function AppointmentAllServer({
       currentPage={safePage}
       search={search}
       ministryId={ministryId}
+      category={category}
       ministries={ministries}
     />
   );
