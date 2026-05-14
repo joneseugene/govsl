@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { footerNavLinks, LOGO } from '@/libs/consts/nav.const';
+import { FooterLinks } from './FooterLinks';
 
 export default function Footer() {
   const router = useRouter();
@@ -45,17 +46,7 @@ export default function Footer() {
         </div>
 
         {/* Links */}
-        <nav className="mb-12 grid grid-cols-2 gap-4 text-sm sm:grid-cols-3 md:grid-cols-4 lg:flex lg:flex-wrap lg:gap-x-10">
-          {footerNavLinks.map(({ label, page }) => (
-            <button
-              key={page}
-              onClick={() => onNavigate(page)}
-              className="text-left text-[#1e60aa] transition hover:text-[#003366]"
-            >
-              {label}
-            </button>
-          ))}
-        </nav>
+        <FooterLinks links={footerNavLinks} onNavigate={onNavigate} />
       </div>
 
       {/* Green accent bar */}
