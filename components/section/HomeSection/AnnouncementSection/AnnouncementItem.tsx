@@ -46,14 +46,10 @@ export function AnnouncementItem({ item, onNavigate, className = '' }: Announcem
         onClick={handleClick}
         className={`
           group flex h-full w-full flex-col justify-between
-          rounded-2xl border border-slate-200
+          border border-slate-50
           bg-white
           p-5 sm:p-6
           text-left
-          transition-all duration-300
-          hover:-translate-y-1
-          hover:border-[#003366]/20
-          hover:shadow-lg
           ${className}
         `}
       >

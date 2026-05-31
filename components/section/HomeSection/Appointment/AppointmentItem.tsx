@@ -1,126 +1,117 @@
 'use client';
 
+import { homeSections } from '@/libs/consts/home.const';
+import { formatDate } from '@/libs/functions';
 import { AppointmentSummaryInterface } from '@/libs/interface/appointments.interface';
-import { formatDate } from '../../../../libs/functions';
-import { ArrowRight } from 'lucide-react';
 
 interface AppointmentItemProps {
   item: AppointmentSummaryInterface;
   onNavigate: (path: string) => void;
   className?: string;
+  showVerified?: boolean;
+  variant?: 'default' | 'compact';
+  useHomeSections?: boolean;
 }
 
-export function AppointmentItem({ item, onNavigate, className = '' }: AppointmentItemProps) {
+export function AppointmentItem({
+  item,
+  onNavigate,
+  className = '',
+  showVerified = true,
+  variant = 'default',
+  useHomeSections = true,
+}: AppointmentItemProps) {
+  const isCompact = variant === 'compact';
+
   const date = item.appointment_date;
   const total = item.total_appointments;
 
+  const handleClick = () => {
+    if (useHomeSections) {
+      onNavigate(homeSections.appointment.routes.detail(date));
+    } else {
+      onNavigate(`/appointment?date=${encodeURIComponent(date)}`);
+    }
+  };
+
   return (
-    <button
-      type="button"
-      onClick={() => onNavigate(`/appointment?date=${encodeURIComponent(date)}`)}
-      className={`
-        group relative overflow-hidden
-        rounded-2xl border border-slate-200
-        bg-white p-6 sm:p-7
-        text-left shadow-sm
-        transition-all duration-300
-        hover:-translate-y-1
-        hover:border-[#003366]/20
-        hover:shadow-xl
-        focus:outline-none
-        focus-visible:ring-2
-        focus-visible:ring-[#1D70B8]/40
-        ${className}
-      `}
-    >
-      {/* Accent line */}
+    <div className="{`group ${className}`} mb-5">
+      {/* Meta line */}
       <div
-        className="
-          absolute left-0 top-0 h-full w-1
-          bg-[#003366]
-          transition-all duration-300
-          group-hover:bg-[#008A3C]
-        "
-      />
-
-      {/* Top Meta */}
-      <div
-        className="
-          mb-5 flex flex-wrap items-center
-          gap-3 text-sm sm:text-[15px]
-          text-slate-500
-        "
+        className={`
+          flex flex-wrap items-center gap-3
+          text-[#505A5F] mb-3
+          ${isCompact ? 'text-sm' : 'text-[15px] sm:text-[16px]'}
+        `}
       >
-        <span
-          className="
-            rounded-full bg-slate-100
-            px-3 py-1
-            font-medium text-slate-700
-          "
-        >
-          Appointment Notice
-        </span>
+        <span className="font-medium text-[#333]">Appointment Notice</span>
 
-        <span className="text-slate-300">•</span>
+        {date && (
+          <>
+            <span className="text-gray-400">•</span>
+            <time>{formatDate(date)}</time>
+          </>
+        )}
 
-        <time className="font-medium text-slate-600">{formatDate(date)}</time>
+        {!isCompact && (
+          <>
+            <span className="text-gray-400">•</span>
+            <span className="px-2 py-0.5 text-xs font-medium bg-gray-100 text-gray-700 rounded">
+              Public Service
+            </span>
+          </>
+        )}
       </div>
 
-      {/* Main Title */}
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <h3
-            className="
-              text-[24px] leading-tight
-              font-bold tracking-tight
-              text-[#003366]
-              transition-colors duration-300
-              group-hover:text-[#1D70B8]
-            "
-          >
-            {total} Official Appointment
-            {total > 1 ? 's' : ''}
-          </h3>
+      {/* Clickable headline */}
+      <button
+        type="button"
+        onClick={handleClick}
+        className="
+          text-left w-full
+          focus:outline-none focus-visible:ring-2
+          focus-visible:ring-[#1D70B8]/50 rounded
+        "
+      >
+        <h6
+          className={`
+            text-[#1D70B8] group-hover:text-[#003366]
+            group-hover:underline group-hover:underline-offset-4
+            decoration-2 transition-colors
+            ${isCompact ? 'text-lg sm:text-xl' : 'text-[20px] sm:text-[22px] md:text-[24px]'}
+          `}
+        >
+          {total} Official Appointment{total > 1 ? 's' : ''}
+        </h6>
+      </button>
 
-          <p
-            className="
-              mt-3 max-w-2xl
-              text-[15px] leading-relaxed
-              text-slate-600
-            "
-          >
-            Published government appointment notices and official public service designations for
-            this date.
-          </p>
-        </div>
+      {/* Optional summary */}
+      {!isCompact && (
+        <p className="mt-3 text-[17px] text-gray-600 leading-relaxed">
+          Published government appointment notices and official public service designations for this
+          date.
+        </p>
+      )}
 
-        {/* Arrow */}
+      {/* Verified trust signal */}
+      {showVerified && (
         <div
-          className="
-            hidden sm:flex h-11 w-11 shrink-0
-            items-center justify-center
-            rounded-full border border-slate-200
-            bg-slate-50 text-slate-500
-            transition-all duration-300
-            group-hover:border-[#1D70B8]
-            group-hover:bg-[#1D70B8]
-            group-hover:text-white
-          "
+          className={`
+            mt-4 flex items-center gap-1.5
+            font-medium text-[#008A3C]
+            ${isCompact ? 'text-sm' : 'text-[15px]'}
+          `}
         >
-          <ArrowRight className="h-5 w-5" />
+          <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+            <path
+              fillRule="evenodd"
+              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+              clipRule="evenodd"
+            />
+          </svg>
+          Official & Verified
         </div>
-      </div>
-
-      {/* Footer */}
-      <div
-        className="
-          mt-6 flex items-center gap-2
-          text-sm font-medium text-[#008A3C]
-        "
-      >
-        <div className="h-2 w-2 rounded-full bg-[#008A3C]" />
-        Official & Verified
-      </div>
-    </button>
+      )}
+    </div>
   );
 }

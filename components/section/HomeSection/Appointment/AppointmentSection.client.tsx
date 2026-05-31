@@ -17,7 +17,7 @@ export default function AppointmentSectionClient({
 
   return (
     <HomeSection id={homeSections.appointment.id} className="bg-[#F8FAFC]">
-      <div className="mx-auto max-w-6xl">
+      <div className="mx-auto max-w-5xl">
         <SectionHeading
           level="h2"
           title="Appointment Notices"
@@ -28,7 +28,7 @@ export default function AppointmentSectionClient({
         {items.length === 0 ? (
           <div
             className="
-              rounded-2xl border border-slate-200
+              border border-slate-100
               bg-white py-16 text-center
               text-[18px] italic text-[#505A5F]
               shadow-sm
