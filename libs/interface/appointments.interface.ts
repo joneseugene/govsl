@@ -21,6 +21,7 @@ export interface AppointmentInterface {
 }
 
 export interface AppointmentSummaryInterface {
+  id: string;
   appointment_date: string;
   signatory_name?: string;
   signatory_title?: string;
@@ -28,7 +29,7 @@ export interface AppointmentSummaryInterface {
   summary_text: string;
   appointee_names?: string;
   positions?: string;
-  reference_numbers?: string;
+  reference_number?: string;
   ministry_name?: string;
   ministry_id?: string;
   category?: string;

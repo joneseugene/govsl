@@ -43,9 +43,9 @@ export default function AppointmentSectionClient({
               gap-5 lg:gap-6
             "
           >
-            {items.map((item) => (
+            {items.map((item, index) => (
               <AppointmentItem
-                key={item.appointment_date}
+                key={`${item.id ?? 'appointment'}-${item.appointment_date}-${index}`}
                 item={item}
                 onNavigate={(path) => router.push(path)}
               />
