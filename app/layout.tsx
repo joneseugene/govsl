@@ -1,21 +1,10 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import Providers from "@/provider/react_query";
-import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import type { Metadata } from 'next';
+import Providers from '@/provider/react_query';
+import './globals.css';
 
 export const metadata: Metadata = {
-  title: "GOV SL",
-  description: "Government of Sierra Leone Official Media Platform",
+  title: 'Gov SL',
+  description: 'Government of Sierra Leone Official Media Platform',
 };
 
 export default function RootLayout({
@@ -25,12 +14,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <Providers>
-          {children}
-        </Providers>
+      <body className={`antialiased`}>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
