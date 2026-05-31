@@ -25,9 +25,7 @@ export function NewsItem({
   const id = item.id;
   const mda_name = item.mdas?.name;
   const date = item.date;
-  const category = item.category;
   const headline = item.headline;
-  const summary = item.summary;
 
   const handleClick = () => {
     if (useHomeSections) {
@@ -43,25 +41,15 @@ export function NewsItem({
       <div
         className={`
             flex flex-wrap items-center gap-3
-            text-[#505A5F] mb-3
+            text-gray-600 mb-3
             ${isCompact ? 'text-sm' : 'text-[15px] sm:text-[16px]'}
             `}
       >
-        <span className="font-medium text-[#333]">{mda_name ?? 'Unknown Ministry'}</span>
+        <span className="text-gray-600">{mda_name ?? 'Unknown Ministry'}</span>
         {date && (
           <>
-            <span className="text-gray-400">•</span>
+            <span className="text-gray-600">|</span>
             <time>{formatDate(date)}</time>
-          </>
-        )}
-
-        {/* Optional category badge */}
-        {category && !isCompact && (
-          <>
-            <span className="text-gray-400">•</span>
-            <span className="px-2 py-0.5 text-xs font-medium bg-gray-100 text-gray-700 rounded">
-              {category}
-            </span>
           </>
         )}
       </div>
@@ -77,24 +65,17 @@ export function NewsItem({
         "
       >
         <h6
-          className={`
-          text-[20px] sm:text-[18px] md:text-[20px] lg:text-[22px]
-          text-[#1D70B8] group-hover:text-[#003366]
+          className={`font-medium
+          text-[18px] sm:text-[16px] md:text-[18px] lg:text-[20px]
+          text-[#1D70B8] group-hover:cursor-pointer
           group-hover:underline group-hover:underline-offset-4
           decoration-2 transition-colors
-          ${isCompact ? 'text-lg sm:text-xl' : 'text-[20px] sm:text-[22px] md:text-[24px]'}
+          ${isCompact ? 'text-lg sm:text-xl' : 'text-[18px] sm:text-[20px] md:text-[22px]'}
         `}
         >
           {headline}
         </h6>
       </button>
-
-      {/* Optional summary */}
-      {summary && !isCompact && (
-        <p className="mt-3 text-[17px] text-gray-600 leading-relaxed">
-          {summary.length > 150 ? `${summary.slice(0, 150)}…` : summary}
-        </p>
-      )}
 
       {/* Verified trust signal */}
       {showVerified && (
@@ -112,7 +93,7 @@ export function NewsItem({
               clipRule="evenodd"
             />
           </svg>
-          Official & Verified
+          Verified
         </div>
       )}
     </div>
