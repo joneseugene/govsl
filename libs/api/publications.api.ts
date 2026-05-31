@@ -1,7 +1,7 @@
 // libs/api/publications.api.ts
-import { model } from "@/supabase/model";
-import { baseQuery } from "./base.api";
-import { PublicationInterface } from "../interface/publications.interface";
+import { model } from '@/supabase/model';
+import { baseQuery } from './base.api';
+import { PublicationInterface } from '../interface/publications.interface';
 
 export async function getPublications(params?: {
   status?: string;
@@ -24,12 +24,12 @@ export async function getPublications(params?: {
     `,
 
     filters: {
-      status: params?.status,
+      status: params?.status ?? 'published',
     },
 
     search: params?.search,
 
-    searchFields: ["title", "summary", "content"],
+    searchFields: ['title', 'summary', 'content'],
 
     ministry: params?.ministryId,
 
@@ -38,12 +38,11 @@ export async function getPublications(params?: {
   });
 }
 
-
 export async function getPublicationById(id: string) {
   const result = await baseQuery<PublicationInterface>({
     table: model.publications,
     select: `*, mdas(id,name,acronym,type)`,
-    filters: { id },
+    filters: { id, status: 'published' },
     limit: 1,
     page: 1,
   });
