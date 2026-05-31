@@ -8,6 +8,7 @@ import PublicationSectionServer from '@/components/section/HomeSection/Publicati
 import PopularServicesSectionServer from '@/components/section/HomeSection/PopularService/PopularServiceSection.server';
 import MDASectionServer from '@/components/section/HomeSection/Mda/MdaSection.server';
 import Footer from '@/components/layout/footer/page';
+import AnnouncementSectionServer from '@/components/section/HomeSection/AnnouncementSection/AnnouncementSection.server';
 
 export default function Page() {
   return (
@@ -17,6 +18,7 @@ export default function Page() {
       <HeroSection />
       {/* SERVER SECTIONS */}
       <PressReleaseSectionServer />
+      <AnnouncementSectionServer />
       <NewsSectionServer />
       <PublicationSectionServer />
       <AppointmentSectionServer />

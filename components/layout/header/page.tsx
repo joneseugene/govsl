@@ -114,7 +114,7 @@ export default function Header({ links, onNavigate }: Props) {
                                 <button
                                     key={link.id}
                                     onClick={() => handleNavigate(link)}
-                                    className={`relative font-regular text-sm transition-colors hover:text-[#003366] ${active === link.id
+                                    className={`relative font-regular text-sm transition-colors hover:cursor-pointer hover:text-[#003366] ${active === link.id
                                         ? 'text-[#003366] after:absolute after:-bottom-1 after:left-0 after:h-0.5 after:w-full after:bg-[#008A3C] after:rounded'
                                         : 'text-gray-700'
                                         }`}

@@ -28,7 +28,7 @@ export function PressReleaseItem({
       <div className="flex flex-wrap items-center gap-3 mb-3 text-[15px] sm:text-[16px] text-[#505A5F]">
         <span className="font-medium text-[#333]">{mda_name ?? 'Unknown Ministry'}</span>
 
-        <span className="text-gray-400">•</span>
+        <span className="text-gray-400">|</span>
 
         <time>{formatDate(date)}</time>
       </div>

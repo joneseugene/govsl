@@ -9,6 +9,7 @@ interface HeadingProps {
   level?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
   className?: string;
   descriptionClassName?: string;
+  descriptionSizeClassName?: string;
   showBack?: boolean;
   onBack?: () => void;
 }
@@ -19,6 +20,7 @@ export function SectionHeading({
   level = 'h2',
   className = '',
   descriptionClassName = '',
+  descriptionSizeClassName = '',
   showBack = false,
   onBack,
 }: HeadingProps) {
@@ -62,9 +64,9 @@ export function SectionHeading({
       {description && (
         <p
           className={`
-            text-[24px] text-gray-900
             mb-12
-            ${descriptionClassName}
+            ${descriptionSizeClassName || 'text-[24px]'}
+            ${descriptionClassName || 'text-gray-900'}
           `}
         >
           {description}

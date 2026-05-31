@@ -2,10 +2,9 @@ import {
   getAnnouncementTypes,
   AnnouncementTypeMappedInterface,
 } from '@/libs/api/announcements.api';
+import AnnouncementSectionClient from './AnnouncementSection.client';
 
-import MoreSectionClient from './AnnouncementSection.client';
-
-export default async function MoreSectionServer() {
+export default async function AnnouncementSectionServer() {
   const items = await getAnnouncementTypes();
 
   const data: AnnouncementTypeMappedInterface[] = [
@@ -20,5 +19,5 @@ export default async function MoreSectionServer() {
     },
   ];
 
-  return <MoreSectionClient items={data} />;
+  return <AnnouncementSectionClient items={data} />;
 }
