@@ -1,16 +1,16 @@
-'use client'
+'use client';
 
-import { ArrowBigLeftIcon } from 'lucide-react'
-import { ReactNode } from 'react'
+import { ArrowBigLeftIcon } from 'lucide-react';
+import { ReactNode } from 'react';
 
 interface HeadingProps {
-  title: ReactNode
-  description?: ReactNode
-  level?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
-  className?: string
-  descriptionClassName?: string
-  showBack?: boolean
-  onBack?: () => void
+  title: ReactNode;
+  description?: ReactNode;
+  level?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+  className?: string;
+  descriptionClassName?: string;
+  showBack?: boolean;
+  onBack?: () => void;
 }
 
 export function SectionHeading({
@@ -22,10 +22,9 @@ export function SectionHeading({
   showBack = false,
   onBack,
 }: HeadingProps) {
-  const Tag = level
+  const Tag = level;
 
-  const baseStyles =
-    'font-bold text-[#003366] tracking-tight mb-3 leading-tight'
+  const baseStyles = 'font-bold text-[#003366] tracking-tight mb-3 leading-tight';
 
   const sizeStyles = {
     h1: 'text-4xl sm:text-[42px]',
@@ -33,8 +32,8 @@ export function SectionHeading({
     h3: 'text-3xl sm:text-4xl',
     h4: 'text-2xl sm:text-3xl',
     h5: 'text-xl sm:text-2xl',
-    h6: 'text-lg sm:text-xl'
-  }
+    h6: 'text-lg sm:text-xl',
+  };
 
   return (
     <div className="mb-1">
@@ -57,15 +56,13 @@ export function SectionHeading({
             <ArrowBigLeftIcon className="text-sm" />
           </button>
         )}
-      <Tag className={`${baseStyles} ${sizeStyles[level]} ${className}`}>
-        {title}
-      </Tag>
+        <Tag className={`${baseStyles} ${sizeStyles[level]} ${className}`}>{title}</Tag>
       </div>
 
       {description && (
         <p
           className={`
-            text-[18px] text-[#4B5563]
+            text-[24px] text-gray-900
             mb-12
             ${descriptionClassName}
           `}
@@ -74,5 +71,5 @@ export function SectionHeading({
         </p>
       )}
     </div>
-  )
+  );
 }

@@ -6,7 +6,6 @@ import AppointmentSectionServer from '@/components/section/HomeSection/Appointme
 import NewsSectionServer from '@/components/section/HomeSection/News/NewsSection.server';
 import PublicationSectionServer from '@/components/section/HomeSection/Publication/PublicationSection.server.tsx';
 import PopularServicesSectionServer from '@/components/section/HomeSection/PopularService/PopularServiceSection.server';
-import MoreSectionServer from '@/components/section/HomeSection/More/MoreSection.server';
 import MDASectionServer from '@/components/section/HomeSection/Mda/MdaSection.server';
 import Footer from '@/components/layout/footer/page';
 
