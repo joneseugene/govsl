@@ -41,7 +41,7 @@ export const homeSections = {
       all: '/service',
     },
   },
-  more: {
+  announcement: {
     id: 'announcement',
     routes: {
       detail: (id: string | number) => `/announcement/${id}`,

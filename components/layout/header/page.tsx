@@ -7,10 +7,10 @@ import { LOGO } from '@/libs/consts/nav.const'
 import { usePathname, useRouter } from 'next/navigation'
 import { homeSections } from '@/libs/consts/home.const'
 
-type Link = { label: string; id: string; key: string }
+type NavLink = { label: string; id: string; key: string }
 
 interface Props {
-    links: Link[]
+    links: NavLink[]
     onNavigate?: (page: string) => void
 }
 
@@ -38,7 +38,7 @@ export default function Header({ links, onNavigate }: Props) {
         }
     }, [pathname, isHomePage, links])
 
-    const handleNavigate = (link: Link) => {
+    const handleNavigate = (link: NavLink) => {
         if (isHomePage) {
             scrollToSection(link.id)
         } else {

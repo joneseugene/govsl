@@ -1,11 +1,10 @@
 // Header
 export const homeNavLinks = [
   { label: 'Press Releases', id: 'press-release', key: 'press-release' },
-  { label: 'Appointments', id: 'appointment', key: 'appointment' },
+  { label: 'Announcements', id: 'announcement', key: 'announcement' },
   { label: 'News', id: 'news', key: 'news' },
-  { label: 'Publications', id: 'publication', key: 'publication' },
+  { label: 'Reports', id: 'publication', key: 'publication' },
   { label: 'Services', id: 'service', key: 'service' },
-  { label: 'More', id: 'announcement', key: 'announcement' },
   { label: 'MDAs', id: 'mda', key: 'mda' },
 ];
 
