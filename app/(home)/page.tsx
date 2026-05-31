@@ -18,11 +18,10 @@ export default function Page() {
       <HeroSection />
       {/* SERVER SECTIONS */}
       <PressReleaseSectionServer />
-      <AppointmentSectionServer />
       <NewsSectionServer />
       <PublicationSectionServer />
+      <AppointmentSectionServer />
       <PopularServicesSectionServer />
-      <MoreSectionServer />
       <MDASectionServer />
       {/* END SERVER SECTIONS */}
       <Footer />

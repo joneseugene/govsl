@@ -1,12 +1,12 @@
 import { AnnouncementTypeMappedInterface } from '@/libs/api/announcements.api';
 
-interface MoreItemProps {
+interface AnnouncementItemProps {
   item: AnnouncementTypeMappedInterface;
   onNavigate: (path: string) => void;
   className?: string;
 }
 
-export function MoreItem({ item, onNavigate, className = '' }: MoreItemProps) {
+export function AnnouncementItem({ item, onNavigate, className = '' }: AnnouncementItemProps) {
   const type = item.announcement_type?.toLowerCase();
 
   const typeLabel =

@@ -3,7 +3,7 @@ import {
   AnnouncementTypeMappedInterface,
 } from '@/libs/api/announcements.api';
 
-import MoreSectionClient from './MoreSection.client';
+import MoreSectionClient from './AnnouncementSection.client';
 
 export default async function MoreSectionServer() {
   const items = await getAnnouncementTypes();

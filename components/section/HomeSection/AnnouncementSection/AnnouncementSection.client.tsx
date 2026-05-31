@@ -7,20 +7,24 @@ import { HomeSection } from '../../../ui/HomeSections';
 
 import { homeSections } from '@/libs/consts/home.const';
 
-import { MoreItem } from './MoreItem';
+import { AnnouncementItem } from './AnnouncementItem';
 
 import { AnnouncementTypeMappedInterface } from '@/libs/api/announcements.api';
 
-export default function MoreSectionClient({ items }: { items: AnnouncementTypeMappedInterface[] }) {
+export default function AnnouncementSectionClient({
+  items,
+}: {
+  items: AnnouncementTypeMappedInterface[];
+}) {
   const router = useRouter();
 
   return (
-    <HomeSection id={homeSections.more.id}>
+    <HomeSection id={homeSections.announcement.id}>
       <div className="mx-auto max-w-5xl">
         {/* Header */}
         <SectionHeading
           level="h2"
-          title="More on GOV.SL"
+          title="Announcements"
           description="Explore official government notices, opportunities, and public information"
         />
 
@@ -33,7 +37,7 @@ export default function MoreSectionClient({ items }: { items: AnnouncementTypeMa
           "
         >
           {items.map((item) => (
-            <MoreItem
+            <AnnouncementItem
               key={item.announcement_type}
               item={item}
               onNavigate={(path) => router.push(path)}
