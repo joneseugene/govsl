@@ -1,5 +1,3 @@
-// AppointmentAll.client.tsx
-
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
@@ -11,7 +9,6 @@ import { Pagination } from '@/components/ui/PaginationUI';
 import { AppointmentNoticeCard } from '@/components/section/AllSection/AppointmentAll/AppointmentAllCard';
 import { Breadcrumb } from '@/components/ui/Breadcrumb';
 import { Search2 } from '@/components/ui/SearchUI2';
-import { FilterDropdown } from '@/components/ui/FilterDropdown';
 import { Tabs } from '@/components/ui/TabUI';
 import { AppointmentInterface } from '@/libs/interface/appointments.interface';
 import { useDebounce } from '@/libs/hook/useDebounce';
@@ -58,21 +55,6 @@ export default function AppointmentAllClient({
 
   const itemsPerPage = 10;
   const totalPages = Math.ceil(total / itemsPerPage);
-
-  // Ministry options
-  const ministryOptions = useMemo(() => {
-    return [
-      {
-        value: 'all',
-        label: 'All Ministries',
-      },
-
-      ...ministries.map((m) => ({
-        value: m.id,
-        label: m.name,
-      })),
-    ];
-  }, [ministries]);
 
   // Sync URL
   useEffect(() => {
@@ -153,14 +135,13 @@ export default function AppointmentAllClient({
 
           <div className="flex-1">
             <Tabs
-            label="Categories"
-            value={selectedCategory}
-            onChange={setSelectedCategory}
-            options={CATEGORY_OPTIONS}
-          />
+              label="Categories"
+              value={selectedCategory}
+              onChange={setSelectedCategory}
+              options={CATEGORY_OPTIONS}
+            />
           </div>
         </div>
-
 
         {/* COUNT */}
         <div className="mb-8 flex items-center justify-between">
