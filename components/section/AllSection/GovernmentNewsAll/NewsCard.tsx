@@ -23,41 +23,44 @@ export function NewsCard({ id, ministry, date, title, summary, onReadMore }: New
     <article
       className="
         group
-        rounded-xl border border-gray-200
-        bg-white p-6 shadow-sm
-        transition-all
-        hover:border-gray-300
-        hover:shadow-md
-        hover:-translate-y-0.5
       "
     >
       {/* Meta */}
-      <div className="mb-3 flex flex-wrap items-center gap-3 text-sm">
-        <span className="font-medium text-gray-800">{ministry}</span>
-
-        {ministry && formattedDate && (
-          <span className="text-gray-500">•</span>
-        )}
-
-        {formattedDate && (
-          <time className="text-gray-600">{formattedDate}</time>
+      <div
+        className={`
+            flex flex-wrap items-center gap-3
+            text-gray-600 mb-1
+            `}
+      >
+        <span className="text-gray-600">{ministry}</span>
+        {date && (
+          <>
+            <span className="text-gray-600">|</span>
+            <time>{formattedDate}</time>
+          </>
         )}
       </div>
-
-      {/* Headline */}
-      <h2 className="mb-2 text-xl font-semibold text-blue-950 transition-colors group-hover:text-blue-800">
-        {title}
-      </h2>
-
-      {/* Summary */}
-      <p className="mb-4 line-clamp-3 text-sm text-gray-600">{summary}</p>
-
-      {/* CTA */}
       <button
+        type="button"
         onClick={() => onReadMore(id)}
-        className="mt-4 px-4 py-2 bg-blue-950 text-white text-sm rounded hover:bg-blue-800 transition"
+        className="
+          text-left w-full
+          mb-3
+          focus:outline-none focus-visible:ring-2
+          focus-visible:ring-[#1D70B8]/50 rounded
+        "
       >
-        Open
+        {/* Headline */}
+        <h5
+          className={`font-medium
+          text-[18px] sm:text-[16px] md:text-[18px] lg:text-[20px]
+          text-[#1D70B8] group-hover:cursor-pointer
+          group-hover:underline group-hover:underline-offset-4
+          decoration-2 transition-colors
+        `}
+        >
+          {title}
+        </h5>
       </button>
     </article>
   );

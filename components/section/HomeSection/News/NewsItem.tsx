@@ -64,7 +64,7 @@ export function NewsItem({
           focus-visible:ring-[#1D70B8]/50 rounded
         "
       >
-        <h6
+        <h5
           className={`font-medium
           text-[18px] sm:text-[16px] md:text-[18px] lg:text-[20px]
           text-[#1D70B8] group-hover:cursor-pointer
@@ -74,7 +74,7 @@ export function NewsItem({
         `}
         >
           {headline}
-        </h6>
+        </h5>
       </button>
 
       {/* Verified trust signal */}

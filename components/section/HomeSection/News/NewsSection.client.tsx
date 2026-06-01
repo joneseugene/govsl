@@ -15,9 +15,11 @@ export default function NewsArticleSectionClient({ items }: { items: NewsArticle
     <HomeSection id={homeSections.news.id}>
       <div className="max-w-5xl mx-auto">
         <SectionHeading
-          level="h2"
+          level="h3"
           title="Government News & Updates"
           description="Official updates from ministries, departments, and agencies"
+          descriptionClassName="text-gray-400"
+          descriptionSizeClassName="text-[20px]"
         />
 
         {items.length === 0 ? (

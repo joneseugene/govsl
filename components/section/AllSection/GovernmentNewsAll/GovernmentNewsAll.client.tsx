@@ -103,9 +103,11 @@ export default function AllGovernmentNewsClient({
           variant="government"
         />
         <SectionHeading
-          level="h2"
+          level="h3"
           title="Government News"
           description="Latest official news and updates from ministries and agencies"
+          descriptionClassName="text-gray-400"
+          descriptionSizeClassName="text-[20px]"
           showBack
           onBack={() => router.back()}
         />
