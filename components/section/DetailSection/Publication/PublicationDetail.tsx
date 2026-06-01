@@ -16,14 +16,10 @@ interface PublicationDetailClientProps {
 export default function PublicationDetailClient({ publication }: PublicationDetailClientProps) {
   const router = useRouter();
 
-  const [qrUrl, setQrUrl] = useState('');
-
   const { id, title, description, content, file_url, status, date, mdas } = publication;
 
   /* ---------------- QR ---------------- */
-  useEffect(() => {
-    setQrUrl(`${window.location.origin}/publication/${id}`);
-  }, [id]);
+  const qrUrl = typeof window !== 'undefined' ? `${window.location.origin}/publication/${id}` : '';
 
   /* ---------------- Date ---------------- */
   const formattedDate = useMemo(() => {

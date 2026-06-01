@@ -1,7 +1,6 @@
 'use client';
 
 import { homeSections } from '@/libs/consts/home.const';
-import { formatDate } from '@/libs/functions';
 import { AppointmentInterface } from '@/libs/interface/appointments.interface';
 
 interface AppointmentItemProps {
@@ -24,17 +23,17 @@ export function AppointmentItem({
   const isCompact = variant === 'compact';
 
   const handleClick = () => {
-  const referenceNumber = item.reference_number;
+    const referenceNumber = item.reference_number;
 
-  if (!referenceNumber) return;
+    if (!referenceNumber) return;
 
-  if (useHomeSections) {
-    onNavigate(homeSections.appointment.routes.detail(referenceNumber));
-    return;
-  }
+    if (useHomeSections) {
+      onNavigate(homeSections.appointment.routes.detail(referenceNumber));
+      return;
+    }
 
-  onNavigate(`/appointment/${referenceNumber}`);
-};
+    onNavigate(`/appointment/${referenceNumber}`);
+  };
 
   return (
     <div className={`group mb-5 ${className}`}>
@@ -59,7 +58,6 @@ export function AppointmentItem({
           {item.reference_number || 'Appointment Notice'}
         </h5>
       </button>
-
 
       {showVerified && (
         <div

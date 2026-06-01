@@ -1,13 +1,14 @@
 'use client';
 
 import { Printer } from 'lucide-react';
-import { useEffect, useState, useRef } from 'react';
+import { useState, useRef } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { LOGO } from '@/libs/consts/nav.const';
 import { AppointmentInterface } from '@/libs/interface/appointments.interface';
 import { formatDate, getQRCode } from '@/libs/functions';
 import { useReactToPrint } from 'react-to-print';
+import { useMemo } from 'react';
 
 interface AppointmentDetailProps {
   notices: AppointmentInterface[];
@@ -15,8 +16,6 @@ interface AppointmentDetailProps {
 
 export function AppointmentDetail({ notices }: AppointmentDetailProps) {
   const router = useRouter();
-
-  const [qrUrl, setQrUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   const printRef = useRef<HTMLDivElement>(null);
@@ -25,8 +24,10 @@ export function AppointmentDetail({ notices }: AppointmentDetailProps) {
     contentRef: printRef,
   });
 
-  useEffect(() => {
-    setQrUrl(getQRCode(window.location.href));
+  const qrUrl = useMemo(() => {
+    if (typeof window === 'undefined') return '';
+
+    return getQRCode(window.location.href);
   }, []);
 
   if (!notices?.length) {
