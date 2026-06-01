@@ -1,12 +1,15 @@
 import { model } from '@/supabase/model';
 import { baseQuery } from './base.api';
 import {
-  AppointmentInterface,
-  AppointmentSummaryInterface,
+    AppointeeDetailInterface,
+  AppointmentInterface
 } from '../interface/appointments.interface';
+import { createServerSupabaseClient } from '@/supabase/server';
+import { createClient } from '@/supabase/client';
 
 export async function getAppointments(params?: {
   status?: string;
+  type?: string;
   page?: number;
   limit?: number;
   search?: string;
@@ -25,6 +28,7 @@ export async function getAppointments(params?: {
     `,
     filters: {
       status: params?.status,
+      type: params?.type,
     },
     search: params?.search,
     searchFields: ['title', 'position', 'appointee_name', 'office_name'],
@@ -36,62 +40,80 @@ export async function getAppointments(params?: {
   return result;
 }
 
-export async function getAppointmentById(id: string) {
+
+export async function getAppointmentsByReferenceNumber(
+  reference_number: string
+): Promise<AppointmentInterface[]> {
   const result = await baseQuery<AppointmentInterface>({
     table: model.appointments,
-    select: `*, mdas(id,name,acronym,type)`,
-    filters: { id },
-    limit: 1,
-    page: 1,
-  });
-
-  return result.data[0] ?? null;
-}
-
-export async function getAppointmentSummary(params?: {
-  page?: number;
-  limit?: number;
-  search?: string;
-  ministryId?: string;
-  category?: string;
-}) {
-  const result = await baseQuery<AppointmentSummaryInterface>({
-    table: 'appointment_summary_view',
-
-    select: '*',
-
-    search: params?.search,
-
-    searchFields: [
-      'summary_text',
-      'appointee_names',
-      'positions',
-      'reference_numbers',
-      'ministry_name',
-    ],
-
+    select: `
+      *,
+      mdas (
+        id,
+        name,
+        acronym,
+        type
+      )
+    `,
     filters: {
-      ministry_id: params?.ministryId,
-      category: params?.category,
+      reference_number,
+      type: 'notice',
     },
-
-    page: params?.page ?? 1,
-    limit: params?.limit ?? 10,
-  });
-
-  return result;
-}
-
-export async function getAppointmentsByDate(date: string) {
-  const result = await baseQuery<AppointmentInterface>({
-    table: model.appointments,
-    select: `*, mdas(id,name,acronym,type)`,
-    filters: {
-      appointment_date: date,
-    },
-    page: 1,
     limit: 100,
+    page: 1,
   });
 
-  return result.data;
+  const notices = result.data ?? [];
+
+  if (notices.length === 0) {
+    return [];
+  }
+
+  const linkedIds = [
+    ...new Set(
+      notices
+        .flatMap((notice) => notice.linked_letter_ids ?? [])
+        .filter(Boolean)
+    ),
+  ];
+
+  if (linkedIds.length === 0) {
+    return notices.map((notice) => ({
+      ...notice,
+      linked_letters: [],
+    }));
+  }
+
+  const supabase = await createServerSupabaseClient();
+
+  const { data: letters, error } = await supabase
+    .from(model.appointments)
+    .select(`
+      id,
+      type,
+      reference_number,
+      appointee_name,
+      appointment_date,
+      position,
+      office_name
+    `)
+    .in('id', linkedIds)
+    .eq('type', 'letter');
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  const linkedLetters = (letters ?? []) as AppointeeDetailInterface[];
+
+  return notices.map((notice) => {
+    const noticeLinkedIds = notice.linked_letter_ids ?? [];
+
+    return {
+      ...notice,
+      linked_letters: linkedLetters.filter((letter) =>
+        noticeLinkedIds.includes(letter.id)
+      ),
+    };
+  });
 }

@@ -1,10 +1,11 @@
+import { getAppointments } from '@/libs/api/appointments.api';
 import AppointmentSectionClient from './AppointmentSection.client';
-import { getAppointmentSummary } from '@/libs/api/appointments.api';
 
 export default async function AppointmentSectionServer() {
-  const appointments = await getAppointmentSummary({
+  const appointments = await getAppointments({
+    type: 'notice',
     limit: 5,
   });
 
-  return <AppointmentSectionClient items={appointments.data} />;
+  return <AppointmentSectionClient items={appointments.data ?? []} />;
 }

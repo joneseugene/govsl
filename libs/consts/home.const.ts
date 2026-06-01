@@ -9,7 +9,7 @@ export const homeSections = {
   appointment: {
     id: 'appointment',
     routes: {
-      detail: (id: string | number) => `/appointment/${id}`,
+      detail: (referenceNumber: string) => `/appointment/${referenceNumber}`,
       all: '/appointment',
     },
   },

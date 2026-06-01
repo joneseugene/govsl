@@ -1,17 +1,19 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+
 import { SectionHeading } from '../../../ui/SectionHeading';
 import { HomeSection } from '../../../ui/HomeSections';
-import { homeSections } from '@/libs/consts/home.const';
 import { ViewAllButton } from '../../../ui/ViewAllUI';
 import { AppointmentItem } from './AppointmentItem';
-import { useRouter } from 'next/navigation';
-import { AppointmentSummaryInterface } from '@/libs/interface/appointments.interface';
+
+import { homeSections } from '@/libs/consts/home.const';
+import { AppointmentInterface } from '@/libs/interface/appointments.interface';
 
 export default function AppointmentSectionClient({
   items,
 }: {
-  items: AppointmentSummaryInterface[];
+  items: AppointmentInterface[];
 }) {
   const router = useRouter();
 
@@ -24,7 +26,6 @@ export default function AppointmentSectionClient({
           description="Official government appointments, designations and public service notices."
         />
 
-        {/* CONTENT */}
         {items.length === 0 ? (
           <div
             className="
@@ -37,15 +38,10 @@ export default function AppointmentSectionClient({
             No recent appointment notices available.
           </div>
         ) : (
-          <div
-            className="
-              grid grid-cols-1
-              gap-5 lg:gap-6
-            "
-          >
+          <div className="grid grid-cols-1 gap-5 lg:gap-6">
             {items.map((item, index) => (
               <AppointmentItem
-                key={`${item.id ?? 'appointment'}-${item.appointment_date}-${index}`}
+                key={`${item.id ?? 'appointment'}-${item.reference_number ?? index}`}
                 item={item}
                 onNavigate={(path) => router.push(path)}
               />
@@ -53,7 +49,6 @@ export default function AppointmentSectionClient({
           </div>
         )}
 
-        {/* VIEW ALL */}
         <div className="mt-1 flex">
           <ViewAllButton onClick={() => router.push(homeSections.appointment.routes.all)}>
             See all Appointment Notices

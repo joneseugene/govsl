@@ -2,10 +2,10 @@
 
 import { homeSections } from '@/libs/consts/home.const';
 import { formatDate } from '@/libs/functions';
-import { AppointmentSummaryInterface } from '@/libs/interface/appointments.interface';
+import { AppointmentInterface } from '@/libs/interface/appointments.interface';
 
 interface AppointmentItemProps {
-  item: AppointmentSummaryInterface;
+  item: AppointmentInterface;
   onNavigate: (path: string) => void;
   className?: string;
   showVerified?: boolean;
@@ -23,77 +23,44 @@ export function AppointmentItem({
 }: AppointmentItemProps) {
   const isCompact = variant === 'compact';
 
-  const date = item.appointment_date;
-  const total = item.total_appointments;
-
   const handleClick = () => {
-    if (useHomeSections) {
-      onNavigate(homeSections.appointment.routes.detail(date));
-    } else {
-      onNavigate(`/appointment?date=${encodeURIComponent(date)}`);
-    }
-  };
+  const referenceNumber = item.reference_number;
+
+  if (!referenceNumber) return;
+
+  if (useHomeSections) {
+    onNavigate(homeSections.appointment.routes.detail(referenceNumber));
+    return;
+  }
+
+  onNavigate(`/appointment/${referenceNumber}`);
+};
 
   return (
-    <div className="{`group ${className}`} mb-5">
-      {/* Meta line */}
-      <div
-        className={`
-          flex flex-wrap items-center gap-3
-          text-[#505A5F] mb-3
-          ${isCompact ? 'text-sm' : 'text-[15px] sm:text-[16px]'}
-        `}
-      >
-        <span className="font-medium text-[#333]">Appointment Notice</span>
-
-        {date && (
-          <>
-            <span className="text-gray-400">•</span>
-            <time>{formatDate(date)}</time>
-          </>
-        )}
-
-        {!isCompact && (
-          <>
-            <span className="text-gray-400">•</span>
-            <span className="px-2 py-0.5 text-xs font-medium bg-gray-100 text-gray-700 rounded">
-              Public Service
-            </span>
-          </>
-        )}
-      </div>
-
-      {/* Clickable headline */}
+    <div className={`group mb-5 ${className}`}>
       <button
         type="button"
         onClick={handleClick}
         className="
-          text-left w-full
+          w-full rounded text-left
           focus:outline-none focus-visible:ring-2
-          focus-visible:ring-[#1D70B8]/50 rounded
+          focus-visible:ring-[#1D70B8]/50
         "
       >
         <h6
-          className={`
-            text-[#1D70B8] group-hover:text-[#003366]
-            group-hover:underline group-hover:underline-offset-4
-            decoration-2 transition-colors
-            ${isCompact ? 'text-lg sm:text-xl' : 'text-[20px] sm:text-[22px] md:text-[24px]'}
-          `}
+          className={`font-medium
+          text-[18px] sm:text-[16px] md:text-[18px] lg:text-[20px]
+          text-[#1D70B8] group-hover:cursor-pointer
+          group-hover:underline group-hover:underline-offset-4
+          decoration-2 transition-colors
+          ${isCompact ? 'text-lg sm:text-xl' : 'text-[18px] sm:text-[20px] md:text-[22px]'}
+        `}
         >
-          {total} Official Appointment{total > 1 ? 's' : ''}
+          {item.reference_number || 'Appointment Notice'}
         </h6>
       </button>
 
-      {/* Optional summary */}
-      {!isCompact && (
-        <p className="mt-3 text-[17px] text-gray-600 leading-relaxed">
-          Published government appointment notices and official public service designations for this
-          date.
-        </p>
-      )}
 
-      {/* Verified trust signal */}
       {showVerified && (
         <div
           className={`
