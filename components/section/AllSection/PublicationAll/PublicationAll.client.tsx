@@ -102,6 +102,8 @@ export default function AllPublicationsClient({
           level="h2"
           title="All Publications & Reports"
           description="Policy documents, white papers, and official government reports"
+          descriptionClassName="text-gray-400"
+          descriptionSizeClassName="text-[20px]"
           showBack
           onBack={() => router.back()}
         />

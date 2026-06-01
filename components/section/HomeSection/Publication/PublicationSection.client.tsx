@@ -15,9 +15,11 @@ export default function PublicationSectionClient({ items }: { items: Publication
     <HomeSection id={homeSections.publication.id}>
       <div className="max-w-5xl mx-auto">
         <SectionHeading
-          level="h2"
+          level="h3"
           title="Official Publications & Reports"
           description="Policy documents, strategic plans, annual reports and government publications."
+          descriptionClassName="text-gray-400"
+          descriptionSizeClassName="text-[20px]"
         />
 
         {items.length === 0 ? (
