@@ -128,9 +128,11 @@ export default function AllMDAClient({
 
         {/* Heading */}
         <SectionHeading
-          level="h2"
+          level="h3"
           title="Ministries, Departments & Agencies"
           description="Browse government MDAs of Sierra Leone"
+          descriptionClassName="text-gray-400"
+          descriptionSizeClassName="text-[20px]"
           showBack
           onBack={() => router.back()}
         />

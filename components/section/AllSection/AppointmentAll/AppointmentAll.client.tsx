@@ -120,9 +120,11 @@ export default function AppointmentAllClient({
 
         {/* Heading */}
         <SectionHeading
-          level="h2"
+          level="h3"
           title="Appointment Notices"
           description="Official government appointments, designations and public service notices."
+          descriptionClassName="text-gray-400"
+          descriptionSizeClassName="text-[20px]"
           showBack
           onBack={() => router.back()}
         />

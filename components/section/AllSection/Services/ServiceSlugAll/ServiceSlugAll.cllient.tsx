@@ -42,9 +42,11 @@ export default function ServicesSlugClient({ result }: Props) {
       />
 
       <SectionHeading
-        level="h2"
+        level="h3"
         title={result?.meta?.name || 'Category'}
         description={result?.meta?.description || ''}
+        descriptionClassName="text-gray-400"
+        descriptionSizeClassName="text-[20px]"
         showBack
         onBack={() => router.back()}
       />

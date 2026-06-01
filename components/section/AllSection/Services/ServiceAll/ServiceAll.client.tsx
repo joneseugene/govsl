@@ -113,9 +113,11 @@ export default function AllServicesClient({
         />
 
         <SectionHeading
-          level="h2"
+          level="h3"
           title="Government Services"
           description="Browse government services by category"
+          descriptionClassName="text-gray-400"
+          descriptionSizeClassName="text-[20px]"
           showBack
           onBack={() => router.back()}
         />
@@ -140,10 +142,10 @@ export default function AllServicesClient({
           Showing {paginated.length} of {filtered.length} categories
         </p>
 
-        {/* Grid */}
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 auto-rows-fr">
+        {/* Row*/}
+        <div className="mb-6 flex flex-col gap-4 sm:flex-row">
           {paginated.length === 0 ? (
-            <div className="rounded-xl bg-white p-10 text-center text-gray-500">
+            <div className="text-left text-gray-500">
               No services found.
             </div>
           ) : (

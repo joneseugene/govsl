@@ -140,9 +140,11 @@ export default function AllAnnouncementClient({
 
         {/* Heading */}
         <SectionHeading
-          level="h2"
+          level="h3"
           title="Official Announcements"
           description="Official government announcements and public notices"
+          descriptionClassName="text-gray-400"
+          descriptionSizeClassName="text-[20px]"
           showBack
           onBack={() => router.back()}
         />

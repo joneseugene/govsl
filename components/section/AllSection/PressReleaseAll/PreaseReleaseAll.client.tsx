@@ -98,7 +98,7 @@ export default function PressReleasesAllClient({
           variant="government"
         />
         <SectionHeading
-          level="h2"
+          level="h3"
           title="Press Releases"
           description="Official communications from the Government of Sierra Leone"
           descriptionClassName="text-gray-400"

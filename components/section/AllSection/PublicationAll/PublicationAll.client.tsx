@@ -99,7 +99,7 @@ export default function AllPublicationsClient({
         />
 
         <SectionHeading
-          level="h2"
+          level="h3"
           title="All Publications & Reports"
           description="Policy documents, white papers, and official government reports"
           descriptionClassName="text-gray-400"
