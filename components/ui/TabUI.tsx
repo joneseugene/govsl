@@ -18,7 +18,7 @@ export function Tabs({
   className = '',
 }: TabsProps) {
   return (
-    <div className={`rounded-lg bg-slate-100 p-2 ${className}`}>
+    <div className={` p-2 ${className}`}>
       <div className="mb-2 text-xs font-semibold text-[#003366]">
         {label}:
       </div>

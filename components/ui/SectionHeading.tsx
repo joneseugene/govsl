@@ -47,15 +47,13 @@ export function SectionHeading({
             onClick={onBack}
             className="
               flex items-center justify-center
-              w-9 h-9 rounded-full
-              border border-gray-200
-              text-gray-600
+              w-9 h-9
               hover:bg-gray-100 hover:text-[#003366]
               transition
             "
             aria-label="Go back"
           >
-            <ArrowBigLeftIcon className="text-sm" />
+            <ArrowBigLeftIcon className="text-sm text-[#003366]" />
           </button>
         )}
         <Tag className={`${baseStyles} ${sizeStyles[level]} ${className}`}>{title}</Tag>

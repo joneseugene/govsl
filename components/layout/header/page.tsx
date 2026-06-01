@@ -93,7 +93,7 @@ export default function Header({ links, onNavigate }: Props) {
                                     router.push('/')
                                 }
                             }}
-                            className="flex items-center gap-3.5 focus:outline-none focus:ring-2 focus:ring-[#003366]/40 rounded transition hover:cursor-pointer"
+                            className="flex items-center gap-3.5 transition hover:cursor-pointer"
                             aria-label="Government of Sierra Leone – Home"
                         >
                             <div className="relative h-10 w-10 shrink-0">

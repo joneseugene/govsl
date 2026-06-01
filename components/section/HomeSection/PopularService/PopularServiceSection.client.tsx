@@ -14,7 +14,12 @@ export default function PopularServicesSectionClient({ items }: { items: Service
   return (
     <HomeSection id={homeSections.service.id}>
       <div className="mx-auto max-w-5xl">
-        <SectionHeading level="h2" title="Popular Services" />
+        <SectionHeading 
+          level="h3" 
+          title="Popular Services" 
+          descriptionClassName="text-gray-400"
+          descriptionSizeClassName="text-[20px]"
+          />
 
         {items.length === 0 ? (
           <div className="py-20 text-center">

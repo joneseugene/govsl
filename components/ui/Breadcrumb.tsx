@@ -36,11 +36,11 @@ export function Breadcrumb({
         },
         government: {
             container: 'mb-10',
-            active: 'text-[#003366] font-semibold',
-            inactive: 'text-[#1D70B8] hover:text-[#003366]',
+            active: 'text-[#1D70B8] font-semibold',
+            inactive: 'text-[#003366] hover:text-[#1D70B8]',
             separator: 'text-[#505A5F]/50'
         }
-    }
+    } 
 
     const style = variants[variant]
 

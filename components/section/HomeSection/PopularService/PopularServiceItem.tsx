@@ -26,23 +26,19 @@ export function PopularCategoryItem({
     <button
       type="button"
       onClick={() => onNavigate(`/service/detail/${id}`)}
-      className={`
-        group block w-full text-left
-        focus:outline-none focus-visible:ring-2
-        focus-visible:ring-[#003366]/50 focus-visible:ring-offset-2
-        rounded-lg transition-colors
-        ${className}
-      `}
+      className="
+          text-left w-full
+          focus:outline-none focus-visible:ring-2
+          focus-visible:ring-[#1D70B8]/50 rounded
+        "
     >
       <h5
-        className={`
-          text-[20px] sm:text-[18px] md:text-[20px] lg:text-[22px]
-          text-[#003366] group-hover:text-[#003366]
-          ${showUnderline ? 'group-hover:underline group-hover:underline-offset-[6px]' : ''}
-          decoration-2 decoration-[#003366]/40
-          leading-tight
-          mb-3
-          ${isCompact ? 'text-lg sm:text-xl' : 'text-[20px] sm:text-[18px]'}
+        className={`font-medium
+          text-[18px] sm:text-[16px] md:text-[18px] lg:text-[20px]
+          text-[#1D70B8] group-hover:cursor-pointer
+          group-hover:underline group-hover:underline-offset-4
+          decoration-2 transition-colors
+          ${isCompact ? 'text-lg sm:text-xl' : 'text-[18px] sm:text-[20px] md:text-[22px]'}
         `}
       >
         {name}
