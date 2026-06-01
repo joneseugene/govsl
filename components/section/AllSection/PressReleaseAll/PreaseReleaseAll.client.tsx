@@ -101,6 +101,8 @@ export default function PressReleasesAllClient({
           level="h2"
           title="Press Releases"
           description="Official communications from the Government of Sierra Leone"
+          descriptionClassName="text-gray-400"
+          descriptionSizeClassName="text-[20px]"
           showBack
           onBack={() => router.back()}
         />

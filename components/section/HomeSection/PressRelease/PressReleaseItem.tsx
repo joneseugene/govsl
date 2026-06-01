@@ -1,4 +1,5 @@
 import { markdownComponents } from '@/libs/consts/general.const';
+import { homeSections } from '@/libs/consts/home.const';
 import { formatDate } from '@/libs/functions';
 import { PressReleaseInterface } from '@/libs/interface/press.releases.interface';
 import ReactMarkdown from 'react-markdown';
@@ -7,6 +8,8 @@ interface PressReleaseItemProps {
   item: PressReleaseInterface;
   onNavigate: (path: string) => void;
   className?: string;
+  variant?: 'default' | 'compact';
+  useHomeSections?: boolean;
   showVerified?: boolean;
 }
 
@@ -14,6 +17,8 @@ export function PressReleaseItem({
   item,
   onNavigate,
   className = '',
+  variant = 'default',
+  useHomeSections = true,
   showVerified = true,
 }: PressReleaseItemProps) {
   // Params
@@ -22,6 +27,15 @@ export function PressReleaseItem({
   const description = item.description ?? '';
   const mda_name = item.mdas?.name ?? 'Unknown MDA';
   const date = item.date;
+  const isCompact = variant === 'compact';
+
+  const handleClick = () => {
+    if (useHomeSections) {
+      onNavigate(homeSections.pressRelease.routes.detail(id));
+    } else {
+      onNavigate(`news-${id}`);
+    }
+  };
 
   return (
     <div className={`group ${className}`}>
@@ -36,19 +50,21 @@ export function PressReleaseItem({
       {/* Clickable title */}
       <button
         type="button"
-        onClick={() => onNavigate(`/press-release/${id}`)}
+        onClick={handleClick}
         className="
           text-left w-full
-          focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1D70B8]/50 rounded
+          focus:outline-none focus-visible:ring-2
+          focus-visible:ring-[#1D70B8]/50 rounded
         "
       >
         <h5
-          className="
-            text-[20px] sm:text-[18px] md:text-[20px] lg:text-[22px]
-            text-[#1D70B8] group-hover:text-[#003366]
-            group-hover:underline group-hover:underline-offset-4
-            decoration-2 transition-colors
-          "
+          className={`font-medium
+          text-[18px] sm:text-[16px] md:text-[18px] lg:text-[20px]
+          text-[#1D70B8] group-hover:cursor-pointer
+          group-hover:underline group-hover:underline-offset-4
+          decoration-2 transition-colors
+          ${isCompact ? 'text-lg sm:text-xl' : 'text-[18px] sm:text-[20px] md:text-[22px]'}
+        `}
         >
           {title}
         </h5>

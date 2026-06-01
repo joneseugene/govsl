@@ -11,7 +11,7 @@ export interface PressReleaseInterface {
   attachments?: AttachmentInterface[];
   status?: string;
   ministry_id?: string;
-  legacy_id?: string;
+  reference_numbers?: string;
   mdas?: MDASummary | null;
   date?: string;
 }
