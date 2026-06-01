@@ -1,5 +1,7 @@
 import { formatDate } from '@/libs/functions';
+import ReactMarkdown from 'react-markdown';
 import { AnnouncementInterface } from '@/libs/interface/announcements.interface';
+import { markdownComponents } from '@/libs/consts/general.const';
 
 interface AnnouncementCardProps {
   item: AnnouncementInterface;
@@ -37,15 +39,11 @@ export function AnnouncementCard({ item, onNavigate, className = '' }: Announcem
       <button
         type="button"
         onClick={() => onNavigate(`/announcement/${item.id}`)}
-        className={`
-          group flex h-full w-full flex-col justify-between
-          rounded-2xl bg-white
-          p-4 sm:p-5 md:p-6
-          text-left
-          transition-all duration-300 ease-out
-          hover:-translate-y-0.5 hover:shadow-md
-          ${className}
-        `}
+        className="
+          text-left w-full
+          focus:outline-none focus-visible:ring-2
+          focus-visible:ring-[#1D70B8]/50 rounded
+        "
       >
         {/* META */}
         <div className="mb-4 flex flex-wrap items-center gap-3">
@@ -68,45 +66,21 @@ export function AnnouncementCard({ item, onNavigate, className = '' }: Announcem
         </div>
 
         {/* TITLE */}
-        <h3
-          className="
-            mb-3
-            line-clamp-2
-            text-base font-semibold leading-tight text-[#003366]
-            transition-colors duration-200
-            sm:text-lg
-            md:text-xl
-            lg:text-[21px]
-          "
+        <h5
+          className={`font-medium
+          text-[18px] sm:text-[16px] md:text-[18px] lg:text-[20px]
+          text-[#1D70B8] group-hover:cursor-pointer
+          group-hover:underline group-hover:underline-offset-4
+          decoration-2 transition-colors
+        `}
         >
           {title}
-        </h3>
+        </h5>
 
         {/* DESCRIPTION */}
-        <p
-          className="
-            mb-4
-            line-clamp-3
-            text-sm leading-relaxed text-gray-600
-            sm:text-base
-            md:text-[15px]
-          "
-        >
-          {description}
+        <p className="mb-4 text-xs text-gray-700">
+          <ReactMarkdown components={markdownComponents}>{description}</ReactMarkdown>
         </p>
-
-        {/* CTA */}
-        <span
-          className="
-            mt-auto
-            text-sm font-medium text-[#003366]
-            opacity-100
-            transition-opacity duration-200
-            hover:cursor-pointer
-          "
-        >
-          View announcement →
-        </span>
       </button>
     </div>
   );

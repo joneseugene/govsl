@@ -61,7 +61,9 @@ export function AnnouncementItem({ item, onNavigate, className = '' }: Announcem
         </span>
 
         {/* TITLE */}
-        <h3 className="mb-3 text-xl font-bold text-[#003366]">{item.title}</h3>
+        <h5 className="mb-3 text-xl font-bold text-[#1D70B8] group-hover:cursor-pointer">
+          {item.title}
+        </h5>
 
         {/* DESCRIPTION */}
         <p className="text-sm text-gray-600">{item.description}</p>
@@ -69,10 +71,6 @@ export function AnnouncementItem({ item, onNavigate, className = '' }: Announcem
         {/* COUNT */}
         <span className="mt-5 inline-flex w-fit rounded-full bg-[#F3F2F1] px-3 py-1 text-xs font-semibold text-[#003366]">
           {item.total} items
-        </span>
-
-        <span className="mt-4 text-sm font-medium text-[#003366] opacity-100">
-          Browse category →
         </span>
       </button>
     </div>

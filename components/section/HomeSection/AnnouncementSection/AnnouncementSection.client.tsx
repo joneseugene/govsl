@@ -22,9 +22,11 @@ export default function AnnouncementSectionClient({
     <HomeSection id={homeSections.announcement.id} className="bg-white">
       <div className="mx-auto max-w-5xl">
         <SectionHeading
-          level="h2"
+          level="h3"
           title="Announcements"
           description="Explore official government notices, opportunities, and public information."
+          descriptionClassName="text-gray-400"
+          descriptionSizeClassName="text-[20px]"
         />
 
         {items.length === 0 ? (
