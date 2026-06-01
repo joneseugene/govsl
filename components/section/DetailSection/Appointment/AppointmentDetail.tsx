@@ -79,7 +79,7 @@ export function AppointmentDetail({ notices }: AppointmentDetailProps) {
             inline-flex items-center justify-center gap-2
             rounded-md bg-[#008A3C] px-4 py-2
             text-sm font-medium text-white transition
-            hover:bg-[#006D2F]
+            hover:bg-[#006D2F] hover:cursor-pointer
             disabled:cursor-not-allowed disabled:opacity-70
           "
         >
@@ -90,7 +90,7 @@ export function AppointmentDetail({ notices }: AppointmentDetailProps) {
 
       <div
         ref={printRef}
-        className="relative mx-auto bg-white shadow-xl"
+        className="relative mx-auto bg-white shadow-md"
         style={{
           maxWidth: '210mm',
           minHeight: '297mm',

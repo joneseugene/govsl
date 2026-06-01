@@ -21,9 +21,11 @@ export default function AppointmentSectionClient({
     <HomeSection id={homeSections.appointment.id} className="bg-[#F8FAFC]">
       <div className="mx-auto max-w-5xl">
         <SectionHeading
-          level="h2"
+          level="h3"
           title="Appointment Notices"
           description="Official government appointments, designations and public service notices."
+          descriptionClassName="text-gray-400"
+          descriptionSizeClassName="text-[20px]"
         />
 
         {items.length === 0 ? (

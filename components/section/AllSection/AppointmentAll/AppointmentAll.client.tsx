@@ -13,8 +13,7 @@ import { Breadcrumb } from '@/components/ui/Breadcrumb';
 import { Search2 } from '@/components/ui/SearchUI2';
 import { FilterDropdown } from '@/components/ui/FilterDropdown';
 import { Tabs } from '@/components/ui/TabUI';
-
-import { AppointmentSummaryInterface } from '@/libs/interface/appointments.interface';
+import { AppointmentInterface } from '@/libs/interface/appointments.interface';
 import { useDebounce } from '@/libs/hook/useDebounce';
 
 const CATEGORY_OPTIONS = [
@@ -34,7 +33,7 @@ export default function AppointmentAllClient({
   category,
   ministries,
 }: {
-  items: AppointmentSummaryInterface[];
+  items: AppointmentInterface[];
   total: number;
   currentPage: number;
 
@@ -153,23 +152,15 @@ export default function AppointmentAllClient({
           </div>
 
           <div className="flex-1">
-            <FilterDropdown
-              value={selectedMinistry}
-              onChange={setSelectedMinistry}
-              options={ministryOptions}
-            />
-          </div>
-        </div>
-
-        {/* Categories */}
-        <div className="mb-8">
-          <Tabs
+            <Tabs
             label="Categories"
             value={selectedCategory}
             onChange={setSelectedCategory}
             options={CATEGORY_OPTIONS}
           />
+          </div>
         </div>
+
 
         {/* COUNT */}
         <div className="mb-8 flex items-center justify-between">
@@ -193,9 +184,9 @@ export default function AppointmentAllClient({
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-5 lg:gap-6">
-            {items.map((notice) => (
+            {items.map((notice, index) => (
               <AppointmentNoticeCard
-                key={notice.appointment_date}
+                key={`${notice.id ?? 'appointment'}-${notice.reference_number ?? index}`}
                 item={notice}
                 onNavigate={(path) => router.push(path)}
               />

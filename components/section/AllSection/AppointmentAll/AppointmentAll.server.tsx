@@ -1,7 +1,7 @@
 // AppointmentAll.server.tsx
 
+import { getAppointments } from '@/libs/api/appointments.api';
 import AppointmentAllClient from './AppointmentAll.client';
-import { getAppointmentSummary } from '@/libs/api/appointments.api';
 import { getMDAOptions } from '@/libs/api/mdas.api';
 
 type SearchParams = {
@@ -27,12 +27,12 @@ export default async function AppointmentAllServer({
 
   const category = params.category && params.category !== 'all' ? params.category : undefined;
 
-  const result = await getAppointmentSummary({
+  const result = await getAppointments({
     page: safePage,
+    type: 'notice',
     limit: 10,
     search,
-    ministryId,
-    category,
+    ministryId
   });
 
   const ministries = await getMDAOptions();
