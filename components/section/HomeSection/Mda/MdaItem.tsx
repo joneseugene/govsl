@@ -28,20 +28,19 @@ export function MdaItem({
     <button
       type="button"
       onClick={() => onNavigate(`/mda/${id}`)}
-      className={`
-        group block w-full text-left
-        focus:outline-none focus-visible:ring-2
-        focus-visible:ring-[#1D70B8]/40 focus-visible:ring-offset-2
-        transition-all duration-200
-        ${className}
-      `}
+      className="
+          text-left w-full
+          focus:outline-none focus-visible:ring-2
+          focus-visible:ring-[#1D70B8]/50 rounded
+        "
     >
       <h5
-        className={`
-          text-[#1D70B8] group-hover:text-[#003366]
-          ${showUnderline ? 'group-hover:underline group-hover:underline-offset-[6px]' : ''}
-          decoration-2 decoration-[#1D70B8]/30
-          ${isCompact ? 'text-base sm:text-lg' : 'text-[17px] sm:text-[21px] lg:text-[23px]'}
+        className={`font-medium
+          text-[18px] sm:text-[16px] md:text-[18px] lg:text-[20px]
+          text-[#1D70B8] group-hover:cursor-pointer
+          group-hover:underline group-hover:underline-offset-4
+          decoration-2 transition-colors
+          ${isCompact ? 'text-lg sm:text-xl' : 'text-[18px] sm:text-[20px] md:text-[22px]'}
         `}
       >
         {name}

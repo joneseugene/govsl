@@ -15,7 +15,12 @@ export default function MDASectionClient({ items }: { items: MDAInterface[] }) {
     <HomeSection id={homeSections.mda.id} className="bg-white px-4">
       <div className="mx-auto max-w-5xl">
         {/* Header */}
-        <SectionHeading level="h2" title="Ministries, Departments & Agencies" />
+        <SectionHeading
+          level="h3"
+          title="Ministries, Departments & Agencies"
+          descriptionClassName="text-gray-400"
+          descriptionSizeClassName="text-[20px]"
+        />
 
         {/* List of MDAs */}
         <div className="space-y-6 sm:space-y-8 md:space-y-10">
