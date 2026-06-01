@@ -11,8 +11,6 @@ interface PopularCategoryItemProps {
 export function PopularCategoryItem({
   item,
   onNavigate,
-  className = '',
-  showUnderline = true,
   variant = 'default',
 }: PopularCategoryItemProps) {
   const isCompact = variant === 'compact';
