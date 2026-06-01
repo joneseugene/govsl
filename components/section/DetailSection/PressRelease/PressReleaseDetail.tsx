@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useMemo, useState, useRef } from 'react';
 import { CustomDivider } from '../../../ui/CustomDivider';
 import ReactMarkdown from 'react-markdown';
 import { formatDate, getQRCode } from '@/libs/functions';
@@ -15,13 +15,12 @@ interface PressReleaseDetailUIProps {
   onBack?: () => void;
 }
 
-export function PressReleaseDetailUI({ pressRelease, pdfUrl, onBack }: PressReleaseDetailUIProps) {
+export function PressReleaseDetailUI({ pressRelease, pdfUrl }: PressReleaseDetailUIProps) {
   const { id, title, mdas, content, reference_numbers, contact_info, date } = pressRelease;
   const ministry = mdas?.name || 'Government of Sierra Leone';
   const acronym = mdas?.acronym || 'GoSL';
   const reference = reference_numbers || '-';
-  const [qrUrl, setQrUrl] = useState<string | null>(null);
-  const [loadingPDF, setLoadingPDF] = useState(false);
+  const [loading] = useState(false);
   const router = useRouter();
 
   const handleBack = () => {
@@ -32,11 +31,12 @@ export function PressReleaseDetailUI({ pressRelease, pdfUrl, onBack }: PressRele
     }
   };
 
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const url = pdfUrl || `${window.location.origin}/${id}`;
-      setQrUrl(getQRCode(url));
-    }
+  const qrUrl = useMemo(() => {
+    if (typeof window === 'undefined') return null;
+
+    const url = pdfUrl || `${window.location.origin}/press-release/${id}`;
+
+    return getQRCode(url);
   }, [id, pdfUrl]);
 
   //Handle PDF
@@ -97,7 +97,7 @@ export function PressReleaseDetailUI({ pressRelease, pdfUrl, onBack }: PressRele
               hover:cursor-pointer
             "
             >
-              {loadingPDF ? 'Generating...' : 'Print'}
+              {loading ? 'Generating...' : 'Print'}
             </button>
           </div>
         </div>
