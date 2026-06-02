@@ -34,7 +34,6 @@ export function PublicationCard({
   }, []);
 
   if (!mounted) {
-    // Render fallback to match server HTML
     return (
       <article className="group">
         <h2 className="text-xl font-semibold">{title}</h2>

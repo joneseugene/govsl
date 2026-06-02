@@ -5,14 +5,15 @@ import { SectionHeading } from '@/components/ui/SectionHeading';
 import { ServicesInterface } from '@/libs/interface/service/services.interface';
 import { ChevronDown } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 export interface ServiceDetailUIProps {
   service: ServicesInterface;
+  slug: string;
   onNavigate?: (id: string) => void;
 }
 
-export default function ServiceDetailUI({ service, onNavigate }: ServiceDetailUIProps) {
+export default function ServiceDetailUI({ service, onNavigate, slug }: ServiceDetailUIProps) {
   const router = useRouter();
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
 
@@ -26,8 +27,12 @@ export default function ServiceDetailUI({ service, onNavigate }: ServiceDetailUI
               page: '/',
             },
             {
-              label: 'Service',
+              label: 'Categories',
               page: '/service',
+            },
+            {
+              label: 'Services',
+              page: `/service/${slug}`,
             },
             {
               label: `${service.name}`,
@@ -36,13 +41,14 @@ export default function ServiceDetailUI({ service, onNavigate }: ServiceDetailUI
           onNavigate={(page) => router.push(page)}
           variant="government"
         />
+
         {/* TITLE */}
         <SectionHeading
           level="h2"
           title={service.name || 'Service Name'}
           description={service.description || ''}
           showBack
-          onBack={() => router.push('/service')}
+          onBack={() => router.push(`/service/${slug}`)}
         />
 
         <p className="text-sm text-green-700 mb-10">

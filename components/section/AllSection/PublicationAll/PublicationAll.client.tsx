@@ -129,7 +129,7 @@ export default function AllPublicationsClient({
         </p>
 
         {/* List */}
-        <div className="space-y-5">
+        <div className="space-y-10">
           {items.length === 0 ? (
             <div className="rounded-xl bg-white p-10 text-center text-gray-500">
               No matching publications found.

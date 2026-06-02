@@ -5,8 +5,6 @@ interface Props {
   searchParams: Promise<{
     page?: string;
     search?: string;
-    acronym?: string;
-    type?: string;
   }>;
 }
 
@@ -15,8 +13,6 @@ export default async function AllMDAServer({ searchParams }: Props) {
 
   const currentPage = Number(params.page || 1);
   const search = params.search || '';
-  const type = params.type || 'all';
-  const acronym = params.acronym || '';
 
   const mdas = await getMdas({
     status: 'active',
@@ -29,8 +25,6 @@ export default async function AllMDAServer({ searchParams }: Props) {
       items={mdas}
       currentPage={currentPage}
       search={search}
-      type={type}
-      acronym={acronym}
     />
   );
 }

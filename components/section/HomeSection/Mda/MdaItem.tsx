@@ -32,6 +32,7 @@ export function MdaItem({
           text-left w-full
           focus:outline-none focus-visible:ring-2
           focus-visible:ring-[#1D70B8]/50 rounded
+          hover:cursor-pointer
         "
     >
       <h5

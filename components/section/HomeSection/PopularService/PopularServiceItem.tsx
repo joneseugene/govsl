@@ -23,11 +23,12 @@ export function PopularCategoryItem({
   return (
     <button
       type="button"
-      onClick={() => onNavigate(`/service/detail/${id}`)}
+      onClick={() => onNavigate(`/service/${item.category_page}/${id}`)}
       className="
           text-left w-full
           focus:outline-none focus-visible:ring-2
           focus-visible:ring-[#1D70B8]/50 rounded
+          hover:cursor-pointer
         "
     >
       <h5

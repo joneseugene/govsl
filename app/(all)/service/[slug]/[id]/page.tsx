@@ -4,12 +4,13 @@ import { notFound } from "next/navigation";
 
 interface Props {
   params: Promise<{
+    slug: string;
     id: string;
   }>;
 }
 
 export default async function ServiceDetailPage({ params }: Props) {
-  const { id } = await params; 
+  const { slug, id } = await params;
 
   const res = await getServiceById(id);
 
@@ -17,5 +18,5 @@ export default async function ServiceDetailPage({ params }: Props) {
     return notFound();
   }
 
-  return <ServiceDetailUI service={res} />;
+  return <ServiceDetailUI service={res} slug={slug} />;
 }

@@ -154,7 +154,7 @@ export default function AllMDAClient({
         </p>
 
         {/* Grid */}
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 auto-rows-fr">
+        <div className="space-y-5">
           {paginated.length === 0 ? (
             <div className="rounded-xl bg-white p-10 text-center text-gray-500">
               No matching MDAs found.
@@ -164,8 +164,6 @@ export default function AllMDAClient({
               <div key={mda.id} className="h-full">
                 <MDACard
                   name={mda.name}
-                  acronym={mda.acronym ?? ''}
-                  type={mda.type ?? ''}
                   onViewClick={() => handleView(mda)}
                 />
               </div>

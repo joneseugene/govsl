@@ -12,6 +12,14 @@ interface HeadingProps {
   descriptionSizeClassName?: string;
   showBack?: boolean;
   onBack?: () => void;
+
+  fontWeight?:
+    | 'font-light'
+    | 'font-normal'
+    | 'font-medium'
+    | 'font-semibold'
+    | 'font-bold'
+    | 'font-extrabold';
 }
 
 export function SectionHeading({
@@ -21,12 +29,13 @@ export function SectionHeading({
   className = '',
   descriptionClassName = '',
   descriptionSizeClassName = '',
+  fontWeight = 'font-bold',
   showBack = false,
   onBack,
 }: HeadingProps) {
   const Tag = level;
 
-  const baseStyles = 'font-bold text-[#003366] tracking-tight mb-3 leading-tight';
+  const baseStyles = `text-[#003366] tracking-tight mb-3 leading-tight ${fontWeight}`;
 
   const sizeStyles = {
     h1: 'text-4xl sm:text-[42px]',
@@ -49,6 +58,7 @@ export function SectionHeading({
               flex items-center justify-center
               w-9 h-9
               hover:bg-gray-100 hover:text-[#003366]
+              hover:cursor-pointer
               transition
             "
             aria-label="Go back"

@@ -2,6 +2,7 @@
 'use client';
 
 import { Breadcrumb } from '@/components/ui/Breadcrumb';
+import { HomeSection } from '@/components/ui/HomeSections';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { MDAInterface } from '@/libs/interface/mda/mdas.interface';
 import { useRouter } from 'next/navigation';
@@ -14,9 +15,23 @@ interface Props {
 export default function MdaDetailPage({ mda, relatedAgencies }: Props) {
   const router = useRouter();
 
+  console.log('Vis: ', mda.vision);
+
+  const minister = typeof mda?.minister === 'string' ? JSON.parse(mda.minister) : mda?.minister;
+
+  const deputy_minister =
+    typeof mda?.deputy_minister === 'string'
+      ? JSON.parse(mda.deputy_minister)
+      : mda?.deputy_minister;
+
   return (
-    <section className="bg-[#F8F8F8] min-h-screen">
-      <div className="mx-auto max-w-6xl px-4 py-8 lg:px-6">
+    <HomeSection
+      backgroundColor="gray"
+      hasBorderTop={false}
+      padding="small"
+      className="min-h-screen"
+    >
+      <div className="mx-auto max-w-4xl">
         {/* Breadcrumb */}
         <Breadcrumb
           items={[
@@ -36,123 +51,87 @@ export default function MdaDetailPage({ mda, relatedAgencies }: Props) {
           variant="government"
         />
 
-        {/* Hero */}
-        <div className="rounded-2xl bg-white border border-gray-200 shadow-sm p-6 lg:p-10">
-          <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
-            <div>
-              <div className="flex flex-wrap gap-2 mb-4">
-                {mda.type && (
-                  <span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-800">
-                    {mda.type}
-                  </span>
-                )}
+        {/* Head */}
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+          <SectionHeading
+            level="h4"
+            title={mda.name}
+            fontWeight="font-normal"
+            showBack
+            onBack={() => router.push('/mda')}
+          />
+        </div>
 
-                {mda.acronym && (
-                  <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600">
-                    {mda.acronym}
-                  </span>
-                )}
-              </div>
+        {/* Mandate */}
+        {mda.mandate && (
+          <div className="w-full border border-gray-200 bg-gray-100 p-5 mt-8">
+            {mda.mandate && (
+              <div>
+                <span className="font-heading text-2xl font-normal tracking-tight text-[#003366] mb-4">Mandate</span>
 
-              <SectionHeading
-                level="h1"
-                title={mda.name}
-                description={mda.mission || mda.vision || ''}
-                showBack
-                onBack={() => router.push('/mda')}
-              />
-            </div>
-
-            {/* Contact Card */}
-            {mda.contact && (
-              <div className="w-full lg:max-w-sm rounded-2xl border border-gray-200 bg-gray-50 p-5">
-                <h3 className="text-lg font-semibold text-[#003366] mb-4">Contact Information</h3>
-
-                <div className="space-y-3 text-sm text-gray-700">
-                  {mda.contact.email && (
-                    <div>
-                      <p className="font-medium text-gray-900">Email</p>
-                      <p>{mda.contact.email}</p>
-                    </div>
-                  )}
-
-                  {mda.contact.phone && (
-                    <div>
-                      <p className="font-medium text-gray-900">Phone</p>
-                      <p>{mda.contact.phone}</p>
-                    </div>
-                  )}
-
-                  {mda.contact.address && (
-                    <div>
-                      <p className="font-medium text-gray-900">Address</p>
-                      <p>{mda.contact.address}</p>
-                    </div>
-                  )}
-
-                  {mda.contact.website && (
-                    <div>
-                      <p className="font-medium text-gray-900">Website</p>
-
-                      <a
-                        href={mda.contact.website}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-700 hover:underline break-all"
-                      >
-                        {mda.contact.website}
-                      </a>
-                    </div>
-                  )}
-
-                  {mda.contact.hours && (
-                    <div>
-                      <p className="font-medium text-gray-900">Opening Hours</p>
-                      <p>{mda.contact.hours}</p>
-                    </div>
-                  )}
-                </div>
+                <p className="mt-1 font-body text-gray-600 text-lg">{mda?.mandate}</p>
               </div>
             )}
           </div>
-        </div>
+        )}
+
+        {/* About */}
+        {(mda?.vision || mda?.mission) && (
+          <div className="mt-8 w-full border-t border-gray-200 p-5">
+            <h3 className="font-heading text-2xl font-normal tracking-tight text-[#003366] mb-4">About</h3>
+
+            {mda?.vision && (
+              <div className="mt-5">
+                <p className="text-lg font-body leading-relaxed text-gray-700">
+                  <span className="mr-2 font-heading font-normal text-black">Vision:</span>
+                  {mda.vision}
+                </p>
+              </div>
+            )}
+
+            {mda?.mission && (
+              <div className="mt-4">
+                <p className="text-lg font-body leading-relaxed text-gray-700">
+                  <span className="mr-2 font-heading font-normal text-black">Mission:</span>
+                  {mda.mission}
+                </p>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Ministers */}
-        {(mda.minister || mda.deputy_minister) && (
-          <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
-            {mda.minister && (
-              <div className="rounded-2xl bg-white border border-gray-200 shadow-sm p-6">
-                <span className="text-xs uppercase tracking-wide text-blue-700 font-semibold">
-                  Minister
-                </span>
+        {(minister || deputy_minister) && (
+          <div className="w-full border-t border-gray-200 p-5 mt-5">
+            {minister && (
+              <div>
+                <span className="font-heading text-2xl font-normal tracking-tight text-[#003366] mb-4">Minister</span>
 
-                <h3 className="mt-2 text-2xl font-bold text-[#003366]">{mda.minister.name}</h3>
+                <h3 className="mt-2 text-lg font-heading font-normal text-gray-900">{minister.name}</h3>
 
-                {mda.minister.title && <p className="mt-1 text-gray-600">{mda.minister.title}</p>}
+                {minister.title && (
+                  <p className="mt-1 font-heading font-normal text-gray-900 text-lg">{minister.title}</p>
+                )}
 
-                {mda.minister.bio && (
-                  <p className="mt-4 text-sm leading-relaxed text-gray-700">{mda.minister.bio}</p>
+                {minister.bio && (
+                  <p className="mt-4 text-lg font-body leading-relaxed text-gray-700">{minister.bio}</p>
                 )}
               </div>
             )}
 
-            {mda.deputy_minister && (
-              <div className="rounded-2xl bg-white border border-gray-200 shadow-sm p-6">
-                <span className="text-xs uppercase tracking-wide text-blue-700 font-semibold">
-                  Deputy Minister
-                </span>
+            {deputy_minister && (
+              <div>
+                <span className="font-heading text-2xl font-normal tracking-tight text-[#003366] mb-4">Deputy Minister</span>
 
-                <h3 className="mt-2 text-2xl font-bold text-[#003366]">
-                  {mda.deputy_minister.name}
-                </h3>
+                <h3 className="mt-2 text-lg font-heading font-normal text-gray-900">{deputy_minister.name}</h3>
 
-                {mda.deputy_minister.title && (
-                  <p className="mt-1 text-gray-600">{mda.deputy_minister.title}</p>
+                {deputy_minister.title && (
+                  <p className="mt-1 font-heading font-normal text-gray-600 text-lg">{deputy_minister.title}</p>
                 )}
 
-                {mda.deputy_minister.bio && (
-                  <p className="mt-4 text-sm leading-relaxed text-gray-700">
-                    {mda.deputy_minister.bio}
+                {deputy_minister.bio && (
+                  <p className="mt-4 font-body text-lg leading-relaxed text-gray-700">
+                    {deputy_minister.bio}
                   </p>
                 )}
               </div>
@@ -160,56 +139,82 @@ export default function MdaDetailPage({ mda, relatedAgencies }: Props) {
           </div>
         )}
 
+        {mda.contact && (
+          <div className="w-full border border-gray-200 p-5 mt-5">
+            <h3 className="font-heading text-2xl font-normal tracking-tight text-[#003366] mb-4">Contact Information</h3>
+
+            <div className="space-y-3 text-sm text-gray-700">
+              {mda.contact.email && (
+                <p className="text-lg font-body text-gray-900">
+                  <span className="font-bold">Email:</span> {mda.contact.email}
+                </p>
+              )}
+
+              {mda.contact.phone && (
+                <p className="text-lg font-body text-gray-900">
+                  <span className="font-bold">Phone:</span> {mda.contact.phone}
+                </p>
+              )}
+
+              {mda.contact.address && (
+                <div>
+                  <p className="text-lg font-body text-gray-900">
+                    <span className="font-bold">Address:</span> {mda.contact.address}
+                  </p>
+                </div>
+              )}
+
+              {mda.contact.website && (
+                <div>
+                  <p className="text-lg font-body text-gray-900">
+                    <span className="font-bold">Website: </span>
+
+                    <a
+                      href={mda.contact.website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-700 hover:underline break-all"
+                    >
+                      {mda.contact.website}
+                    </a>
+                  </p>
+                </div>
+              )}
+
+              {mda.contact.hours && (
+                <div>
+                  <p className="text-lg font-body text-gray-900">
+                    <span className="font-bold">Office Hours:</span> {mda.contact.hours}
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* Related Agencies */}
         {relatedAgencies.length > 0 && (
           <div className="mt-10">
             <div className="mb-5 flex items-center justify-between">
-              <h2 className="text-2xl font-bold text-[#003366]">
+              <h2 className="text-2xl font-heading font-normal text-[#003366]">
                 Related Agencies ({relatedAgencies.length})
               </h2>
             </div>
 
-            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-5">
               {relatedAgencies.map((agency) => (
                 <button
                   key={agency.id}
                   onClick={() => router.push(`/mda/${agency.id}`)}
-                  className="
-                    text-left rounded-2xl border border-gray-200
-                    bg-white p-5 shadow-sm
-                    transition-all duration-200
-                    hover:border-blue-500 hover:shadow-md
-                  "
+                  className="text-left"
                 >
-                  <div className="flex flex-wrap gap-2 mb-3">
-                    {agency.acronym && (
-                      <span className="rounded-full bg-blue-50 px-2.5 py-1 text-xs text-blue-700">
-                        {agency.acronym}
-                      </span>
-                    )}
-
-                    {agency.type && (
-                      <span className="rounded-full bg-gray-100 px-2.5 py-1 text-xs text-gray-600">
-                        {agency.type}
-                      </span>
-                    )}
-                  </div>
-
-                  <h3 className="text-lg font-semibold text-[#003366] line-clamp-2">
-                    {agency.name}
-                  </h3>
-
-                  {(agency.mission || agency.vision) && (
-                    <p className="mt-2 text-sm text-gray-600 line-clamp-3">
-                      {agency.mission || agency.vision}
-                    </p>
-                  )}
+                  <h3 className="text-lg font-body font-normal text-[#1D70B8] line-clamp-2">{agency.name}</h3>
                 </button>
               ))}
             </div>
           </div>
         )}
       </div>
-    </section>
+    </HomeSection>
   );
 }

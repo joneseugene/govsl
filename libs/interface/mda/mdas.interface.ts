@@ -8,6 +8,7 @@ export interface MDAInterface {
   acronym?: string;
   type?: string;
   status?: string;
+  mandate?: string;
 
   minister?: Minister | null;
   deputy_minister?: Minister | null;

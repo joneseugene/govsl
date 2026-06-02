@@ -16,9 +16,10 @@ interface ServicesSlugResult {
 
 interface Props {
   result: ServicesSlugResult;
+  categoryPage: string;
 }
 
-export default function ServicesSlugClient({ result }: Props) {
+export default function ServicesSlugClient({ result, categoryPage }: Props) {
   const router = useRouter();
   return (
     <div className="p-6 space-y-6 max-w-6xl mx-auto">
@@ -59,8 +60,13 @@ export default function ServicesSlugClient({ result }: Props) {
           result?.data?.map((service: ServicesInterface) => (
             <div key={service.id} className="p-4 hover:bg-gray-50 transition">
               <Link
-                href={`/service/detail/${service.id}`}
-                className="text-lg font-semibold text-blue-950 hover:underline hover:text-blue-800 transition"
+                href={`/service/${categoryPage}/${service.id}`}
+                className={`font-medium
+                  text-[18px] sm:text-[16px] md:text-[18px] lg:text-[20px]
+                  text-[#1D70B8] hover:cursor-pointer
+                  group-hover:underline group-hover:underline-offset-4
+                  decoration-2 transition-colors
+                `}
               >
                 {service.name}
               </Link>

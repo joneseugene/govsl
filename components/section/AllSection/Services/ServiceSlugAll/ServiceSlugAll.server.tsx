@@ -10,5 +10,5 @@ export default async function ServiceSlugServer({ categoryPage }: Props) {
     categoryPage,
   });
 
-  return <ServicesClient result={result} />;
+  return <ServicesClient result={result} categoryPage={categoryPage} />;
 }

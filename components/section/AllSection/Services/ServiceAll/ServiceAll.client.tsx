@@ -142,10 +142,10 @@ export default function AllServicesClient({
           Showing {paginated.length} of {filtered.length} categories
         </p>
 
-        {/* Row*/}
-        <div className="mb-6 flex flex-col gap-4 sm:flex-row">
+        {/* Grid */}
+        <div className="space-y-5">
           {paginated.length === 0 ? (
-            <div className="text-left text-gray-500">
+            <div className="rounded-xl bg-white p-10 text-center text-gray-500">
               No services found.
             </div>
           ) : (

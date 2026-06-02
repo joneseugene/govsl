@@ -1,4 +1,4 @@
-import { ChevronRightIcon, HomeIcon } from "lucide-react"
+import { ChevronRightIcon } from "lucide-react"
 
 // components/Breadcrumb.tsx
 interface BreadcrumbItem {
@@ -24,21 +24,21 @@ export function Breadcrumb({
     const variants = {
         default: {
             container: 'mb-8',
-            active: 'text-gray-900 font-semibold',
-            inactive: 'text-gray-600 hover:text-gray-900',
-            separator: 'text-gray-400'
+            active: 'text-gray-800',
+            inactive: 'text-[#1D70B8] hover:text-[#1D70B8]',
+            separator: 'text-gray-400 w-3 h-3'
         },
         minimal: {
             container: 'mb-6',
             active: 'text-gray-800',
-            inactive: 'text-gray-500 hover:text-gray-700',
-            separator: 'text-gray-300'
+            inactive: 'text-[#1D70B8] hover:text-[#1D70B8]',
+            separator: 'text-gray-400 w-3 h-3'
         },
         government: {
             container: 'mb-10',
-            active: 'text-[#1D70B8] font-semibold',
-            inactive: 'text-[#003366] hover:text-[#1D70B8]',
-            separator: 'text-[#505A5F]/50'
+            active: 'text-gray-800',
+            inactive: 'text-[#1D70B8] hover:text-[#1D70B8]',
+            separator: 'text-gray-400 w-3 h-3'
         }
     } 
 
@@ -52,7 +52,7 @@ export function Breadcrumb({
             <ol className="
         flex flex-wrap items-center gap-x-2 gap-y-1.5
         text-[15px] sm:text-[16px]
-      ">
+        ">
                 {items.map((item, index) => {
                     const isLast = index === items.length - 1
                     const hasLink = !isLast && item.page
@@ -75,39 +75,34 @@ export function Breadcrumb({
                                     type="button"
                                     onClick={() => onNavigate(item.page!)}
                                     className={`
-                    relative inline-flex items-center gap-1.5
-                    ${style.inactive}
-                    font-medium
-                    transition-colors
-                    focus:outline-none focus-visible:ring-2
-                    focus-visible:ring-[#1D70B8]/40
-                    focus-visible:ring-offset-2
-                    rounded-sm
-                    group
-                  `}
+                                        relative inline-flex items-center gap-1.5
+                                        ${style.inactive}
+                                        transition-colors
+                                        hover:cursor-pointer
+                                        group
+                                    `}
                                 >
-                                    {index === 0 && <HomeIcon />}
                                     {item.label}
 
                                     {/* Hover underline */}
-                                    <span className="
-                    absolute left-0 -bottom-0.5
-                    h-0.5 w-full
-                    bg-current opacity-20
-                    scale-x-0 group-hover:scale-x-100
-                    transition-transform duration-200
-                    origin-left
-                  " />
-                                </button>
-                            ) : (
-                                <span
+                                    <span 
+                                        className="
+                                            absolute left-0 -bottom-0.5
+                                            h-0.5 w-full
+                                            bg-current opacity-20
+                                            scale-x-0 group-hover:scale-x-100
+                                            transition-transform duration-200
+                                            origin-left
+                                        " />
+                                            </button>
+                                        ) : (
+                                    <span
                                     className={`
-                    inline-flex items-center gap-1.5
-                    ${style.active}
-                  `}
+                                        inline-flex items-center gap-1.5
+                                        ${style.active}
+                                    `}
                                     aria-current="page"
                                 >
-                                    {index === 0 && <HomeIcon />}
                                     {item.label}
                                 </span>
                             )}

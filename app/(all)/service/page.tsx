@@ -10,6 +10,6 @@ type PageProps = {
     searchParams: Promise<SearchParams>;
 };
 
-export default function PublicationsPage({ searchParams }: PageProps) {
+export default function ServiceDetailPage({ searchParams }: PageProps) {
     return <AllServicesServer searchParams={searchParams} />;
 }

@@ -24,7 +24,7 @@ export function HomeSection({
     }
 
     const paddingClasses = {
-        default: 'px-5 sm:px-6 lg:px-8 py-20 sm:py-24 lg:py-28',
+        default: 'px-5 sm:px-6 lg:px-8 pt-10 pb-16 sm:pt-12 sm:pb-20 lg:pt-14 lg:pb-24',
         large: 'px-5 sm:px-8 lg:px-12 py-24 sm:py-32 lg:py-40',
         small: 'px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-24',
         none: ''
