@@ -1,8 +1,19 @@
-import { getMdas } from '@/libs/api/mdas.api';
 import MDASectionClient from './MdaSection.client';
+import { getQueryClient } from '@/libs/functions';
+import { getHomeMdas, mdaQueryKey } from '@/libs/query/home/mda.query';
+import { HydrationBoundary, dehydrate } from '@tanstack/react-query';
 
 export default async function MDASectionServer() {
-  const mdas = await getMdas({ limit: 10 });
+  const queryClient = getQueryClient();
 
-  return <MDASectionClient items={mdas} />;
+  await queryClient.prefetchQuery({
+    queryKey: mdaQueryKey,
+    queryFn: getHomeMdas,
+  });
+
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <MDASectionClient />
+    </HydrationBoundary>
+  );
 }

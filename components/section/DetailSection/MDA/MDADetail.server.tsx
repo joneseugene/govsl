@@ -1,6 +1,13 @@
-import { getMDAById, getMdas } from '@/libs/api/mdas.api';
 import { notFound } from 'next/navigation';
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import MdaDetailPage from './MDADetail.client';
+import { getQueryClient } from '@/libs/functions';
+import {
+  getMdaDetail,
+  getRelatedMdas,
+  mdaDetailQueryKey,
+  relatedMdaQueryKey,
+} from '@/libs/query/detail/mda_detail.query';
 
 interface Props {
   params: Promise<{
@@ -11,18 +18,31 @@ interface Props {
 export default async function Page({ params }: Props) {
   const { id } = await params;
 
-  const mda = await getMDAById(id);
+  const queryClient = getQueryClient();
+
+  await Promise.all([
+    queryClient.prefetchQuery({
+      queryKey: mdaDetailQueryKey(id),
+      queryFn: () => getMdaDetail(id),
+    }),
+
+    queryClient.prefetchQuery({
+      queryKey: relatedMdaQueryKey(id),
+      queryFn: () => getRelatedMdas(id),
+    }),
+  ]);
+
+  const mda = queryClient.getQueryData(mdaDetailQueryKey(id)) as Awaited<
+    ReturnType<typeof getMdaDetail>
+  >;
 
   if (!mda) {
     notFound();
   }
 
-  const allMdas = await getMdas({
-    status: 'active',
-    limit: 100,
-  });
-
-  const relatedAgencies = allMdas.filter((item) => item.parent_ministry_id === id);
-
-  return <MdaDetailPage mda={mda} relatedAgencies={relatedAgencies} />;
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <MdaDetailPage id={id} />
+    </HydrationBoundary>
+  );
 }

@@ -2,30 +2,26 @@
 
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
-
+import { useQuery } from '@tanstack/react-query';
 import { HomeSection } from '@/components/ui/HomeSections';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { FilterDropdown } from '@/components/ui/FilterDropdown';
 import { Search2 } from '@/components/ui/SearchUI2';
 import { Pagination } from '@/components/ui/PaginationUI';
-import { useDebounce } from '@/libs/hook/useDebounce';
-import { MDACard } from './MdaCard';
-import { MDAInterface } from '@/libs/interface/mda/mdas.interface';
 import { Breadcrumb } from '@/components/ui/Breadcrumb';
+import { useDebounce } from '@/libs/hook/useDebounce';
+import { MDAInterface } from '@/libs/interface/mda/mdas.interface';
+import { MDACard } from './MdaCard';
+import { mdaAllQueryKey, getAllMdas } from './MdaAll.query';
 
-export default function AllMDAClient({
-  items,
-  currentPage,
-  search,
-  type,
-  acronym,
-}: {
-  items: MDAInterface[];
+type Props = {
   currentPage: number;
   search?: string;
   type?: string;
   acronym?: string;
-}) {
+};
+
+export default function AllMDAClient({ currentPage, search, type, acronym }: Props) {
   const router = useRouter();
 
   const [searchQuery, setSearchQuery] = useState(search ?? '');
@@ -33,14 +29,31 @@ export default function AllMDAClient({
 
   const debouncedSearch = useDebounce(searchQuery, 500);
 
+  const queryParams = {
+    search: debouncedSearch.trim() || undefined,
+  };
+
+  const {
+    data: items = [],
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: mdaAllQueryKey(queryParams),
+    queryFn: () => getAllMdas(queryParams),
+    staleTime: 1000 * 60 * 2,
+    gcTime: 1000 * 60 * 60 * 2,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    retry: 1,
+  });
+
   const itemsPerPage = 6;
 
-  /* ---------------- Filter ---------------- */
   const filtered = useMemo(() => {
     const q = searchQuery.toLowerCase().trim();
     const a = acronym?.toLowerCase();
 
-    return items.filter((mda) => {
+    return items.filter((mda: MDAInterface) => {
       const matchesSearch =
         mda.name.toLowerCase().includes(q) ||
         mda.acronym?.toLowerCase().includes(q) ||
@@ -54,12 +67,10 @@ export default function AllMDAClient({
     });
   }, [items, searchQuery, selectedType, acronym]);
 
-  /* ---------------- Pagination ---------------- */
   const totalPages = Math.ceil(filtered.length / itemsPerPage);
 
   const paginated = filtered.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
-  /* ---------------- Type Options ---------------- */
   const typeOptions = [
     { value: 'all', label: 'All Types' },
     { value: 'Ministry', label: 'Ministry' },
@@ -67,35 +78,41 @@ export default function AllMDAClient({
     { value: 'Agency', label: 'Agency' },
   ];
 
-  /* ---------------- Sync URL ---------------- */
   useEffect(() => {
     const params = new URLSearchParams();
 
     params.set('page', '1');
 
-    if (debouncedSearch) {
-      params.set('search', debouncedSearch);
+    if (debouncedSearch.trim()) {
+      params.set('search', debouncedSearch.trim());
     }
 
     if (selectedType !== 'all') {
       params.set('type', selectedType);
     }
 
-    router.replace(`/mda?${params.toString()}`);
-  }, [debouncedSearch, selectedType, router]);
+    if (acronym) {
+      params.set('acronym', acronym);
+    }
 
-  /* ---------------- Change Page ---------------- */
+    router.replace(`/mda?${params.toString()}`);
+  }, [debouncedSearch, selectedType, acronym, router]);
+
   const updatePage = (page: number) => {
     const params = new URLSearchParams();
 
     params.set('page', page.toString());
 
-    if (searchQuery) {
-      params.set('search', searchQuery);
+    if (searchQuery.trim()) {
+      params.set('search', searchQuery.trim());
     }
 
     if (selectedType !== 'all') {
       params.set('type', selectedType);
+    }
+
+    if (acronym) {
+      params.set('acronym', acronym);
     }
 
     router.push(`/mda?${params.toString()}`, {
@@ -103,7 +120,6 @@ export default function AllMDAClient({
     });
   };
 
-  /* ---------------- Navigate ---------------- */
   const handleView = (mda: MDAInterface) => {
     router.push(`/mda/${mda.id}`);
   };
@@ -111,33 +127,22 @@ export default function AllMDAClient({
   return (
     <HomeSection>
       <div className="mx-auto max-w-5xl">
-        {/* Breadcrumb */}
         <Breadcrumb
-          items={[
-            {
-              label: 'Home',
-              page: '/',
-            },
-            {
-              label: 'MDAs',
-            },
-          ]}
+          items={[{ label: 'Home', page: '/' }, { label: 'MDAs' }]}
           onNavigate={(page) => router.push(page)}
           variant="government"
         />
 
-        {/* Heading */}
         <SectionHeading
           level="h3"
           title="Ministries, Departments & Agencies"
           description="Browse government MDAs of Sierra Leone"
           descriptionClassName="text-gray-400"
-          descriptionSizeClassName="text-[20px]"
+          descriptionSizeClassName="text-[16px]"
           showBack
           onBack={() => router.back()}
         />
 
-        {/* Filters */}
         <div className="mb-6 flex flex-col gap-4 sm:flex-row">
           <div className="flex-1">
             <Search2 value={searchQuery} onSearch={setSearchQuery} />
@@ -148,30 +153,32 @@ export default function AllMDAClient({
           </div>
         </div>
 
-        {/* Count */}
         <p className="mb-6 text-sm text-gray-600">
           Showing {paginated.length} of {filtered.length} MDAs
         </p>
 
-        {/* Grid */}
         <div className="space-y-5">
-          {paginated.length === 0 ? (
+          {isLoading ? (
+            <div className="rounded-xl bg-white p-10 text-center text-gray-500">
+              Loading MDAs...
+            </div>
+          ) : isError ? (
+            <div className="rounded-xl bg-white p-10 text-center text-gray-500">
+              MDAs could not be loaded.
+            </div>
+          ) : paginated.length === 0 ? (
             <div className="rounded-xl bg-white p-10 text-center text-gray-500">
               No matching MDAs found.
             </div>
           ) : (
-            paginated.map((mda) => (
+            paginated.map((mda: MDAInterface) => (
               <div key={mda.id} className="h-full">
-                <MDACard
-                  name={mda.name}
-                  onViewClick={() => handleView(mda)}
-                />
+                <MDACard name={mda.name} onViewClick={() => handleView(mda)} />
               </div>
             ))
           )}
         </div>
 
-        {/* Pagination */}
         {totalPages > 1 && (
           <div className="mt-8">
             <Pagination

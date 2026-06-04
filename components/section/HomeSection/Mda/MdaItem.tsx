@@ -1,7 +1,6 @@
 'use client';
 
 import { MDAInterface } from '@/libs/interface/mda/mdas.interface';
-import React from 'react';
 
 interface MdaItemProps {
   item: MDAInterface;

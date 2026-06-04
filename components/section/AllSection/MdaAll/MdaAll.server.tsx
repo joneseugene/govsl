@@ -1,30 +1,42 @@
-import { getMdas } from '@/libs/api/mdas.api';
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import AllMDAClient from './MdaAll.client';
+import { getQueryClient } from '@/libs/functions';
+import { getAllMdas, mdaAllQueryKey } from '@/libs/query/all/mda_all.query';
 
 interface Props {
   searchParams: Promise<{
     page?: string;
     search?: string;
+    type?: string;
+    acronym?: string;
   }>;
 }
 
 export default async function AllMDAServer({ searchParams }: Props) {
   const params = await searchParams;
 
-  const currentPage = Number(params.page || 1);
-  const search = params.search || '';
+  const currentPage = Math.max(1, Number(params.page ?? 1) || 1);
+  const search = params.search?.trim() || undefined;
 
-  const mdas = await getMdas({
-    status: 'active',
+  const queryClient = getQueryClient();
+
+  const queryParams = {
     search,
-    limit: 300,
+  };
+
+  await queryClient.prefetchQuery({
+    queryKey: mdaAllQueryKey(queryParams),
+    queryFn: () => getAllMdas(queryParams),
   });
 
   return (
-    <AllMDAClient
-      items={mdas}
-      currentPage={currentPage}
-      search={search}
-    />
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <AllMDAClient
+        currentPage={currentPage}
+        search={search ?? ''}
+        type={params.type ?? 'all'}
+        acronym={params.acronym}
+      />
+    </HydrationBoundary>
   );
 }
