@@ -1,58 +1,88 @@
-// AnnouncementAll.client.tsx
-
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-
+import { useQuery } from '@tanstack/react-query';
 import { HomeSection } from '@/components/ui/HomeSections';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { Search2 } from '@/components/ui/SearchUI2';
 import { FilterDropdown } from '@/components/ui/FilterDropdown';
 import { Pagination } from '@/components/ui/PaginationUI';
 import { Breadcrumb } from '@/components/ui/Breadcrumb';
-
-import { useDebounce } from '@/libs/hook/useDebounce';
-import { AnnouncementInterface } from '@/libs/interface/announcements.interface';
-
-import { AnnouncementCard } from './AnnouncementCard';
 import { Tabs } from '@/components/ui/TabUI';
+import { useDebounce } from '@/libs/hook/useDebounce';
+import { AnnouncementCard } from './AnnouncementCard';
+import {
+  announcementAllQueryKey,
+  announcementMdaOptionsQueryKey,
+  getAllAnnouncements,
+  getAnnouncementMdaOptions,
+} from '@/libs/query/all/announcement_all.query';
 
 interface AllAnnouncementClientProps {
-  items: AnnouncementInterface[];
-  total: number;
   currentPage: number;
   search?: string;
   ministryId?: string;
   category?: string;
-  ministries: { id: string; name: string }[];
 }
 
+const CATEGORY_OPTIONS = [
+  { value: 'all', label: 'All' },
+  { value: 'vacancy', label: 'Vacancy' },
+  { value: 'notice', label: 'Notice' },
+  { value: 'event', label: 'Event' },
+];
+
 export default function AllAnnouncementClient({
-  items,
-  total,
   currentPage,
   search,
   ministryId,
-  ministries,
   category,
 }: AllAnnouncementClientProps) {
   const router = useRouter();
 
   const [searchQuery, setSearchQuery] = useState(search ?? '');
-
   const [selectedMinistry, setSelectedMinistry] = useState(ministryId ?? 'all');
-
   const [selectedCategory, setSelectedCategory] = useState(category ?? 'all');
 
   const debouncedSearch = useDebounce(searchQuery, 500);
 
-  const itemsPerPage = 5;
+  const queryParams = {
+    page: currentPage,
+    search: debouncedSearch.trim() || undefined,
+    ministryId: selectedMinistry !== 'all' ? selectedMinistry : undefined,
+    category: selectedCategory !== 'all' ? selectedCategory : undefined,
+  };
 
+  const {
+    data: result,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: announcementAllQueryKey(queryParams),
+    queryFn: () => getAllAnnouncements(queryParams),
+    staleTime: 1000 * 60 * 2,
+    gcTime: 1000 * 60 * 60,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    retry: 1,
+  });
+
+  const { data: ministries = [] } = useQuery({
+    queryKey: announcementMdaOptionsQueryKey,
+    queryFn: getAnnouncementMdaOptions,
+    staleTime: 1000 * 60 * 60,
+    gcTime: 1000 * 60 * 60 * 2,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    retry: 1,
+  });
+
+  const items = result?.data ?? [];
+  const total = result?.total ?? 0;
+  const itemsPerPage = 5;
   const totalPages = Math.ceil(total / itemsPerPage);
 
-  /* ---------------- URL Sync ---------------- */
-  // URL Sync
   useEffect(() => {
     const params = new URLSearchParams();
 
@@ -66,7 +96,6 @@ export default function AllAnnouncementClient({
       params.set('ministry', selectedMinistry);
     }
 
-    // ADD THIS
     if (selectedCategory !== 'all') {
       params.set('category', selectedCategory);
     }
@@ -74,7 +103,6 @@ export default function AllAnnouncementClient({
     router.push(`/announcement?${params.toString()}`);
   }, [debouncedSearch, selectedMinistry, selectedCategory, router]);
 
-  /* ---------------- Pagination ---------------- */
   const updatePage = (page: number) => {
     const params = new URLSearchParams();
 
@@ -97,14 +125,9 @@ export default function AllAnnouncementClient({
     });
   };
 
-  /* ---------------- Ministry Options ---------------- */
   const ministryOptions = useMemo(() => {
     return [
-      {
-        value: 'all',
-        label: 'All Ministries',
-      },
-
+      { value: 'all', label: 'All Ministries' },
       ...ministries.map((m) => ({
         value: m.id,
         label: m.name,
@@ -112,44 +135,25 @@ export default function AllAnnouncementClient({
     ];
   }, [ministries]);
 
-  /* ---------------- Category Options ---------------- */
-  const CATEGORY_OPTIONS = [
-    { value: 'all', label: 'All' },
-    { value: 'vacancy', label: 'Vacancy' },
-    { value: 'notice', label: 'Notice' },
-    { value: 'event', label: 'Event' },
-  ];
-
   return (
     <HomeSection>
       <div className="mx-auto max-w-5xl">
-        {/* Breadcrumb */}
         <Breadcrumb
-          items={[
-            {
-              label: 'Home',
-              page: '/',
-            },
-            {
-              label: 'Announcements',
-            },
-          ]}
+          items={[{ label: 'Home', page: '/' }, { label: 'Announcements' }]}
           onNavigate={(page) => router.push(page)}
           variant="government"
         />
 
-        {/* Heading */}
         <SectionHeading
           level="h3"
           title="Official Announcements"
           description="Official government announcements and public notices"
           descriptionClassName="text-gray-400"
-          descriptionSizeClassName="text-[20px]"
+          descriptionSizeClassName="text-[16px]"
           showBack
           onBack={() => router.back()}
         />
 
-        {/* Filters */}
         <div className="mb-6 flex flex-col gap-4 sm:flex-row">
           <div className="flex-1">
             <Search2 value={searchQuery} onSearch={setSearchQuery} />
@@ -173,14 +177,20 @@ export default function AllAnnouncementClient({
           />
         </div>
 
-        {/* Count */}
         <p className="mb-6 text-sm text-gray-600">
           Showing {items.length} of {total} announcements
         </p>
 
-        {/* List */}
         <div className="space-y-5">
-          {items.length === 0 ? (
+          {isLoading ? (
+            <div className="rounded-xl bg-white p-10 text-center text-gray-500">
+              Loading announcements...
+            </div>
+          ) : isError ? (
+            <div className="rounded-xl bg-white p-10 text-center text-gray-500">
+              Announcements could not be loaded.
+            </div>
+          ) : items.length === 0 ? (
             <div className="rounded-xl bg-white p-10 text-center text-gray-500">
               No matching announcements found.
             </div>
@@ -195,7 +205,6 @@ export default function AllAnnouncementClient({
           )}
         </div>
 
-        {/* Pagination */}
         {totalPages > 1 && (
           <div className="mt-8">
             <Pagination

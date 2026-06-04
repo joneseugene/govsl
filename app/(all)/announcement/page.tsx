@@ -3,7 +3,7 @@ import AllAnnouncementServer from '@/components/section/AllSection/AnnouncementA
 type SearchParams = {
   page?: string;
   search?: string;
-  ministryId?: string;
+  ministry?: string;
 };
 
 type PageProps = {

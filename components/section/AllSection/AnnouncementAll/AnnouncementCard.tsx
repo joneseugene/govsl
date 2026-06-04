@@ -69,7 +69,7 @@ export function AnnouncementCard({ item, onNavigate, className = '' }: Announcem
         <h5
           className={`font-medium
           text-[18px] sm:text-[16px] md:text-[18px] lg:text-[20px]
-          text-[#1D70B8] group-hover:cursor-pointer
+          text-[#1D70B8] hover:cursor-pointer
           group-hover:underline group-hover:underline-offset-4
           decoration-2 transition-colors
         `}

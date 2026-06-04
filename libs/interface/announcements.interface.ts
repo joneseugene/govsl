@@ -31,5 +31,6 @@ export interface AnnouncementInterface {
   expiry_date?: string;
   contact_info?: string;
   ministry_id?: string;
+  reference_number?: string;
   mdas?: MDASummary | null;
 }

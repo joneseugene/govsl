@@ -50,32 +50,51 @@ export interface AnnouncementTypeMappedInterface extends AnnouncementTypeInterfa
 }
 
 export async function getAnnouncementTypes() {
-  const result = await baseQuery<AnnouncementTypeInterface>({
-    table: 'announcement_types_view',
-    select: '*',
+  const result = await baseQuery<AnnouncementInterface>({
+    table: model.announcements,
+    select: "*",
     page: 1,
     limit: 100,
   });
 
-  const mapped: AnnouncementTypeMappedInterface[] = result.data
-    .map((item) => {
-      const type = item.announcement_type?.toLowerCase().trim() || '';
-
-      const config = announcementTypeMap[type];
+  // Group announcements
+  const grouped = result.data.reduce(
+    (acc, item) => {
+      const type = item.announcement_type?.toLowerCase().trim();
 
       // Ignore unsupported types
-      if (!config) {
-        return null;
+      if (!type || !announcementTypeMap[type]) {
+        return acc;
       }
 
-      return {
-        ...item,
-        title: config.title,
-        description: config.description,
-        route: config.route,
-      };
-    })
-    .filter((item): item is AnnouncementTypeMappedInterface => item !== null);
+      // Create group if missing
+      if (!acc[type]) {
+        acc[type] = {
+          announcement_type: type,
+          total: 0,
+          title: announcementTypeMap[type].title,
+          description: announcementTypeMap[type].description,
+          route: announcementTypeMap[type].route,
 
-  return mapped;
+          // actual announcements
+          data: [],
+        };
+      }
+
+      acc[type].total += 1;
+
+      // push announcement
+      acc[type].data.push(item);
+
+      return acc;
+    },
+    {} as Record<
+      string,
+      AnnouncementTypeMappedInterface & {
+        data: AnnouncementInterface[];
+      }
+    >
+  );
+
+  return Object.values(grouped);
 }
