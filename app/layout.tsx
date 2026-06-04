@@ -40,7 +40,11 @@ export const metadata: Metadata = {
     'Announcements',
   ],
 
-  authors: [{ name: 'Directorate of Science, Technology and Innovation' }],
+  authors: [
+    {
+      name: 'Directorate of Science, Technology and Innovation',
+    },
+  ],
 
   creator: 'Directorate of Science, Technology and Innovation',
 
@@ -51,17 +55,17 @@ export const metadata: Metadata = {
     siteName: 'Gov SL',
     title: 'Gov SL',
     description: 'Government of Sierra Leone Official Media Platform',
+  },
 
-    twitter: {
-      card: 'summary_large_image',
-      title: 'Gov SL',
-      description: 'Government of Sierra Leone Official Media Platform',
-    },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Gov SL',
+    description: 'Government of Sierra Leone Official Media Platform',
+  },
 
-    robots: {
-      index: true,
-      follow: true,
-    },
+  robots: {
+    index: true,
+    follow: true,
   },
 };
 
