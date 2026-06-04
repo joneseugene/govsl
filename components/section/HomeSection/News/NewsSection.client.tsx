@@ -6,7 +6,6 @@ import { homeSections } from '@/libs/consts/home.const';
 import { ViewAllButton } from '../../../ui/ViewAllUI';
 import { NewsItem } from './NewsItem';
 import { useRouter } from 'next/navigation';
-import { NewsArticleInterface } from '@/libs/interface/news.articles.interface';
 import { getHomeNewsArticles, newsQueryKey } from '@/libs/query/home/news.query';
 import { useQuery } from '@tanstack/react-query';
 
@@ -50,11 +49,7 @@ export default function NewsArticleSectionClient() {
         ) : (
           <div className="space-y-12 sm:space-y-14">
             {items.map((item) => (
-              <NewsItem 
-                key={item.id} 
-                item={item} 
-                onNavigate={(path) => router.push(path)} 
-              />
+              <NewsItem key={item.id} item={item} onNavigate={(path) => router.push(path)} />
             ))}
           </div>
         )}
