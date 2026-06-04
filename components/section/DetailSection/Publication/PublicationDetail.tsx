@@ -1,27 +1,63 @@
 'use client';
 
-import React, { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-
+import { useQuery } from '@tanstack/react-query';
 import { Breadcrumb } from '@/components/ui/Breadcrumb';
 import { SectionHeading } from '@/components/ui/SectionHeading';
-
 import { getQRCode } from '@/libs/functions';
-import { PublicationInterface } from '@/libs/interface/publications.interface';
+
+import {
+  getPublicationDetail,
+  publicationDetailQueryKey,
+} from '@/libs/query/detail/publication_detail.query';
 
 interface PublicationDetailClientProps {
-  publication: PublicationInterface;
+  id: string;
 }
 
-export default function PublicationDetailClient({ publication }: PublicationDetailClientProps) {
+export default function PublicationDetailClient({ id }: PublicationDetailClientProps) {
   const router = useRouter();
 
-  const { id, title, description, content, file_url, status, date, mdas } = publication;
+  const {
+    data: publication,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: publicationDetailQueryKey(id),
+    queryFn: () => getPublicationDetail(id),
+    staleTime: 1000 * 60 * 2,
+    gcTime: 1000 * 60 * 60,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    retry: 1,
+  });
+
+  /* ---------------- LOADING ---------------- */
+  if (isLoading) {
+    return (
+      <section className="bg-white px-4 py-20">
+        <div className="mx-auto max-w-5xl text-center text-gray-500">Loading publication...</div>
+      </section>
+    );
+  }
+
+  if (isError || !publication) {
+    return (
+      <section className="bg-white px-4 py-20">
+        <div className="mx-auto max-w-5xl text-center text-gray-500">
+          Publication could not be loaded.
+        </div>
+      </section>
+    );
+  }
+
+  const { title, description, content, file_url, status, date, mdas } = publication;
 
   /* ---------------- QR ---------------- */
   const qrUrl = typeof window !== 'undefined' ? `${window.location.origin}/publication/${id}` : '';
 
-  /* ---------------- Date ---------------- */
+  /* ---------------- DATE ---------------- */
   const formattedDate = useMemo(() => {
     if (!date) return null;
 
@@ -38,7 +74,7 @@ export default function PublicationDetailClient({ publication }: PublicationDeta
     });
   }, [date]);
 
-  /* ---------------- Content Renderer ---------------- */
+  /* ---------------- CONTENT RENDERER ---------------- */
   const renderContent = (text?: string) => {
     if (!text) {
       return <p className="text-[#505A5F]">No publication content available.</p>;
@@ -50,7 +86,7 @@ export default function PublicationDetailClient({ publication }: PublicationDeta
       /* H2 */
       if (trimmed.startsWith('**') && trimmed.endsWith(':**')) {
         return (
-          <h2 key={index} className="mt-12 mb-4 text-3xl font-semibold text-[#003366]">
+          <h2 key={index} className="mb-4 mt-12 text-3xl font-semibold text-[#003366]">
             {trimmed.replace(/\*\*/g, '').replace(':', '')}
           </h2>
         );
@@ -59,7 +95,7 @@ export default function PublicationDetailClient({ publication }: PublicationDeta
       /* H3 */
       if (trimmed.startsWith('**') && trimmed.endsWith('**')) {
         return (
-          <h3 key={index} className="mt-8 mb-3 text-2xl font-semibold text-[#003366]">
+          <h3 key={index} className="mb-3 mt-8 text-2xl font-semibold text-[#003366]">
             {trimmed.replace(/\*\*/g, '')}
           </h3>
         );
@@ -73,7 +109,7 @@ export default function PublicationDetailClient({ publication }: PublicationDeta
           .filter(Boolean);
 
         return (
-          <ul key={index} className="mb-6 list-disc list-inside space-y-2 text-[#0B0C0C]">
+          <ul key={index} className="mb-6 list-inside list-disc space-y-2 text-[#0B0C0C]">
             {items.map((item, itemIndex) => (
               <li key={itemIndex}>{item.replace(/^•\s*/, '')}</li>
             ))}
@@ -95,7 +131,6 @@ export default function PublicationDetailClient({ publication }: PublicationDeta
       <div className="mx-auto max-w-5xl">
         {/* TOP META */}
         <div className="mb-6">
-          {/* Breadcrumb */}
           <Breadcrumb
             items={[
               {
@@ -139,6 +174,8 @@ export default function PublicationDetailClient({ publication }: PublicationDeta
           level="h2"
           title={title}
           description={description}
+          descriptionClassName="text-gray-400"
+          descriptionSizeClassName="text-[16px]"
           showBack
           onBack={() => router.back()}
         />

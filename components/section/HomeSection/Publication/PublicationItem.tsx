@@ -1,4 +1,3 @@
-import { formatDate } from '@/libs/functions';
 import { PublicationInterface } from '@/libs/interface/publications.interface';
 
 interface PublicationItemProps {

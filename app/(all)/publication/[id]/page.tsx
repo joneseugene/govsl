@@ -1,8 +1,14 @@
-import { notFound } from 'next/navigation';
+import { notFound } from "next/navigation";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
-import PublicationDetailClient from '@/components/section/DetailSection/Publication/PublicationDetail';
+import PublicationDetailClient from "@/components/section/DetailSection/Publication/PublicationDetail";
 
-import { getPublicationById } from '@/libs/api/publications.api';
+import { getQueryClient } from "@/libs/functions";
+
+import {
+  getPublicationDetail,
+  publicationDetailQueryKey,
+} from "@/libs/query/detail/publication_detail.query";
 
 interface Props {
   params: Promise<{
@@ -13,11 +19,24 @@ interface Props {
 export default async function Page({ params }: Props) {
   const { id } = await params;
 
-  const publication = await getPublicationById(id);
+  const queryClient = getQueryClient();
+
+  await queryClient.prefetchQuery({
+    queryKey: publicationDetailQueryKey(id),
+    queryFn: () => getPublicationDetail(id),
+  });
+
+  const publication = queryClient.getQueryData(
+    publicationDetailQueryKey(id)
+  ) as Awaited<ReturnType<typeof getPublicationDetail>>;
 
   if (!publication) {
     notFound();
   }
 
-  return <PublicationDetailClient publication={publication} />;
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <PublicationDetailClient id={id} />
+    </HydrationBoundary>
+  );
 }

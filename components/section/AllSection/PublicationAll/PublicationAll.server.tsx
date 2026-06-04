@@ -1,6 +1,7 @@
-import { getPublications } from "@/libs/api/publications.api";
-import { getMDAOptions } from "@/libs/api/mdas.api";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import PublicationAllClient from "./PublicationAll.client";
+import { getQueryClient } from "@/libs/functions";
+import { getAllPublications, getPublicationMdaOptions, publicationAllQueryKey, publicationMdaOptionsQueryKey } from "@/libs/query/all/publication_all.query";
 
 type SearchParams = {
   page?: string;
@@ -13,11 +14,9 @@ export default async function PublicationAllServer({
 }: {
   searchParams: Promise<SearchParams>;
 }) {
-  // ALWAYS await first
   const params = await searchParams;
 
   const safePage = Math.max(1, Number(params.page ?? 1) || 1);
-
   const search = params.search?.trim() || undefined;
 
   const ministryId =
@@ -25,26 +24,33 @@ export default async function PublicationAllServer({
       ? params.ministryId
       : undefined;
 
+  const queryClient = getQueryClient();
 
-  const [result, ministries] = await Promise.all([
-    getPublications({
-      page: safePage,
-      limit: 5,
-      search,
-      ministryId,
-      status: "published",
+  const queryParams = {
+    page: safePage,
+    search,
+    ministryId,
+  };
+
+  await Promise.all([
+    queryClient.prefetchQuery({
+      queryKey: publicationAllQueryKey(queryParams),
+      queryFn: () => getAllPublications(queryParams),
     }),
-    getMDAOptions(),
+
+    queryClient.prefetchQuery({
+      queryKey: publicationMdaOptionsQueryKey,
+      queryFn: getPublicationMdaOptions,
+    }),
   ]);
 
   return (
-    <PublicationAllClient
-      items={result.data}
-      total={result.total ?? 0}
-      currentPage={safePage}
-      search={search}
-      ministryId={params.ministryId ?? "all"}
-      ministries={ministries}
-    />
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <PublicationAllClient
+        currentPage={safePage}
+        search={search}
+        ministryId={params.ministryId ?? "all"}
+      />
+    </HydrationBoundary>
   );
 }

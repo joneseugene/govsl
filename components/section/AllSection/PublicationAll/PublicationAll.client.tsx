@@ -1,34 +1,30 @@
 'use client';
 
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-
+import { useQuery } from '@tanstack/react-query';
 import { HomeSection } from '@/components/ui/HomeSections';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { Search2 } from '@/components/ui/SearchUI2';
 import { FilterDropdown } from '@/components/ui/FilterDropdown';
 import { Pagination } from '@/components/ui/PaginationUI';
 import { PublicationCard } from '@/components/section/AllSection/PublicationAll/PublicationCard';
-
-import { useDebounce } from '@/libs/hook/useDebounce';
-import { PublicationInterface } from '@/libs/interface/publications.interface';
 import { Breadcrumb } from '@/components/ui/Breadcrumb';
+import { useDebounce } from '@/libs/hook/useDebounce';
+import {
+  getAllPublications,
+  getPublicationMdaOptions,
+  publicationAllQueryKey,
+  publicationMdaOptionsQueryKey,
+} from '@/libs/query/all/publication_all.query';
 
-export default function AllPublicationsClient({
-  items,
-  total,
-  currentPage,
-  search,
-  ministryId,
-  ministries,
-}: {
-  items: PublicationInterface[];
-  total: number;
+type Props = {
   currentPage: number;
   search?: string;
   ministryId?: string;
-  ministries: { id: string; name: string }[];
-}) {
+};
+
+export default function PublicationAllClient({ currentPage, search, ministryId }: Props) {
   const router = useRouter();
 
   const [searchQuery, setSearchQuery] = useState(search ?? '');
@@ -36,21 +32,53 @@ export default function AllPublicationsClient({
 
   const debouncedSearch = useDebounce(searchQuery, 500);
 
-  const itemsPerPage = 3;
+  const queryParams = {
+    page: currentPage,
+    search: debouncedSearch.trim() || undefined,
+    ministryId: selectedMinistry !== 'all' ? selectedMinistry : undefined,
+  };
+
+  const {
+    data: result,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: publicationAllQueryKey(queryParams),
+    queryFn: () => getAllPublications(queryParams),
+    staleTime: 1000 * 60 * 2,
+    gcTime: 1000 * 60 * 60,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    retry: 1,
+  });
+
+  const { data: ministries = [] } = useQuery({
+    queryKey: publicationMdaOptionsQueryKey,
+    queryFn: getPublicationMdaOptions,
+    staleTime: 1000 * 60 * 60,
+    gcTime: 1000 * 60 * 60 * 2,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    retry: 1,
+  });
+
+  const items = result?.data ?? [];
+  const total = result?.total ?? 0;
+
+  const itemsPerPage = 5;
   const totalPages = Math.ceil(total / itemsPerPage);
 
-  /* ---------------- URL Sync ---------------- */
   useEffect(() => {
     const params = new URLSearchParams();
 
     params.set('page', '1');
 
-    if (debouncedSearch?.trim()) {
+    if (debouncedSearch.trim()) {
       params.set('search', debouncedSearch.trim());
     }
 
     if (selectedMinistry !== 'all') {
-      params.set('ministry', selectedMinistry);
+      params.set('ministryId', selectedMinistry);
     }
 
     router.push(`/publication?${params.toString()}`);
@@ -61,16 +89,20 @@ export default function AllPublicationsClient({
 
     params.set('page', page.toString());
 
-    if (searchQuery.trim()) params.set('search', searchQuery.trim());
-    if (selectedMinistry !== 'all') params.set('ministry', selectedMinistry);
+    if (searchQuery.trim()) {
+      params.set('search', searchQuery.trim());
+    }
 
-    router.push(`/publication?${params.toString()}`, { scroll: false });
+    if (selectedMinistry !== 'all') {
+      params.set('ministryId', selectedMinistry);
+    }
+
+    router.push(`/publication?${params.toString()}`, {
+      scroll: false,
+    });
   };
 
-  /* ---------------- Options ---------------- */
   const ministryOptions = useMemo(() => {
-    if (!ministries) return [{ value: 'all', label: 'All Ministries' }];
-
     return [
       { value: 'all', label: 'All Ministries' },
       ...ministries.map((m) => ({
@@ -83,17 +115,8 @@ export default function AllPublicationsClient({
   return (
     <HomeSection>
       <div className="mx-auto max-w-5xl">
-        {/* Breadcrumb */}
         <Breadcrumb
-          items={[
-            {
-              label: 'Home',
-              page: '/',
-            },
-            {
-              label: 'Publications and Reports',
-            },
-          ]}
+          items={[{ label: 'Home', page: '/' }, { label: 'Publications and Reports' }]}
           onNavigate={(page) => router.push(page)}
           variant="government"
         />
@@ -103,12 +126,11 @@ export default function AllPublicationsClient({
           title="All Publications & Reports"
           description="Policy documents, white papers, and official government reports"
           descriptionClassName="text-gray-400"
-          descriptionSizeClassName="text-[20px]"
+          descriptionSizeClassName="text-[16px]"
           showBack
           onBack={() => router.back()}
         />
 
-        {/* Filters */}
         <div className="mb-6 flex flex-col gap-4 sm:flex-row">
           <div className="flex-1">
             <Search2 value={searchQuery} onSearch={setSearchQuery} />
@@ -123,14 +145,20 @@ export default function AllPublicationsClient({
           </div>
         </div>
 
-        {/* Count */}
         <p className="mb-6 text-sm text-gray-600">
           Showing {items.length} of {total} publications
         </p>
 
-        {/* List */}
         <div className="space-y-10">
-          {items.length === 0 ? (
+          {isLoading ? (
+            <div className="rounded-xl bg-white p-10 text-center text-gray-500">
+              Loading publications...
+            </div>
+          ) : isError ? (
+            <div className="rounded-xl bg-white p-10 text-center text-gray-500">
+              Publications could not be loaded.
+            </div>
+          ) : items.length === 0 ? (
             <div className="rounded-xl bg-white p-10 text-center text-gray-500">
               No matching publications found.
             </div>
@@ -149,7 +177,6 @@ export default function AllPublicationsClient({
           )}
         </div>
 
-        {/* Pagination */}
         {totalPages > 1 && (
           <div className="mt-8">
             <Pagination
