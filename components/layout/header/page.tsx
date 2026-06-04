@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
 import { LOGO } from '@/libs/consts/nav.const';
 import { usePathname, useRouter } from 'next/navigation';
@@ -26,24 +26,28 @@ export default function Header({ links, onNavigate }: Props) {
   const isHomePage = pathname === '/' || pathname === '/home';
 
   /* ---------------- ACTIVE LINK ---------------- */
-  const [active, setActive] = useState('');
+  const [activeSection, setActiveSection] = useState('');
+
+  const routeActive = useMemo(() => {
+    if (isHomePage) return '';
+
+    const matchedSection = Object.entries(homeSections).find(([, section]) => {
+      const routes = section.routes;
+
+      if ('all' in routes && pathname.startsWith(routes.all)) {
+        return true;
+      }
+
+      return false;
+    });
+
+    return matchedSection?.[1]?.id ?? '';
+  }, [pathname, isHomePage]);
+
+  const active = isHomePage ? activeSection : routeActive;
 
   useEffect(() => {
-    if (!isHomePage) {
-      const matchedSection = Object.entries(homeSections).find(([, section]) => {
-        const routes = section.routes;
-
-        if ('all' in routes && pathname.startsWith(routes.all)) {
-          return true;
-        }
-
-        return false;
-      });
-
-      setActive(matchedSection?.[1]?.id ?? '');
-
-      return;
-    }
+    if (!isHomePage) return;
 
     const handleScroll = () => {
       const scrollPosition = window.scrollY + 140;
@@ -63,17 +67,17 @@ export default function Header({ links, onNavigate }: Props) {
         }
       }
 
-      setActive(currentSection);
+      setActiveSection((prev) => (prev === currentSection ? prev : currentSection));
     };
 
-    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
 
-    window.addEventListener('scroll', handleScroll);
+    requestAnimationFrame(handleScroll);
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, [pathname, isHomePage, links]);
+  }, [isHomePage, links]);
 
   /* ---------------- NAVIGATION ---------------- */
   const handleNavigate = (link: NavLink) => {
