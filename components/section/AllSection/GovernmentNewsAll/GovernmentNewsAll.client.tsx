@@ -3,7 +3,6 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-
 import { HomeSection } from '@/components/ui/HomeSections';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { Search2 } from '@/components/ui/SearchUI2';

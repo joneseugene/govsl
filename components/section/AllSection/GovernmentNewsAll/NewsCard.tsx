@@ -1,7 +1,5 @@
 'use client';
 
-import { ArrowRight } from 'lucide-react';
-
 export interface NewsCardProps {
   id: string;
   title: string;
