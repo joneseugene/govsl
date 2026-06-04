@@ -1,6 +1,12 @@
-import NewsDetailClient from '@/components/section/DetailSection/News/NewsDetail';
-import { getNewsArticleById } from '@/libs/api/news.articles.api';
-import { notFound } from 'next/navigation';
+import { notFound } from "next/navigation";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import NewsDetailClient from "@/components/section/DetailSection/News/NewsDetail";
+import { getQueryClient } from "@/libs/functions";
+
+import {
+  getNewsDetail,
+  newsDetailQueryKey,
+} from "@/libs/query/detail/news_detail.query";
 
 interface Props {
   params: Promise<{
@@ -11,22 +17,24 @@ interface Props {
 export default async function Page({ params }: Props) {
   const { id } = await params;
 
-  const news = await getNewsArticleById(id);
+  const queryClient = getQueryClient();
+
+  await queryClient.prefetchQuery({
+    queryKey: newsDetailQueryKey(id),
+    queryFn: () => getNewsDetail(id),
+  });
+
+  const news = queryClient.getQueryData(
+    newsDetailQueryKey(id)
+  ) as Awaited<ReturnType<typeof getNewsDetail>>;
 
   if (!news) {
     notFound();
   }
 
   return (
-    <NewsDetailClient
-      id={news.id}
-      category={news.category ?? 'News'}
-      ministry={news.mdas?.name ?? 'Government of Sierra Leone'}
-      date={news.date ?? ''}
-      location={news.location}
-      headline={news.headline ?? news.title}
-      excerpt={news.summary}
-      content={news.content ?? ''}
-    />
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <NewsDetailClient id={id} />
+    </HydrationBoundary>
   );
 }

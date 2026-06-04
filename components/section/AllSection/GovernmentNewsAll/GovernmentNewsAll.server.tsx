@@ -1,6 +1,7 @@
-import { getNewsArticles } from "@/libs/api/news.articles.api";
-import { getMDAOptions } from "@/libs/api/mdas.api";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import AllGovernmentNewsClient from "./GovernmentNewsAll.client";
+import { getQueryClient } from "@/libs/functions";
+import { getAllGovernmentNews, getGovernmentNewsMdaOptions, governmentNewsAllQueryKey, governmentNewsMdaOptionsQueryKey } from "@/libs/query/all/news_all.query";
 
 type SearchParams = {
   page?: string;
@@ -24,25 +25,33 @@ export default async function AllGovernmentNewsServer({
       ? params.ministryId
       : undefined;
 
-  const [result, ministries] = await Promise.all([
-    getNewsArticles({
-      page: safePage,
-      limit: 5,
-      search,
-      ministryId,
-      status: "published",
+  const queryClient = getQueryClient();
+
+  const queryParams = {
+    page: safePage,
+    search,
+    ministryId,
+  };
+
+  await Promise.all([
+    queryClient.prefetchQuery({
+      queryKey: governmentNewsAllQueryKey(queryParams),
+      queryFn: () => getAllGovernmentNews(queryParams),
     }),
-    getMDAOptions(),
+
+    queryClient.prefetchQuery({
+      queryKey: governmentNewsMdaOptionsQueryKey,
+      queryFn: getGovernmentNewsMdaOptions,
+    }),
   ]);
 
   return (
-    <AllGovernmentNewsClient
-      items={result.data}
-      total={result.total ?? 0}
-      currentPage={safePage}
-      search={search}
-      ministryId={params.ministryId ?? "all"}
-      ministries={ministries}
-    />
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <AllGovernmentNewsClient
+        currentPage={safePage}
+        search={search}
+        ministryId={params.ministryId ?? "all"}
+      />
+    </HydrationBoundary>
   );
 }

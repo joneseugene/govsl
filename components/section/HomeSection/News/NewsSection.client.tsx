@@ -7,9 +7,22 @@ import { ViewAllButton } from '../../../ui/ViewAllUI';
 import { NewsItem } from './NewsItem';
 import { useRouter } from 'next/navigation';
 import { NewsArticleInterface } from '@/libs/interface/news.articles.interface';
+import { getHomeNewsArticles, newsQueryKey } from '@/libs/query/home/news.query';
+import { useQuery } from '@tanstack/react-query';
 
-export default function NewsArticleSectionClient({ items }: { items: NewsArticleInterface[] }) {
+export default function NewsArticleSectionClient() {
   const router = useRouter();
+  const { data, isLoading, isError } = useQuery({
+    queryKey: newsQueryKey,
+    queryFn: getHomeNewsArticles,
+    staleTime: 1000 * 60 * 2,
+    gcTime: 1000 * 60 * 60,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    retry: 1,
+  });
+
+  const items = data?.data ?? [];
 
   return (
     <HomeSection id={homeSections.news.id}>
@@ -19,22 +32,29 @@ export default function NewsArticleSectionClient({ items }: { items: NewsArticle
           title="Government News & Updates"
           description="Official updates from ministries, departments, and agencies"
           descriptionClassName="text-gray-400"
-          descriptionSizeClassName="text-[20px]"
+          descriptionSizeClassName="text-[16px]"
         />
 
-        {items.length === 0 ? (
-          <div
-            className="
-            text-center py-16
-            text-[19px] text-[#505A5F] italic
-          "
-          >
+        {isLoading ? (
+          <div className="py-16 text-center text-[19px] italic text-[#505A5F]">
+            Loading government news...
+          </div>
+        ) : isError ? (
+          <div className="py-16 text-center text-[19px] italic text-[#505A5F]">
+            Government news could not be loaded.
+          </div>
+        ) : items.length === 0 ? (
+          <div className="py-16 text-center text-[19px] italic text-[#505A5F]">
             No recent government news available.
           </div>
         ) : (
           <div className="space-y-12 sm:space-y-14">
             {items.map((item) => (
-              <NewsItem key={item.id} item={item} onNavigate={(path) => router.push(path)} />
+              <NewsItem 
+                key={item.id} 
+                item={item} 
+                onNavigate={(path) => router.push(path)} 
+              />
             ))}
           </div>
         )}
