@@ -1,27 +1,61 @@
 'use client';
 
 import { useMemo, useState, useRef } from 'react';
-import { CustomDivider } from '../../../ui/CustomDivider';
 import ReactMarkdown from 'react-markdown';
-import { formatDate, getQRCode } from '@/libs/functions';
-import { PressReleaseInterface } from '@/libs/interface/press.releases.interface';
 import { useRouter } from 'next/navigation';
-import { Breadcrumb } from '@/components/ui/Breadcrumb';
+import { useQuery } from '@tanstack/react-query';
 import { useReactToPrint } from 'react-to-print';
+import { CustomDivider } from '../../../ui/CustomDivider';
+import { Breadcrumb } from '@/components/ui/Breadcrumb';
+import { formatDate, getQRCode } from '@/libs/functions';
+import {
+  getPressReleaseDetail,
+  pressReleaseDetailQueryKey,
+} from '@/libs/query/detail/press_release_detail.query';
 
 interface PressReleaseDetailUIProps {
-  pressRelease: PressReleaseInterface;
+  id: string;
   pdfUrl?: string;
-  onBack?: () => void;
 }
 
-export function PressReleaseDetailUI({ pressRelease, pdfUrl }: PressReleaseDetailUIProps) {
-  const { id, title, mdas, content, reference_numbers, contact_info, date } = pressRelease;
-  const ministry = mdas?.name || 'Government of Sierra Leone';
-  const acronym = mdas?.acronym || 'GoSL';
-  const reference = reference_numbers || '-';
-  const [loading] = useState(false);
+export function PressReleaseDetailUI({ id, pdfUrl }: PressReleaseDetailUIProps) {
   const router = useRouter();
+  const [loading] = useState(false);
+  const printRef = useRef<HTMLDivElement>(null);
+
+  const {
+    data: pressRelease,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: pressReleaseDetailQueryKey(id),
+    queryFn: () => getPressReleaseDetail(id),
+    staleTime: 1000 * 60 * 2,
+    gcTime: 1000 * 60 * 60,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    retry: 1,
+  });
+
+  if (isLoading) {
+  return (
+    <div className="min-h-screen bg-white py-24 text-center text-gray-500">
+      Loading press release...
+    </div>
+  );
+}
+
+if (isError || !pressRelease) {
+  return (
+    <div className="min-h-screen bg-white py-24 text-center text-gray-500">
+      Press release could not be loaded.
+    </div>
+  );
+}
+
+  const handlePrint = useReactToPrint({
+    contentRef: printRef,
+  });
 
   const handleBack = () => {
     if (window.history.length > 1) {
@@ -39,63 +73,40 @@ export function PressReleaseDetailUI({ pressRelease, pdfUrl }: PressReleaseDetai
     return getQRCode(url);
   }, [id, pdfUrl]);
 
-  //Handle PDF
-  const printRef = useRef<HTMLDivElement>(null);
 
-  const handlePrint = useReactToPrint({
-    contentRef: printRef,
-  });
+  const { title, mdas, content, reference_numbers, contact_info, date } = pressRelease;
+
+  const ministry = mdas?.name || 'Government of Sierra Leone';
+  const acronym = mdas?.acronym || 'GoSL';
+  const reference = reference_numbers || '-';
 
   return (
-    <div className="bg-white min-h-screen">
-      {/* TOP BAR */}
+    <div className="min-h-screen bg-white">
       <div className="no-print border-b border-slate-200 bg-slate-50">
         <div className="mx-auto flex max-w-4xl flex-col gap-4 px-4 py-5 lg:flex-row lg:items-center lg:justify-between">
-          {/* LEFT */}
           <div className="min-w-0 flex-1">
             <Breadcrumb
               items={[
-                {
-                  label: 'Home',
-                  page: '/',
-                },
-                {
-                  label: 'Press Release',
-                  page: '/press-release',
-                },
-                {
-                  label: `${pressRelease.reference_numbers}`,
-                },
+                { label: 'Home', page: '/' },
+                { label: 'Press Release', page: '/press-release' },
+                { label: `${reference_numbers}` },
               ]}
               onNavigate={(page) => router.push(page)}
               variant="government"
             />
           </div>
 
-          {/* RIGHT */}
           <div className="flex flex-wrap items-center gap-3 pr-6">
             <button
               onClick={handleBack}
-              className="
-              inline-flex items-center justify-center gap-2
-              bg-[#003366]
-              px-4 py-2
-              text-sm font-medium text-white
-            "
+              className="inline-flex items-center justify-center gap-2 bg-[#003366] px-4 py-2 text-sm font-medium text-white"
             >
               Back
             </button>
 
             <button
               onClick={handlePrint}
-              className="
-              inline-flex items-center justify-center
-              rounded-md bg-[#008A3C]
-              px-4 py-2
-              text-sm font-medium text-white
-              transition hover:bg-[#006D2F]
-              hover:cursor-pointer
-            "
+              className="inline-flex items-center justify-center rounded-md bg-[#008A3C] px-4 py-2 text-sm font-medium text-white transition hover:cursor-pointer hover:bg-[#006D2F]"
             >
               {loading ? 'Generating...' : 'Print'}
             </button>
@@ -103,7 +114,6 @@ export function PressReleaseDetailUI({ pressRelease, pdfUrl }: PressReleaseDetai
         </div>
       </div>
 
-      {/* Document Content */}
       <div
         ref={printRef}
         className="relative mx-auto bg-white shadow-md"
@@ -113,8 +123,7 @@ export function PressReleaseDetailUI({ pressRelease, pdfUrl }: PressReleaseDetai
           padding: '25mm 22mm',
         }}
       >
-        <div className="max-w-5xl mx-auto px-6 pb-20 pt-8">
-          {/* Header */}
+        <div className="mx-auto max-w-5xl px-6 pb-20 pt-8">
           <header className="mb-5 flex items-start justify-between pb-6">
             <div className="text-left">
               <div className="text-2xl font-bold text-[#0033A0]">{acronym}</div>

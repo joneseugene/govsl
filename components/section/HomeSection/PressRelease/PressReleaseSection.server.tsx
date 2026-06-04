@@ -1,13 +1,21 @@
 import PressReleaseSectionClient from '@/components/section/HomeSection/PressRelease/PressReleaseSection.client';
-import { getPressReleases } from '@/libs/api/press.releases.api';
-import { redirect } from 'next/navigation';
+import { getQueryClient } from '@/libs/functions';
+import { getHomePressReleases } from '@/libs/query/home/press_release.query';
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
+
+const pressReleaseQueryKey = ["home-press-releases", "approved", 1, 5];
 
 export default async function PressReleaseSectionServer() {
-  const result = await getPressReleases({
-    status: 'approved',
-    page: 1,
-    limit: 5,
+  const queryClient = getQueryClient();
+
+  await queryClient.prefetchQuery({
+    queryKey: pressReleaseQueryKey,
+    queryFn: getHomePressReleases,
   });
 
-  return <PressReleaseSectionClient items={result.data} />;
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <PressReleaseSectionClient />
+    </HydrationBoundary>
+  );
 }
