@@ -1,6 +1,8 @@
-import ServiceDetailUI from "@/components/section/DetailSection/Service/ServiceDetail";
-import { getServiceById } from "@/libs/api/services.api";
-import { notFound } from "next/navigation";
+import { notFound } from 'next/navigation';
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
+import ServiceDetailUI from '@/components/section/DetailSection/Service/ServiceDetail';
+import { getQueryClient } from '@/libs/functions';
+import { getServiceDetail, serviceDetailQueryKey } from '@/libs/query/detail/service_detail.query';
 
 interface Props {
   params: Promise<{
@@ -12,11 +14,24 @@ interface Props {
 export default async function ServiceDetailPage({ params }: Props) {
   const { slug, id } = await params;
 
-  const res = await getServiceById(id);
+  const queryClient = getQueryClient();
 
-  if (!res?.id) {
-    return notFound();
+  await queryClient.prefetchQuery({
+    queryKey: serviceDetailQueryKey(id),
+    queryFn: () => getServiceDetail(id),
+  });
+
+  const service = queryClient.getQueryData(serviceDetailQueryKey(id)) as Awaited<
+    ReturnType<typeof getServiceDetail>
+  >;
+
+  if (!service?.id) {
+    notFound();
   }
 
-  return <ServiceDetailUI service={res} slug={slug} />;
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <ServiceDetailUI id={id} slug={slug} />
+    </HydrationBoundary>
+  );
 }

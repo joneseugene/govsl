@@ -1,35 +1,29 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useEffect, useState, useMemo } from 'react';
-
+import { useEffect, useMemo, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { HomeSection } from '@/components/ui/HomeSections';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { FilterDropdown } from '@/components/ui/FilterDropdown';
 import { Search2 } from '@/components/ui/SearchUI2';
 import { Pagination } from '@/components/ui/PaginationUI';
-
+import { Breadcrumb } from '@/components/ui/Breadcrumb';
 import { useDebounce } from '@/libs/hook/useDebounce';
 import { ServiceCard } from './ServiceCard';
-import { Breadcrumb } from '@/components/ui/Breadcrumb';
+import {
+  ServiceCategory,
+  getAllServiceCategories,
+  serviceAllQueryKey,
+} from '@/libs/query/all/service_all.query';
 
-type ServiceCategory = {
-  category: string;
-  category_page?: string;
-  count: number;
-};
-
-export default function AllServicesClient({
-  items,
-  currentPage,
-  search,
-  category,
-}: {
-  items: ServiceCategory[];
+type Props = {
   currentPage: number;
   search?: string;
   category?: string;
-}) {
+};
+
+export default function AllServicesClient({ currentPage, search, category }: Props) {
   const router = useRouter();
 
   const [searchQuery, setSearchQuery] = useState(search ?? '');
@@ -37,24 +31,40 @@ export default function AllServicesClient({
 
   const debouncedSearch = useDebounce(searchQuery, 500);
 
-  const itemsPerPage = 6;
-  const totalPages = Math.ceil(items.length / itemsPerPage);
+  const {
+    data: result,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: serviceAllQueryKey,
+    queryFn: getAllServiceCategories,
+    staleTime: 1000 * 60 * 2,
+    gcTime: 1000 * 60 * 60 * 2,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    retry: 1,
+  });
 
-  /* ---------------- Filtered (client-side for now) ---------------- */
+  const items: ServiceCategory[] = result?.data ?? [];
+
+  const itemsPerPage = 6;
+
   const filtered = useMemo(() => {
     const q = searchQuery.toLowerCase().trim();
 
     return items.filter((item) => {
       const matchesSearch = item.category.toLowerCase().includes(q);
+
       const matchesCategory = selectedCategory === 'all' || item.category === selectedCategory;
 
       return matchesSearch && matchesCategory;
     });
   }, [items, searchQuery, selectedCategory]);
 
+  const totalPages = Math.ceil(filtered.length / itemsPerPage);
+
   const paginated = filtered.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
-  /* ---------------- Categories ---------------- */
   const categoryOptions = useMemo(() => {
     return [
       { value: 'all', label: 'All Categories' },
@@ -65,14 +75,18 @@ export default function AllServicesClient({
     ];
   }, [items]);
 
-  /* ---------------- Sync URL ---------------- */
   useEffect(() => {
     const params = new URLSearchParams();
 
     params.set('page', '1');
 
-    if (debouncedSearch) params.set('search', debouncedSearch);
-    if (selectedCategory !== 'all') params.set('category', selectedCategory);
+    if (debouncedSearch.trim()) {
+      params.set('search', debouncedSearch.trim());
+    }
+
+    if (selectedCategory !== 'all') {
+      params.set('category', selectedCategory);
+    }
 
     router.replace(`/service?${params.toString()}`);
   }, [debouncedSearch, selectedCategory, router]);
@@ -82,13 +96,19 @@ export default function AllServicesClient({
 
     params.set('page', page.toString());
 
-    if (searchQuery) params.set('search', searchQuery);
-    if (selectedCategory !== 'all') params.set('category', selectedCategory);
+    if (searchQuery.trim()) {
+      params.set('search', searchQuery.trim());
+    }
 
-    router.push(`/service?${params.toString()}`, { scroll: false });
+    if (selectedCategory !== 'all') {
+      params.set('category', selectedCategory);
+    }
+
+    router.push(`/service?${params.toString()}`, {
+      scroll: false,
+    });
   };
 
-  /* ---------------- Navigate ---------------- */
   const handleView = (item: ServiceCategory) => {
     const page = item.category_page || 'services';
     router.push(`/service/${page}`);
@@ -97,17 +117,8 @@ export default function AllServicesClient({
   return (
     <HomeSection>
       <div className="mx-auto max-w-5xl">
-        {/* Breadcrumb */}
         <Breadcrumb
-          items={[
-            {
-              label: 'Home',
-              page: '/',
-            },
-            {
-              label: 'Categories',
-            },
-          ]}
+          items={[{ label: 'Home', page: '/' }, { label: 'Categories' }]}
           onNavigate={(page) => router.push(page)}
           variant="government"
         />
@@ -117,12 +128,11 @@ export default function AllServicesClient({
           title="Government Services"
           description="Browse government services by category"
           descriptionClassName="text-gray-400"
-          descriptionSizeClassName="text-[20px]"
+          descriptionSizeClassName="text-[16px]"
           showBack
           onBack={() => router.back()}
         />
 
-        {/* Filters */}
         <div className="mb-6 flex flex-col gap-4 sm:flex-row">
           <div className="flex-1">
             <Search2 value={searchQuery} onSearch={setSearchQuery} />
@@ -137,14 +147,20 @@ export default function AllServicesClient({
           </div>
         </div>
 
-        {/* Count */}
         <p className="mb-6 text-sm text-gray-600">
           Showing {paginated.length} of {filtered.length} categories
         </p>
 
-        {/* Grid */}
         <div className="space-y-5">
-          {paginated.length === 0 ? (
+          {isLoading ? (
+            <div className="rounded-xl bg-white p-10 text-center text-gray-500">
+              Loading services...
+            </div>
+          ) : isError ? (
+            <div className="rounded-xl bg-white p-10 text-center text-gray-500">
+              Services could not be loaded.
+            </div>
+          ) : paginated.length === 0 ? (
             <div className="rounded-xl bg-white p-10 text-center text-gray-500">
               No services found.
             </div>
@@ -162,7 +178,6 @@ export default function AllServicesClient({
           )}
         </div>
 
-        {/* Pagination */}
         {totalPages > 1 && (
           <div className="mt-8">
             <Pagination
