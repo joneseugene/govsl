@@ -18,7 +18,7 @@ export default function LicencePage() {
         />
 
         <SectionHeading
-          level="h1"
+          level="h2"
           title="Open Government Licence"
           description="The terms under which GOV.SL content may be freely used and shared."
           showBack

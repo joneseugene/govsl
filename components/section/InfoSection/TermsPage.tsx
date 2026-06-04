@@ -18,7 +18,7 @@ export default function TermsPage() {
         />
 
         <SectionHeading
-          level="h1"
+          level="h2"
           title="Terms & Conditions"
           description="The terms governing your use of the GOV.SL portal."
           showBack

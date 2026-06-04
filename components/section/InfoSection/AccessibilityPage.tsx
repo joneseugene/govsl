@@ -18,7 +18,7 @@ export default function AccessibilityPage() {
         />
 
         <SectionHeading
-          level="h1"
+          level="h2"
           title="Accessibility"
           description="Our commitment to making GOV.SL accessible to everyone."
           showBack

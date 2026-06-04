@@ -68,7 +68,7 @@ export default function HelpPage() {
         />
 
         <SectionHeading
-          level="h1"
+          level="h2"
           title="Help & Support"
           description="Answers to common questions about using the GOV.SL portal."
           showBack

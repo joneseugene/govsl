@@ -45,7 +45,7 @@ export default function TransparencyPage() {
         />
 
         <SectionHeading
-          level="h1"
+          level="h2"
           title="Transparency Dashboard"
           description="Sierra Leone's commitment to open, accountable, and transparent governance."
           showBack

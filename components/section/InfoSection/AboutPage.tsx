@@ -18,7 +18,7 @@ export default function AboutPage() {
         />
 
         <SectionHeading
-          level="h1"
+          level="h2"
           title="About GOV.SL"
           description="The official digital gateway to Government of Sierra Leone services and information."
           showBack

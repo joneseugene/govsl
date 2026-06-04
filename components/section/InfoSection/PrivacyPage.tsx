@@ -18,7 +18,7 @@ export default function PrivacyPage() {
         />
 
         <SectionHeading
-          level="h1"
+          level="h2"
           title="Privacy Policy"
           description="How the Government of Sierra Leone collects and uses your information."
           showBack

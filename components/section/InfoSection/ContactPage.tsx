@@ -19,7 +19,7 @@ export default function ContactPage() {
         />
 
         <SectionHeading
-          level="h1"
+          level="h2"
           title="Contact Us"
           description="Get in touch with the Government of Sierra Leone."
           showBack
