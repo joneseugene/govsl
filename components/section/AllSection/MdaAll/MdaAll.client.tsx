@@ -12,7 +12,7 @@ import { Breadcrumb } from '@/components/ui/Breadcrumb';
 import { useDebounce } from '@/libs/hook/useDebounce';
 import { MDAInterface } from '@/libs/interface/mda/mdas.interface';
 import { MDACard } from './MdaCard';
-import { mdaAllQueryKey, getAllMdas } from './MdaAll.query';
+import { mdaAllQueryKey, getAllMdas } from '../../../../libs/query/all/mda_all.query';
 
 type Props = {
   currentPage: number;
