@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { LOGO } from '@/libs/consts/nav.const';
 import { usePathname, useRouter } from 'next/navigation';
@@ -26,19 +26,53 @@ export default function Header({ links, onNavigate }: Props) {
   const isHomePage = pathname === '/' || pathname === '/home';
 
   /* ---------------- ACTIVE LINK ---------------- */
-  const active = useMemo(() => {
-    if (isHomePage) {
-      const sectionLink = links.find((link) => pathname.includes(link.key));
+  const [active, setActive] = useState('');
 
-      return sectionLink?.id ?? '';
+  useEffect(() => {
+    if (!isHomePage) {
+      const matchedSection = Object.entries(homeSections).find(([, section]) => {
+        const routes = section.routes;
+
+        if ('all' in routes && pathname.startsWith(routes.all)) {
+          return true;
+        }
+
+        return false;
+      });
+
+      setActive(matchedSection?.[1]?.id ?? '');
+
+      return;
     }
 
-    const matchedSection = Object.entries(homeSections).find(
-      ([, section]) =>
-        section.routes.all === pathname || section.routes.detail('').startsWith(pathname),
-    );
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY + 140;
 
-    return matchedSection?.[1]?.id ?? '';
+      let currentSection = '';
+
+      for (const link of links) {
+        const element = document.getElementById(link.id);
+
+        if (!element) continue;
+
+        if (
+          scrollPosition >= element.offsetTop &&
+          scrollPosition < element.offsetTop + element.offsetHeight
+        ) {
+          currentSection = link.id;
+        }
+      }
+
+      setActive(currentSection);
+    };
+
+    handleScroll();
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, [pathname, isHomePage, links]);
 
   /* ---------------- NAVIGATION ---------------- */

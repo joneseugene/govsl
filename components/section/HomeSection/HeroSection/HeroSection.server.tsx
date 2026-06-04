@@ -1,19 +1,31 @@
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import HeroSectionClient from './HeroSection.client';
-import { getLastUpdatedDate } from '@/libs/api/global.search.api';
+import { getQueryClient } from '@/libs/functions';
+import { getHeroLastUpdated, heroLastUpdatedQueryKey } from '@/libs/query/home/search.query';
+import { HydrationBoundary, dehydrate } from '@tanstack/react-query';
 
 export default async function HeroSection() {
-  const lastUpdated = await getLastUpdatedDate();
+  const queryClient = getQueryClient();
+
+  await queryClient.prefetchQuery({
+    queryKey: heroLastUpdatedQueryKey,
+    queryFn: getHeroLastUpdated,
+  });
+
+  const lastUpdated = await queryClient.getQueryData<string>(
+    heroLastUpdatedQueryKey
+  );
 
   const formattedDate = lastUpdated
-    ? new Date(lastUpdated).toLocaleDateString('en-GB', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
+    ? new Date(lastUpdated).toLocaleDateString("en-GB", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
       })
-    : 'No data available';
+    : "No data available";
 
   return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
     <section className="bg-white py-16 md:py-24 px-6 lg:px-8 border-b border-gray-200">
       <div className="mx-auto max-w-5xl">
         <div className="space-y-4 md:space-y-6">
@@ -36,5 +48,6 @@ export default async function HeroSection() {
         </div>
       </div>
     </section>
+    </HydrationBoundary>
   );
 }
