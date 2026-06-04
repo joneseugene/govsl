@@ -62,7 +62,7 @@ export function AppointmentItem({
       {showVerified && (
         <div
           className={`
-            mt-4 flex items-center gap-1.5
+            mt-1 flex items-center gap-1.5
             font-medium text-[#008A3C]
             ${isCompact ? 'text-sm' : 'text-[15px]'}
           `}

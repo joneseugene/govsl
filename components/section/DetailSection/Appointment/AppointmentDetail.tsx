@@ -5,16 +5,20 @@ import { useState, useRef } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { LOGO } from '@/libs/consts/nav.const';
-import { AppointmentInterface } from '@/libs/interface/appointments.interface';
 import { formatDate, getQRCode } from '@/libs/functions';
 import { useReactToPrint } from 'react-to-print';
 import { useMemo } from 'react';
+import {
+  appointmentDetailQueryKey,
+  getAppointmentDetail,
+} from '@/libs/query/detail/appointment_detail.query';
+import { useQuery } from '@tanstack/react-query';
 
 interface AppointmentDetailProps {
-  notices: AppointmentInterface[];
+  referenceNumber: string;
 }
 
-export function AppointmentDetail({ notices }: AppointmentDetailProps) {
+export function AppointmentDetail({ referenceNumber }: AppointmentDetailProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
@@ -24,13 +28,25 @@ export function AppointmentDetail({ notices }: AppointmentDetailProps) {
     contentRef: printRef,
   });
 
-  const qrUrl = useMemo(() => {
-    if (typeof window === 'undefined') return '';
+  const {
+    data: notices = [],
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: appointmentDetailQueryKey(referenceNumber),
+    queryFn: () => getAppointmentDetail(referenceNumber),
+    staleTime: 1000 * 60 * 2,
+    gcTime: 1000 * 60 * 60,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    retry: 1,
+  });
 
-    return getQRCode(window.location.href);
-  }, []);
+  if (isLoading) {
+    return <div className="py-24 text-center text-gray-500">Loading appointment...</div>;
+  }
 
-  if (!notices?.length) {
+  if (isError || !notices?.length) {
     return (
       <div className="py-24 text-center">
         <h1 className="text-4xl font-bold text-[#003366]">Appointment Not Found</h1>
@@ -45,6 +61,13 @@ export function AppointmentDetail({ notices }: AppointmentDetailProps) {
       </div>
     );
   }
+
+  const qrUrl = useMemo(() => {
+    if (typeof window === 'undefined') return '';
+
+    return getQRCode(window.location.href);
+  }, []);
+
 
   const first = notices[0];
 

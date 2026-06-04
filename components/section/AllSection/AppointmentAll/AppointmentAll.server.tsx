@@ -1,8 +1,7 @@
-// AppointmentAll.server.tsx
-
-import { getAppointments } from '@/libs/api/appointments.api';
-import AppointmentAllClient from './AppointmentAll.client';
-import { getMDAOptions } from '@/libs/api/mdas.api';
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import AppointmentAllClient from "./AppointmentAll.client";
+import { getQueryClient } from "@/libs/functions";
+import { appointmentAllQueryKey, appointmentMdaOptionsQueryKey, getAllAppointments, getAppointmentMdaOptions } from "@/libs/query/all/appointment_all.query";
 
 type SearchParams = {
   page?: string;
@@ -19,33 +18,46 @@ export default async function AppointmentAllServer({
   const params = await searchParams;
 
   const safePage = Math.max(1, Number(params.page ?? 1) || 1);
-
   const search = params.search?.trim() || undefined;
 
   const ministryId =
-    params.ministryId && params.ministryId !== 'all' ? params.ministryId : undefined;
+    params.ministryId && params.ministryId !== "all"
+      ? params.ministryId
+      : undefined;
 
-  const category = params.category && params.category !== 'all' ? params.category : undefined;
+  const category =
+    params.category && params.category !== "all"
+      ? params.category
+      : undefined;
 
-  const result = await getAppointments({
+  const queryClient = getQueryClient();
+
+  const queryParams = {
     page: safePage,
-    type: 'notice',
-    limit: 10,
     search,
     ministryId
-  });
+  };
 
-  const ministries = await getMDAOptions();
+  await Promise.all([
+    queryClient.prefetchQuery({
+      queryKey: appointmentAllQueryKey(queryParams),
+      queryFn: () => getAllAppointments(queryParams),
+    }),
+
+    queryClient.prefetchQuery({
+      queryKey: appointmentMdaOptionsQueryKey,
+      queryFn: getAppointmentMdaOptions,
+    }),
+  ]);
 
   return (
-    <AppointmentAllClient
-      items={result.data}
-      total={result.total ?? 0}
-      currentPage={safePage}
-      search={search}
-      ministryId={ministryId}
-      category={category}
-      ministries={ministries}
-    />
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <AppointmentAllClient
+        currentPage={safePage}
+        search={search}
+        ministryId={params.ministryId ?? "all"}
+        category={params.category ?? "all"}
+      />
+    </HydrationBoundary>
   );
 }
