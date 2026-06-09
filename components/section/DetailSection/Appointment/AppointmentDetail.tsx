@@ -1,18 +1,17 @@
 'use client';
 
 import { Printer } from 'lucide-react';
-import { useState, useRef } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { LOGO } from '@/libs/consts/nav.const';
 import { formatDate, getQRCode } from '@/libs/functions';
 import { useReactToPrint } from 'react-to-print';
-import { useMemo } from 'react';
 import {
   appointmentDetailQueryKey,
   getAppointmentDetail,
 } from '@/libs/query/detail/appointment_detail.query';
 import { useQuery } from '@tanstack/react-query';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 interface AppointmentDetailProps {
   referenceNumber: string;
@@ -21,6 +20,7 @@ interface AppointmentDetailProps {
 export function AppointmentDetail({ referenceNumber }: AppointmentDetailProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [qrUrl, setQrUrl] = useState('');
 
   const printRef = useRef<HTMLDivElement>(null);
 
@@ -28,10 +28,8 @@ export function AppointmentDetail({ referenceNumber }: AppointmentDetailProps) {
     contentRef: printRef,
   });
 
-  const qrUrl = useMemo(() => {
-    if (typeof window === 'undefined') return '';
-
-    return getQRCode(window.location.href);
+  useEffect(() => {
+    setQrUrl(getQRCode(window.location.href));
   }, []);
 
   const {
@@ -83,13 +81,24 @@ export function AppointmentDetail({ referenceNumber }: AppointmentDetailProps) {
       })) ?? [],
   );
 
+  const handleBack = () => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
+
+    if (window.history.length > 1) {
+      router.back();
+      return;
+    }
+
+    router.push('/appointment');
+  };
+
   return (
     <div className="bg-[#F5F7FA] py-8">
       <div className="no-print mx-auto mb-6 flex max-w-4xl flex-wrap items-center justify-between gap-3 px-12">
         <button
           type="button"
-          onClick={() => router.back()}
-          className="inline-flex items-center justify-center rounded-md bg-[#003366] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#002244]"
+          onClick={handleBack}
+          className="inline-flex items-center justify-center rounded-md bg-[#003366] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#002244] hover:cursor-pointer"
         >
           Back
         </button>
