@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { HomeSection } from '@/components/ui/HomeSections';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { Search2 } from '@/components/ui/SearchUI2';
@@ -57,6 +57,7 @@ export default function AllAnnouncementClient({
   const {
     data: result,
     isLoading,
+    isFetching,
     isError,
   } = useQuery({
     queryKey: announcementAllQueryKey(queryParams),
@@ -66,6 +67,7 @@ export default function AllAnnouncementClient({
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
     retry: 1,
+    placeholderData: keepPreviousData,
   });
 
   const { data: ministries = [] } = useQuery({
@@ -179,10 +181,11 @@ export default function AllAnnouncementClient({
 
         <p className="mb-6 text-sm text-gray-600">
           Showing {items.length} of {total} announcements
+          {isFetching && !isLoading && <span className="ml-2 text-gray-400">Updating...</span>}
         </p>
 
         <div className="space-y-5">
-          {isLoading ? (
+          {isLoading && !result ? (
             <div className="rounded-xl bg-white p-10 text-center text-gray-500">
               Loading announcements...
             </div>
