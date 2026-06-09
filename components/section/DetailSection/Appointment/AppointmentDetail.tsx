@@ -28,6 +28,12 @@ export function AppointmentDetail({ referenceNumber }: AppointmentDetailProps) {
     contentRef: printRef,
   });
 
+  const qrUrl = useMemo(() => {
+    if (typeof window === 'undefined') return '';
+
+    return getQRCode(window.location.href);
+  }, []);
+
   const {
     data: notices = [],
     isLoading,
@@ -62,13 +68,6 @@ export function AppointmentDetail({ referenceNumber }: AppointmentDetailProps) {
     );
   }
 
-  const qrUrl = useMemo(() => {
-    if (typeof window === 'undefined') return '';
-
-    return getQRCode(window.location.href);
-  }, []);
-
-
   const first = notices[0];
 
   const allAppointees = notices.flatMap(
@@ -89,7 +88,7 @@ export function AppointmentDetail({ referenceNumber }: AppointmentDetailProps) {
       <div className="no-print mx-auto mb-6 flex max-w-4xl flex-wrap items-center justify-between gap-3 px-12">
         <button
           type="button"
-          onClick={() => router.push('/appointment')}
+          onClick={() => router.back()}
           className="inline-flex items-center justify-center rounded-md bg-[#003366] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#002244]"
         >
           Back
