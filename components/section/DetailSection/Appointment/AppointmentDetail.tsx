@@ -29,7 +29,11 @@ export function AppointmentDetail({ referenceNumber }: AppointmentDetailProps) {
   });
 
   useEffect(() => {
-    setQrUrl(getQRCode(window.location.href));
+    const timeout = window.setTimeout(() => {
+      setQrUrl(getQRCode(window.location.href));
+    }, 0);
+
+    return () => window.clearTimeout(timeout);
   }, []);
 
   const {
