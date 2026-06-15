@@ -22,17 +22,13 @@ export async function getPublications(params?: {
         type
       )
     `,
-
     filters: {
       status: params?.status ?? 'published',
+      mda_id: params?.ministryId,
+      category: params?.category,
     },
-
     search: params?.search,
-
-    searchFields: ['title', 'summary', 'content'],
-
-    ministry: params?.ministryId,
-
+    searchFields: ['title', 'description', 'content'],
     page: params?.page ?? 1,
     limit: params?.limit ?? 5,
   });

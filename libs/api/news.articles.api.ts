@@ -13,30 +13,31 @@ export async function getNewsArticles(params?: {
   search?: string;
   ministryId?: string;
 }) {
+  console.log('NEWS API PARAMS:', params);
+
   const result = await baseQuery<NewsRow>({
     table: model.news_articles,
     select: `
-      *,
-      mdas (
-        id,
-        name,
-        acronym,
-        type
-      )
-    `,
+    *,
+    mdas (
+      id,
+      name,
+      acronym,
+      type
+    )
+  `,
     filters: {
       status: params?.status,
+      mda_id: params?.ministryId,
     },
     search: params?.search,
-    searchFields: ['title', 'headline', 'excerpt', 'content'],
-    ministry: params?.ministryId,
+    searchFields: ['title', 'summary', 'content'],
     page: params?.page ?? 1,
     limit: params?.limit ?? 5,
   });
 
   const data: NewsArticleInterface[] = result.data.map((item) => ({
     ...item,
-    // normalize correctly
     date: item.date ?? item.created_at ?? undefined,
   }));
 

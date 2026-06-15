@@ -1,8 +1,8 @@
 import { model } from '@/supabase/model';
 import { baseQuery } from './base.api';
 import {
-    AppointeeDetailInterface,
-  AppointmentInterface
+  AppointeeDetailInterface,
+  AppointmentInterface,
 } from '../interface/appointments.interface';
 import { createServerSupabaseClient } from '@/supabase/server';
 import { createClient } from '@/supabase/client';
@@ -29,10 +29,10 @@ export async function getAppointments(params?: {
     filters: {
       status: params?.status,
       type: params?.type,
+      mda_id: params?.ministryId,
     },
     search: params?.search,
-    searchFields: ['title', 'position', 'appointee_name', 'office_name'],
-    ministry: params?.ministryId,
+    searchFields: ['title', 'position', 'reference_number', 'appointee_name', 'office_name'],
     page: params?.page ?? 1,
     limit: params?.limit ?? 5,
   });
@@ -40,9 +40,8 @@ export async function getAppointments(params?: {
   return result;
 }
 
-
 export async function getAppointmentsByReferenceNumber(
-  reference_number: string
+  reference_number: string,
 ): Promise<AppointmentInterface[]> {
   const result = await baseQuery<AppointmentInterface>({
     table: model.appointments,
@@ -70,11 +69,7 @@ export async function getAppointmentsByReferenceNumber(
   }
 
   const linkedIds = [
-    ...new Set(
-      notices
-        .flatMap((notice) => notice.linked_letter_ids ?? [])
-        .filter(Boolean)
-    ),
+    ...new Set(notices.flatMap((notice) => notice.linked_letter_ids ?? []).filter(Boolean)),
   ];
 
   if (linkedIds.length === 0) {
@@ -88,7 +83,8 @@ export async function getAppointmentsByReferenceNumber(
 
   const { data: letters, error } = await supabase
     .from(model.appointments)
-    .select(`
+    .select(
+      `
       id,
       type,
       reference_number,
@@ -96,7 +92,8 @@ export async function getAppointmentsByReferenceNumber(
       appointment_date,
       position,
       office_name
-    `)
+    `,
+    )
     .in('id', linkedIds)
     .eq('type', 'letter');
 
@@ -111,9 +108,7 @@ export async function getAppointmentsByReferenceNumber(
 
     return {
       ...notice,
-      linked_letters: linkedLetters.filter((letter) =>
-        noticeLinkedIds.includes(letter.id)
-      ),
+      linked_letters: linkedLetters.filter((letter) => noticeLinkedIds.includes(letter.id)),
     };
   });
 }

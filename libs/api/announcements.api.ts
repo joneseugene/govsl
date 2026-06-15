@@ -3,7 +3,6 @@ import { AnnouncementInterface } from '../interface/announcements.interface';
 import { baseQuery } from './base.api';
 import { announcementTypeMap } from '../consts/general.const';
 
-
 export async function getAnnouncements(params?: {
   status?: string;
   page?: number;
@@ -20,13 +19,7 @@ export async function getAnnouncements(params?: {
       announcement_type: params?.category,
     },
     search: params?.search,
-    searchFields: [
-      'title',
-      'description',
-      'content',
-      'announcement_type',
-    ],
-    ministry: params?.ministryId,
+    searchFields: ['title', 'description', 'content', 'announcement_type'],
     page: params?.page ?? 1,
     limit: params?.limit ?? 5,
   });
@@ -60,7 +53,7 @@ export interface AnnouncementTypeMappedInterface extends AnnouncementTypeInterfa
 export async function getAnnouncementTypes() {
   const result = await baseQuery<AnnouncementInterface>({
     table: model.announcements,
-    select: "*",
+    select: '*',
     page: 1,
     limit: 100,
   });
@@ -101,7 +94,7 @@ export async function getAnnouncementTypes() {
       AnnouncementTypeMappedInterface & {
         data: AnnouncementInterface[];
       }
-    >
+    >,
   );
 
   return Object.values(grouped);

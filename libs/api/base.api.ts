@@ -9,6 +9,7 @@ type QueryOptions = {
   page?: number;
   limit?: number;
   withCount?: boolean;
+  search?: string;
   searchFields?: string[];
 };
 
@@ -18,12 +19,7 @@ type QueryResult<T> = {
   error?: string;
 };
 
-export async function baseQuery<T = unknown>(
-  options: QueryOptions & {
-    search?: string;
-    ministry?: string;
-  },
-): Promise<QueryResult<T>> {
+export async function baseQuery<T = unknown>(options: QueryOptions): Promise<QueryResult<T>> {
   try {
     const supabase = await createServerSupabaseClient();
 
@@ -33,11 +29,8 @@ export async function baseQuery<T = unknown>(
     const from = (page - 1) * limit;
     const to = from + limit - 1;
 
-    let query = supabase
-      .from(options.table)
-      .select(options.select || '*', { count: 'exact' });
+    let query = supabase.from(options.table).select(options.select || '*', { count: 'exact' });
 
-    // STANDARD FILTERS
     if (options.filters) {
       Object.entries(options.filters).forEach(([key, value]) => {
         if (value !== undefined && value !== null && value !== '') {
@@ -46,28 +39,14 @@ export async function baseQuery<T = unknown>(
       });
     }
 
-    // SEARCH
-    if (
-      options.search &&
-      options.search.trim() !== '' &&
-      options.searchFields &&
-      options.searchFields.length > 0
-    ) {
-      const q = options.search.trim();
+    if (options.search?.trim() && options.searchFields && options.searchFields.length > 0) {
+      const q = options.search.trim().replaceAll(',', ' ');
 
-      const searchQuery = options.searchFields
-        .map((field) => `${field}.ilike.%${q}%`)
-        .join(',');
+      const searchQuery = options.searchFields.map((field) => `${field}.ilike.%${q}%`).join(',');
 
       query = query.or(searchQuery);
     }
 
-    // MINISTRY FILTER
-    if (options.ministry && options.ministry !== 'all') {
-      query = query.eq('ministry_id', options.ministry);
-    }
-
-    // ORDERING
     if (options.orderBy === 'random') {
       query = query.order('id', { ascending: false });
     } else if (options.orderBy) {
@@ -76,20 +55,23 @@ export async function baseQuery<T = unknown>(
       });
     }
 
-    // PAGINATION (ALWAYS LAST)
     query = query.range(from, to);
 
     const { data, error, count } = await query;
 
-    if (error) throw new Error(error.message);
+    if (error) {
+      console.error('BASE QUERY ERROR:', error.message);
+      throw new Error(error.message);
+    }
 
     return {
       data: (data ?? []) as T[],
       total: count ?? 0,
     };
   } catch (err: unknown) {
-    const message =
-      err instanceof Error ? err.message : 'Network error occurred';
+    const message = err instanceof Error ? err.message : 'Network error occurred';
+
+    console.error('BASE QUERY CATCH:', message);
 
     return {
       data: [],
