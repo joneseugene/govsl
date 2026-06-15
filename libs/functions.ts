@@ -42,6 +42,11 @@ export function getQueryClient() {
   });
 }
 
+// To Plain
+export function toPlain<T>(value: T): T {
+  return JSON.parse(JSON.stringify(value));
+}
+
 /**
  * QR FUNCTIONS
  */

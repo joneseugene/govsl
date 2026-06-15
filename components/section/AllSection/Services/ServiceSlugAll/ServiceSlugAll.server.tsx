@@ -1,6 +1,6 @@
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import ServicesSlugClient from './ServiceSlugAll.cllient';
-import { getQueryClient } from '@/libs/functions';
+import { getQueryClient, toPlain } from '@/libs/functions';
 import {
   getServiceCategoryBySlug,
   serviceSlugQueryKey,
@@ -17,14 +17,17 @@ export default async function ServiceSlugServer({ categoryPage }: Props) {
     queryKey: serviceSlugQueryKey({
       categoryPage,
     }),
-    queryFn: () =>
-      getServiceCategoryBySlug({
+    queryFn: async () => {
+      const data = await getServiceCategoryBySlug({
         categoryPage,
-      }),
+      });
+
+      return toPlain(data);
+    },
   });
 
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
+    <HydrationBoundary state={toPlain(dehydrate(queryClient))}>
       <ServicesSlugClient categoryPage={categoryPage} />
     </HydrationBoundary>
   );

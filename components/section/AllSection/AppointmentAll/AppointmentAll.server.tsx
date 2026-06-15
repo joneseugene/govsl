@@ -1,7 +1,12 @@
-import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
-import AppointmentAllClient from "./AppointmentAll.client";
-import { getQueryClient } from "@/libs/functions";
-import { appointmentAllQueryKey, appointmentMdaOptionsQueryKey, getAllAppointments, getAppointmentMdaOptions } from "@/libs/query/all/appointment_all.query";
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
+import AppointmentAllClient from './AppointmentAll.client';
+import { getQueryClient, toPlain } from '@/libs/functions';
+import {
+  appointmentAllQueryKey,
+  appointmentMdaOptionsQueryKey,
+  getAllAppointments,
+  getAppointmentMdaOptions,
+} from '@/libs/query/all/appointment_all.query';
 
 type SearchParams = {
   page?: string;
@@ -21,42 +26,41 @@ export default async function AppointmentAllServer({
   const search = params.search?.trim() || undefined;
 
   const ministryId =
-    params.ministryId && params.ministryId !== "all"
-      ? params.ministryId
-      : undefined;
-
-  const category =
-    params.category && params.category !== "all"
-      ? params.category
-      : undefined;
-
-  const queryClient = getQueryClient();
+    params.ministryId && params.ministryId !== 'all' ? params.ministryId : undefined;
 
   const queryParams = {
     page: safePage,
     search,
-    ministryId
+    ministryId,
   };
+
+  const queryClient = getQueryClient();
 
   await Promise.all([
     queryClient.prefetchQuery({
       queryKey: appointmentAllQueryKey(queryParams),
-      queryFn: () => getAllAppointments(queryParams),
+      queryFn: async () => {
+        const data = await getAllAppointments(queryParams);
+        return toPlain(data);
+      },
     }),
 
     queryClient.prefetchQuery({
       queryKey: appointmentMdaOptionsQueryKey,
-      queryFn: getAppointmentMdaOptions,
+      queryFn: async () => {
+        const data = await getAppointmentMdaOptions();
+        return toPlain(data);
+      },
     }),
   ]);
 
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
+    <HydrationBoundary state={toPlain(dehydrate(queryClient))}>
       <AppointmentAllClient
         currentPage={safePage}
         search={search}
-        ministryId={params.ministryId ?? "all"}
-        category={params.category ?? "all"}
+        ministryId={params.ministryId ?? 'all'}
+        category={params.category ?? 'all'}
       />
     </HydrationBoundary>
   );

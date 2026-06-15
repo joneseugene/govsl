@@ -1,5 +1,5 @@
 import NewsArticleSectionClient from './NewsSection.client';
-import { getQueryClient } from '@/libs/functions';
+import { getQueryClient, toPlain } from '@/libs/functions';
 import { getHomeNewsArticles, newsQueryKey } from '@/libs/query/home/news.query';
 import { HydrationBoundary, dehydrate } from '@tanstack/react-query';
 
@@ -8,11 +8,14 @@ export default async function NewsSectionServer() {
 
   await queryClient.prefetchQuery({
     queryKey: newsQueryKey,
-    queryFn: getHomeNewsArticles,
+    queryFn: async () => {
+      const data = await getHomeNewsArticles();
+      return toPlain(data);
+    },
   });
 
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
+    <HydrationBoundary state={toPlain(dehydrate(queryClient))}>
       <NewsArticleSectionClient />
     </HydrationBoundary>
   );

@@ -1,7 +1,12 @@
-import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
-import PressReleasesAllClient from "./PreaseReleaseAll.client";
-import { getQueryClient } from "@/libs/functions";
-import { getAllPressReleases, getPressReleaseMdaOptions, pressReleaseAllQueryKey, pressReleaseMdaOptionsQueryKey } from "@/libs/query/all/press_release_all.query";
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
+import PressReleasesAllClient from './PreaseReleaseAll.client';
+import { getQueryClient, toPlain } from '@/libs/functions';
+import {
+  getAllPressReleases,
+  getPressReleaseMdaOptions,
+  pressReleaseAllQueryKey,
+  pressReleaseMdaOptionsQueryKey,
+} from '@/libs/query/all/press_release_all.query';
 
 type SearchParams = {
   page?: string;
@@ -20,9 +25,7 @@ export default async function AllPressReleasesSectionServer({
   const search = params.search?.trim() || undefined;
 
   const ministryId =
-    params.ministryId && params.ministryId !== "all"
-      ? params.ministryId
-      : undefined;
+    params.ministryId && params.ministryId !== 'all' ? params.ministryId : undefined;
 
   const queryClient = getQueryClient();
 
@@ -35,21 +38,27 @@ export default async function AllPressReleasesSectionServer({
   await Promise.all([
     queryClient.prefetchQuery({
       queryKey: pressReleaseAllQueryKey(queryParams),
-      queryFn: () => getAllPressReleases(queryParams),
+      queryFn: async () => {
+        const data = await getAllPressReleases(queryParams);
+        return toPlain(data);
+      },
     }),
 
     queryClient.prefetchQuery({
       queryKey: pressReleaseMdaOptionsQueryKey,
-      queryFn: getPressReleaseMdaOptions,
+      queryFn: async () => {
+        const data = await getPressReleaseMdaOptions();
+        return toPlain(data);
+      },
     }),
   ]);
 
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
+    <HydrationBoundary state={toPlain(dehydrate(queryClient))}>
       <PressReleasesAllClient
         currentPage={safePage}
         search={search}
-        ministryId={params.ministryId ?? "all"}
+        ministryId={params.ministryId ?? 'all'}
       />
     </HydrationBoundary>
   );

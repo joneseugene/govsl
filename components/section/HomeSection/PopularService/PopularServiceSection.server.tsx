@@ -1,7 +1,6 @@
-import { getServices } from '@/libs/api/services.api';
 import PopularServicesSectionClient from './PopularServiceSection.client';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
-import { getQueryClient } from '@/libs/functions';
+import { getQueryClient, toPlain } from '@/libs/functions';
 import { getHomePopularServices, popularServicesQueryKey } from '@/libs/query/home/service.query';
 
 export default async function PopularServicesSectionServer() {
@@ -9,11 +8,14 @@ export default async function PopularServicesSectionServer() {
 
   await queryClient.prefetchQuery({
     queryKey: popularServicesQueryKey,
-    queryFn: getHomePopularServices,
+    queryFn: async () => {
+      const data = await getHomePopularServices();
+      return toPlain(data);
+    },
   });
 
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
+    <HydrationBoundary state={toPlain(dehydrate(queryClient))}>
       <PopularServicesSectionClient />
     </HydrationBoundary>
   );

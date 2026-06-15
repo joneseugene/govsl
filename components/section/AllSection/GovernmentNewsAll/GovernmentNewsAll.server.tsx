@@ -1,7 +1,12 @@
-import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
-import AllGovernmentNewsClient from "./GovernmentNewsAll.client";
-import { getQueryClient } from "@/libs/functions";
-import { getAllGovernmentNews, getGovernmentNewsMdaOptions, governmentNewsAllQueryKey, governmentNewsMdaOptionsQueryKey } from "@/libs/query/all/news_all.query";
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
+import AllGovernmentNewsClient from './GovernmentNewsAll.client';
+import { getQueryClient, toPlain } from '@/libs/functions';
+import {
+  getAllGovernmentNews,
+  getGovernmentNewsMdaOptions,
+  governmentNewsAllQueryKey,
+  governmentNewsMdaOptionsQueryKey,
+} from '@/libs/query/all/news_all.query';
 
 type SearchParams = {
   page?: string;
@@ -17,13 +22,10 @@ export default async function AllGovernmentNewsServer({
   const params = await searchParams;
 
   const safePage = Math.max(1, Number(params.page ?? 1) || 1);
-
   const search = params.search?.trim() || undefined;
 
   const ministryId =
-    params.ministryId && params.ministryId !== "all"
-      ? params.ministryId
-      : undefined;
+    params.ministryId && params.ministryId !== 'all' ? params.ministryId : undefined;
 
   const queryClient = getQueryClient();
 
@@ -36,21 +38,27 @@ export default async function AllGovernmentNewsServer({
   await Promise.all([
     queryClient.prefetchQuery({
       queryKey: governmentNewsAllQueryKey(queryParams),
-      queryFn: () => getAllGovernmentNews(queryParams),
+      queryFn: async () => {
+        const data = await getAllGovernmentNews(queryParams);
+        return toPlain(data);
+      },
     }),
 
     queryClient.prefetchQuery({
       queryKey: governmentNewsMdaOptionsQueryKey,
-      queryFn: getGovernmentNewsMdaOptions,
+      queryFn: async () => {
+        const data = await getGovernmentNewsMdaOptions();
+        return toPlain(data);
+      },
     }),
   ]);
 
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
+    <HydrationBoundary state={toPlain(dehydrate(queryClient))}>
       <AllGovernmentNewsClient
         currentPage={safePage}
         search={search}
-        ministryId={params.ministryId ?? "all"}
+        ministryId={params.ministryId ?? 'all'}
       />
     </HydrationBoundary>
   );
