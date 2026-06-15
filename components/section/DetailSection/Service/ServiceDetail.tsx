@@ -2,13 +2,14 @@
 
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { ServicesInterface } from "@/libs/interface/service/services.interface";
 import { ChevronDown } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export interface ServiceDetailUIProps {
   slug: string;
-  service: any;
+  service: ServicesInterface;
 }
 
 export default function ServiceDetailUI({
@@ -26,7 +27,7 @@ export default function ServiceDetailUI({
             { label: "Home", page: "/" },
             { label: "Categories", page: "/service" },
             { label: "Services", page: `/service/${slug}` },
-            { label: service.name },
+            { label: service.name ?? "---" },
           ]}
           onNavigate={(page) => router.push(page)}
           variant="government"

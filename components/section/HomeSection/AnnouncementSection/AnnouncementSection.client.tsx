@@ -6,9 +6,11 @@ import { HomeSection } from '../../../ui/HomeSections';
 import { ViewAllButton } from '../../../ui/ViewAllUI';
 import { homeSections } from '@/libs/consts/home.const';
 import { AnnouncementItem } from './AnnouncementItem';
+import { AnnouncementInterface } from '@/libs/interface/announcements.interface';
+import { AnnouncementTypeMappedInterface } from '@/libs/api/announcements.api';
 
 type Props = {
-  initialData: any;
+  initialData: AnnouncementInterface;
 };
 
 export default function AnnouncementSectionClient({ initialData }: Props) {
@@ -16,8 +18,8 @@ export default function AnnouncementSectionClient({ initialData }: Props) {
 
   const items = Array.isArray(initialData)
   ? initialData
-  : Array.isArray(initialData?.data)
-    ? initialData.data
+  : Array.isArray(initialData)
+    ? initialData
     : initialData && typeof initialData === 'object'
       ? Object.values(initialData)
       : [];
@@ -51,7 +53,7 @@ export default function AnnouncementSectionClient({ initialData }: Props) {
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:gap-6">
-            {items.map((item: any, index: number) => (
+            {items.map((item: AnnouncementTypeMappedInterface, index: number) => (
               <AnnouncementItem
                 key={`${item.announcement_type}-${index}`}
                 item={item}

@@ -1,5 +1,6 @@
 'use client';
 
+import { MDAInterface } from '@/libs/interface/mda/mdas.interface';
 import { HomeSection } from '../../../ui/HomeSections';
 import { SectionHeading } from '../../../ui/SectionHeading';
 import { ViewAllButton } from '../../../ui/ViewAllUI';
@@ -8,7 +9,7 @@ import { homeSections } from '@/libs/consts/home.const';
 import { useRouter } from 'next/navigation';
 
 type Props = {
-  initialData: any;
+  initialData: MDAInterface;
 };
 
 export default function MDASectionClient({ initialData }: Props) {
@@ -16,8 +17,8 @@ export default function MDASectionClient({ initialData }: Props) {
 
   const items = Array.isArray(initialData)
   ? initialData
-  : Array.isArray(initialData?.data)
-    ? initialData.data
+  : Array.isArray(initialData)
+    ? initialData
     : initialData && typeof initialData === 'object'
       ? Object.values(initialData)
       : [];
@@ -50,7 +51,7 @@ export default function MDASectionClient({ initialData }: Props) {
             </div>
           ) : (
             <div className="space-y-6 sm:space-y-8 md:space-y-10">
-              {items.map((item: any) => (
+              {items.map((item: MDAInterface) => (
                 <MdaItem
                   key={item.id}
                   item={item}

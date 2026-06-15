@@ -5,20 +5,27 @@ import { HomeSection } from '@/components/ui/HomeSections';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { ViewAllButton } from '@/components/ui/ViewAllUI';
 import { homeSections } from '@/libs/consts/home.const';
+import { PressReleaseInterface } from '@/libs/interface/press.releases.interface';
 import { useRouter } from 'next/navigation';
 
+type PressReleaseResponse =
+  | PressReleaseInterface[]
+  | {
+      data?: PressReleaseInterface[];
+    };
+
 type Props = {
-  initialData: any;
+  initialData: PressReleaseResponse;
 };
 
 export default function PressReleaseSectionClient({ initialData }: Props) {
   const router = useRouter();
 
-  const items = Array.isArray(initialData?.data)
-  ? initialData.data
-  : initialData?.data && typeof initialData.data === 'object'
-    ? Object.values(initialData.data)
-    : [];
+  const items: PressReleaseInterface[] = Array.isArray(initialData)
+    ? initialData
+    : Array.isArray(initialData?.data)
+      ? initialData.data
+      : [];
 
   return (
     <HomeSection id={homeSections.pressRelease.id}>
@@ -38,13 +45,10 @@ export default function PressReleaseSectionClient({ initialData }: Props) {
             </p>
           ) : (
             <div className="space-y-12 sm:space-y-14">
-              {items.map((item: any, index: number) => (
+              {items.map((item, index) => (
                 <PressReleaseItem
                   key={
                     item.id ??
-                    item.legacy_id ??
-                    item.reference_number ??
-                    item.slug ??
                     `${item.title}-${index}`
                   }
                   item={item}

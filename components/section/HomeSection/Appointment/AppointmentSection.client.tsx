@@ -7,18 +7,19 @@ import { HomeSection } from '../../../ui/HomeSections';
 import { ViewAllButton } from '../../../ui/ViewAllUI';
 import { AppointmentItem } from './AppointmentItem';
 import { homeSections } from '@/libs/consts/home.const';
+import { AppointmentInterface } from '@/libs/interface/appointments.interface';
 
 type Props = {
-  initialData: any;
+  initialData: AppointmentInterface;
 };
 
 export default function AppointmentSectionClient({ initialData }: Props) {
   const router = useRouter();
 
-  const items = Array.isArray(initialData?.data)
-    ? initialData.data
-    : initialData?.data && typeof initialData.data === 'object'
-      ? Object.values(initialData.data)
+  const items = Array.isArray(initialData)
+    ? initialData
+    : initialData && typeof initialData === 'object'
+      ? Object.values(initialData)
       : [];
 
   return (
@@ -38,7 +39,7 @@ export default function AppointmentSectionClient({ initialData }: Props) {
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-5 lg:gap-6">
-            {items.map((item: any, index: number) => (
+            {items.map((item: AppointmentInterface, index: number) => (
               <AppointmentItem
                 key={`${item.id ?? 'appointment'}-${item.reference_number ?? index}`}
                 item={item}

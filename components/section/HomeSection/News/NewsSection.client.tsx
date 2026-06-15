@@ -6,19 +6,26 @@ import { homeSections } from '@/libs/consts/home.const';
 import { ViewAllButton } from '../../../ui/ViewAllUI';
 import { NewsItem } from './NewsItem';
 import { useRouter } from 'next/navigation';
+import { NewsArticleInterface } from '@/libs/interface/news.articles.interface';
+
+type NewsResponse =
+  | NewsArticleInterface[]
+  | {
+      data?: NewsArticleInterface[];
+    };
 
 type Props = {
-  initialData: any;
+  initialData: NewsResponse;
 };
 
 export default function NewsArticleSectionClient({ initialData }: Props) {
   const router = useRouter();
 
-  const items = Array.isArray(initialData?.data)
-  ? initialData.data
-  : initialData?.data && typeof initialData.data === 'object'
-    ? Object.values(initialData.data)
-    : [];
+  const items: NewsArticleInterface[] = Array.isArray(initialData)
+    ? initialData
+    : Array.isArray(initialData?.data)
+      ? initialData.data
+      : [];
 
   return (
     <HomeSection id={homeSections.news.id}>
@@ -37,15 +44,9 @@ export default function NewsArticleSectionClient({ initialData }: Props) {
           </div>
         ) : (
           <div className="space-y-12 sm:space-y-14">
-            {items.map((item: any, index: number) => (
+            {items.map((item, index) => (
               <NewsItem
-                key={
-                  item.id ??
-                  item.legacy_id ??
-                  item.reference_number ??
-                  item.slug ??
-                  `${item.title}-${index}`
-                }
+                key={item.id ?? `${item.title}-${index}`}
                 item={item}
                 onNavigate={(path) => router.push(path)}
               />
@@ -55,7 +56,9 @@ export default function NewsArticleSectionClient({ initialData }: Props) {
 
         <ViewAllButton
           onClick={() =>
-            router.push(`${homeSections.news.routes.all}?from=%2F%23${homeSections.news.id}`)
+            router.push(
+              `${homeSections.news.routes.all}?from=%2F%23${homeSections.news.id}`,
+            )
           }
         >
           See all Government News & Updates

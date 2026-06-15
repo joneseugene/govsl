@@ -6,19 +6,28 @@ import { homeSections } from '@/libs/consts/home.const';
 import { ViewAllButton } from '../../../ui/ViewAllUI';
 import { PopularCategoryItem } from './PopularServiceItem';
 import { useRouter } from 'next/navigation';
+import { ServicesInterface } from '@/libs/interface/service/services.interface';
+
+type ServiceResponse =
+  | ServicesInterface[]
+  | {
+      data?: ServicesInterface[];
+    };
 
 type Props = {
-  initialData: any;
+  initialData: ServiceResponse;
 };
 
-export default function PopularServicesSectionClient({ initialData }: Props) {
+export default function PopularServicesSectionClient({
+  initialData,
+}: Props) {
   const router = useRouter();
 
-  const items = Array.isArray(initialData?.data)
-  ? initialData.data
-  : initialData?.data && typeof initialData.data === 'object'
-    ? Object.values(initialData.data)
-    : [];
+  const items: ServicesInterface[] = Array.isArray(initialData)
+    ? initialData
+    : Array.isArray(initialData?.data)
+      ? initialData.data
+      : [];
 
   return (
     <HomeSection id={homeSections.service.id}>
@@ -38,19 +47,16 @@ export default function PopularServicesSectionClient({ initialData }: Props) {
           </div>
         ) : (
           <div className="space-y-14 sm:space-y-14">
-            {items.map((item: any, index: number) => (
-  <PopularCategoryItem
-    key={
-      item.id ??
-      item.slug ??
-      item.reference_number ??
-      item.legacy_id ??
-      `${item.title ?? item.name}-${index}`
-    }
-    item={item}
-    onNavigate={(path) => router.push(path)}
-  />
-))}
+            {items.map((item, index) => (
+              <PopularCategoryItem
+                key={
+                  item.id ??
+                  `${item.name}-${index}`
+                }
+                item={item}
+                onNavigate={(path) => router.push(path)}
+              />
+            ))}
           </div>
         )}
 

@@ -6,19 +6,28 @@ import { homeSections } from '@/libs/consts/home.const';
 import { ViewAllButton } from '../../../ui/ViewAllUI';
 import { PublicationItem } from './PublicationItem';
 import { useRouter } from 'next/navigation';
+import { PublicationInterface } from '@/libs/interface/publications.interface';
+
+type PublicationResponse =
+  | PublicationInterface[]
+  | {
+      data?: PublicationInterface[];
+    };
 
 type Props = {
-  initialData: any;
+  initialData: PublicationResponse;
 };
 
-export default function PublicationSectionClient({ initialData }: Props) {
+export default function PublicationSectionClient({
+  initialData,
+}: Props) {
   const router = useRouter();
 
-  const items = Array.isArray(initialData?.data)
-  ? initialData.data
-  : initialData?.data && typeof initialData.data === 'object'
-    ? Object.values(initialData.data)
-    : [];
+  const items: PublicationInterface[] = Array.isArray(initialData)
+    ? initialData
+    : Array.isArray(initialData?.data)
+      ? initialData.data
+      : [];
 
   return (
     <HomeSection id={homeSections.publication.id}>
@@ -40,19 +49,17 @@ export default function PublicationSectionClient({ initialData }: Props) {
         ) : (
           <>
             <div className="mb-12 space-y-12 sm:space-y-14">
-              {items.map((item: any, index: number) => (
-  <PublicationItem
-    key={
-      item.id ??
-      item.legacy_id ??
-      item.reference_number ??
-      item.slug ??
-      `${item.title}-${index}`
-    }
-    item={item}
-    onNavigate={(path) => router.push(path)}
-  />
-))}
+              {items.map((item, index) => (
+                <PublicationItem
+                  key={
+                    item.id ??
+                    item.reference_number ??
+                    `${item.title}-${index}`
+                  }
+                  item={item}
+                  onNavigate={(path) => router.push(path)}
+                />
+              ))}
             </div>
 
             <ViewAllButton
