@@ -18,7 +18,6 @@ export async function getServices(params?: {
       status: params?.status,
     },
     search: params?.search,
-    ministry: params?.ministryId,
     page: params?.page ?? 1,
     limit: params?.limit ?? 5,
   });
@@ -112,11 +111,8 @@ export async function getServiceCategoryCounts(params?: { status?: string; minis
   }
 }
 
-
 //Services by Category
-export async function getServicesByCategorySlug(params: {
-  categoryPage: string;
-}) {
+export async function getServicesByCategorySlug(params: { categoryPage: string }) {
   try {
     const supabase = await createServerSupabaseClient();
 
@@ -128,13 +124,11 @@ export async function getServicesByCategorySlug(params: {
     if (error) throw new Error(error.message);
 
     // get category name from first record
-    const categoryName =
-      data && data.length > 0 ? data[0].category ?? 'Unknown' : 'Unknown';
+    const categoryName = data && data.length > 0 ? (data[0].category ?? 'Unknown') : 'Unknown';
 
     // get description from static map
     const categoryDescription =
-      SERVICE_CATEGORY_DESCRIPTIONS[params.categoryPage] ??
-      'No description available';
+      SERVICE_CATEGORY_DESCRIPTIONS[params.categoryPage] ?? 'No description available';
 
     return {
       data: (data ?? []) as ServicesInterface[],
