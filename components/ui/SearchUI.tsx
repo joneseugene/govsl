@@ -26,11 +26,15 @@ export default function Search({
   const [index, setIndex] = useState(-1);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleKey = (e: React.KeyboardEvent) => {
+  const handleKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       e.preventDefault();
-      if (index >= 0) onSelect(suggestions[index]);
-      else onSearch(value);
+
+      if (index >= 0) {
+        onSelect(suggestions[index]);
+      } else {
+        onSearch(value);
+      }
     } else if (e.key === 'ArrowDown') {
       setIndex((i) => Math.min(i + 1, suggestions.length - 1));
     } else if (e.key === 'ArrowUp') {
@@ -47,7 +51,7 @@ export default function Search({
           e.preventDefault();
           onSearch(value);
         }}
-        className="flex items-stretch overflow-hidden rounded-lg border border-[#008A3C] bg-white shadow-sm"
+        className="flex w-full items-stretch overflow-hidden rounded-xl border border-[#008A3C] bg-white shadow-sm"
       >
         <input
           ref={inputRef}
@@ -61,30 +65,36 @@ export default function Search({
           onFocus={() => setShow(true)}
           onBlur={() => setTimeout(() => setShow(false), 150)}
           placeholder={placeholder}
-          className="flex-1 px-5 py-4 text-lg text-gray-900 placeholder:text-gray-400 focus:outline-none"
+          className="min-h-12 flex-1 px-4 py-3 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none sm:px-5 sm:py-4 sm:text-lg"
         />
 
         <button
           type="submit"
-          className="px-6 text-lg font-medium bg-[#008A3C] text-white hover:bg-[#006d2f]"
+          className="shrink-0 bg-[#008A3C] px-4 py-3 text-sm font-medium text-white transition hover:bg-[#006d2f] sm:px-6 sm:text-lg"
         >
           Search
         </button>
       </form>
 
       {show && (isLoading || suggestions.length > 0) && (
-        <div className="absolute z-10 mt-1 w-full rounded-lg border border-[#008A3C] bg-white shadow-lg max-h-80 overflow-y-auto">
+        <div className="absolute left-0 right-0 z-20 mt-2 max-h-72 overflow-y-auto rounded-xl border border-[#008A3C] bg-white shadow-lg sm:max-h-80">
           {isLoading ? (
-            <p className="px-5 py-4 text-center text-gray-500">Searching…</p>
+            <p className="px-4 py-4 text-center text-sm text-gray-500 sm:text-base">Searching…</p>
           ) : (
             suggestions.map((s, i) => (
               <button
                 key={s.id}
+                type="button"
                 onMouseDown={() => onSelect(s)}
-                className={`w-full px-5 py-4 text-left ${i === index ? 'bg-gray-100' : 'hover:bg-gray-50'}`}
+                className={`w-full px-4 py-3 text-left transition sm:px-5 sm:py-4 ${
+                  i === index ? 'bg-gray-100' : 'hover:bg-gray-50'
+                }`}
               >
-                <p className="font-semibold text-[#003366]">{s.title}</p>
-                <p className="text-sm text-gray-500">
+                <p className="line-clamp-2 text-sm font-semibold text-[#003366] sm:text-base">
+                  {s.title}
+                </p>
+
+                <p className="mt-1 line-clamp-1 text-xs text-gray-500 sm:text-sm">
                   {s.type}
                   {s.ministry && ` • ${s.ministry}`}
                 </p>

@@ -4,36 +4,25 @@ import { PressReleaseItem } from '@/components/section/HomeSection/PressRelease/
 import { HomeSection } from '@/components/ui/HomeSections';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { ViewAllButton } from '@/components/ui/ViewAllUI';
-import { getPressReleases } from '@/libs/api/press.releases.api';
 import { homeSections } from '@/libs/consts/home.const';
-import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 
-const pressReleaseQueryKey = ['home-press-releases', 'approved', 1, 5];
+type Props = {
+  initialData: any;
+};
 
-export default function PressReleaseSectionClient() {
+export default function PressReleaseSectionClient({ initialData }: Props) {
   const router = useRouter();
 
-  const { data, isLoading, isError } = useQuery({
-    queryKey: pressReleaseQueryKey,
-    queryFn: () =>
-      getPressReleases({
-        status: 'approved',
-        page: 1,
-        limit: 5,
-      }),
-    staleTime: 1000 * 60 * 2,
-    gcTime: 1000 * 60 * 60,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-    retry: 1,
-  });
-
-  const items = data?.data ?? [];
+  const items = Array.isArray(initialData?.data)
+  ? initialData.data
+  : initialData?.data && typeof initialData.data === 'object'
+    ? Object.values(initialData.data)
+    : [];
 
   return (
     <HomeSection id={homeSections.pressRelease.id}>
-      <div className="max-w-5xl mx-auto">
+      <div className="mx-auto max-w-5xl">
         <SectionHeading
           level="h3"
           title="Latest Press Releases"
@@ -43,19 +32,21 @@ export default function PressReleaseSectionClient() {
         />
 
         <div className="space-y-14">
-          {isLoading ? (
-            <p className="text-[19px] text-[#505A5F] italic">Loading press releases...</p>
-          ) : isError ? (
-            <p className="text-[19px] text-[#505A5F] italic">Press releases could not be loaded.</p>
-          ) : items.length === 0 ? (
-            <p className="text-[19px] text-[#505A5F] italic">
+          {items.length === 0 ? (
+            <p className="text-[19px] italic text-[#505A5F]">
               No recent updates available at this time.
             </p>
           ) : (
             <div className="space-y-12 sm:space-y-14">
-              {items.map((item) => (
+              {items.map((item: any, index: number) => (
                 <PressReleaseItem
-                  key={item.id}
+                  key={
+                    item.id ??
+                    item.legacy_id ??
+                    item.reference_number ??
+                    item.slug ??
+                    `${item.title}-${index}`
+                  }
                   item={item}
                   onNavigate={(path) => router.push(path)}
                 />
@@ -64,7 +55,13 @@ export default function PressReleaseSectionClient() {
           )}
         </div>
 
-        <ViewAllButton onClick={() => router.push(homeSections.pressRelease.routes.all)}>
+        <ViewAllButton
+          onClick={() =>
+            router.push(
+              `${homeSections.pressRelease.routes.all}?from=%2F%23${homeSections.pressRelease.id}`,
+            )
+          }
+        >
           See all Press Releases
         </ViewAllButton>
       </div>

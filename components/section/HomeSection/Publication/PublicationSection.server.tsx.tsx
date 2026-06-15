@@ -1,22 +1,11 @@
 import PublicationSectionClient from './PublicationSection.client';
-import { getQueryClient, toPlain } from '@/libs/functions';
-import { getHomePublications, publicationQueryKey } from '@/libs/query/home/publication.query';
-import { HydrationBoundary, dehydrate } from '@tanstack/react-query';
+import { toPlain } from '@/libs/functions';
+import { getHomePublications } from '@/libs/query/home/publication.query';
+
+export const revalidate = 120;
 
 export default async function PublicationSectionServer() {
-  const queryClient = getQueryClient();
+  const data = await getHomePublications();
 
-  await queryClient.prefetchQuery({
-    queryKey: publicationQueryKey,
-    queryFn: async () => {
-      const data = await getHomePublications();
-      return toPlain(data);
-    },
-  });
-
-  return (
-    <HydrationBoundary state={toPlain(dehydrate(queryClient))}>
-      <PublicationSectionClient />
-    </HydrationBoundary>
-  );
+  return <PublicationSectionClient initialData={toPlain(data)} />;
 }

@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { PressReleaseInterface } from '@/libs/interface/press.releases.interface';
 import ReactMarkdown from 'react-markdown';
 import { markdownComponents } from '@/libs/consts/general.const';
+import { formatDate } from '@/libs/functions';
 
 export interface PressReleaseAllCardProps {
   release: PressReleaseInterface;
@@ -18,7 +19,7 @@ export function PressReleaseAllCard({ release }: PressReleaseAllCardProps) {
       <div className="mb-3 flex flex-wrap items-center gap-3 text-sm">
         <span className="text-gray-600">{release.mdas?.name}</span>
         <span className="text-gray-600">|</span>
-        <time className="text-gray-600">{release.date}</time>
+        <time className="text-gray-600">{formatDate(release.date)}</time>
 
       </div>
 

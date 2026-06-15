@@ -1,75 +1,55 @@
-import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
-import AllAnnouncementClient from './AnnouncementAll.client';
-import { getQueryClient, toPlain } from '@/libs/functions';
+import AllAnnouncementClient from "./AnnouncementAll.client";
 import {
-  announcementAllQueryKey,
-  announcementMdaOptionsQueryKey,
   getAllAnnouncements,
   getAnnouncementMdaOptions,
-} from '@/libs/query/all/announcement_all.query';
+} from "@/libs/query/all/announcement_all.query";
+
+export const revalidate = 120;
 
 type SearchParams = {
   page?: string;
   search?: string;
-  ministry?: string;
+  ministryId?: string;
   category?: string;
+  from?: string;
+};
+
+type Props = {
+  searchParams?: Promise<SearchParams>;
 };
 
 export default async function AllAnnouncementServer({
   searchParams,
-}: {
-  searchParams: Promise<SearchParams>;
-}) {
+}: Props) {
   const params = await searchParams;
 
-  const safePage = Math.max(1, Number(params.page ?? 1) || 1);
-  const search = params.search?.trim() || undefined;
+  const safePage = Math.max(1, Number(params?.page ?? 1) || 1);
+  const search = params?.search?.trim() || "";
 
-  const ministryId = params.ministry && params.ministry !== 'all' ? params.ministry : undefined;
+  const ministryId = params?.ministryId ?? "all";
+  const category = params?.category ?? "all";
 
-  const category = params.category && params.category !== 'all' ? params.category : undefined;
-
-  const queryClient = getQueryClient();
-
-  const announcementKey = announcementAllQueryKey({
+  const queryParams = {
     page: safePage,
-    search,
-    ministryId,
-    category,
-  });
+    search: search || undefined,
+    ministryId: ministryId !== "all" ? ministryId : undefined,
+    category: category !== "all" ? category : undefined,
+  };
 
-  await Promise.all([
-    queryClient.prefetchQuery({
-      queryKey: announcementKey,
-      queryFn: async () => {
-        const data = await getAllAnnouncements({
-          page: safePage,
-          search,
-          ministryId,
-          category,
-        });
-
-        return toPlain(data);
-      },
-    }),
-
-    queryClient.prefetchQuery({
-      queryKey: announcementMdaOptionsQueryKey,
-      queryFn: async () => {
-        const data = await getAnnouncementMdaOptions();
-        return toPlain(data);
-      },
-    }),
+  const [result, ministries] = await Promise.all([
+    getAllAnnouncements(queryParams),
+    getAnnouncementMdaOptions(),
   ]);
 
   return (
-    <HydrationBoundary state={toPlain(dehydrate(queryClient))}>
-      <AllAnnouncementClient
-        currentPage={safePage}
-        search={search}
-        ministryId={params.ministry ?? 'all'}
-        category={params.category ?? 'all'}
-      />
-    </HydrationBoundary>
+    <AllAnnouncementClient
+      currentPage={safePage}
+      search={search}
+      ministryId={ministryId}
+      category={category}
+      announcements={result.data ?? []}
+      total={result.total ?? 0}
+      ministries={ministries ?? []}
+    />
   );
 }

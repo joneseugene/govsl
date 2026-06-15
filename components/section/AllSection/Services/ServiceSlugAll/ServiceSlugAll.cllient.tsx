@@ -1,44 +1,38 @@
 'use client';
 
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useQuery } from '@tanstack/react-query';
+import { useRouter, useSearchParams } from 'next/navigation';
+
 import { Breadcrumb } from '@/components/ui/Breadcrumb';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { HomeSection } from '@/components/ui/HomeSections';
 import { ServicesInterface } from '@/libs/interface/service/services.interface';
-import {
-  getServiceCategoryBySlug,
-  serviceSlugQueryKey,
-} from '@/libs/query/all/service_all_slug.query';
+
+interface ServiceCategoryMeta {
+  name?: string;
+  description?: string;
+}
 
 interface Props {
   categoryPage: string;
+  services: ServicesInterface[];
+  meta: ServiceCategoryMeta | null;
 }
 
-export default function ServicesSlugClient({ categoryPage }: Props) {
+export default function ServicesSlugClient({ categoryPage, services, meta }: Props) {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
-  const {
-    data: result,
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: serviceSlugQueryKey({
-      categoryPage,
-    }),
-    queryFn: () =>
-      getServiceCategoryBySlug({
-        categoryPage,
-      }),
-    staleTime: 1000 * 60 * 2,
-    gcTime: 1000 * 60 * 60,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-    retry: 1,
-  });
+  const from = searchParams.get('from');
 
-  const services = result?.data ?? [];
+  const handleBack = () => {
+    if (from) {
+      window.location.href = from;
+      return;
+    }
+
+    router.replace('/service');
+  };
 
   return (
     <HomeSection>
@@ -62,40 +56,33 @@ export default function ServicesSlugClient({ categoryPage }: Props) {
         />
 
         <SectionHeading
-          level="h3"
-          title={result?.meta?.name || 'Category'}
-          description={result?.meta?.description || ''}
+          level="h5"
+          title={meta?.name || 'Category'}
+          description={meta?.description || ''}
           descriptionClassName="text-gray-400"
           descriptionSizeClassName="text-[16px]"
           showBack
-          onBack={() => router.back()}
+          onBack={handleBack}
         />
 
         <div className="space-y-4">
-          {isLoading ? (
-            <div className="rounded-xl bg-white p-10 text-center text-gray-500">
-              Loading services...
-            </div>
-          ) : isError ? (
-            <div className="rounded-xl bg-white p-10 text-center text-gray-500">
-              Services could not be loaded.
-            </div>
-          ) : services.length === 0 ? (
+          {services.length === 0 ? (
             <div className="rounded-xl bg-white p-10 text-center text-gray-500">
               No services found for this category.
             </div>
           ) : (
-            services.map((service: ServicesInterface) => (
+            services.map((service) => (
               <div
                 key={service.id}
                 className="
-                  rounded-xl border border-gray-200
                   bg-white p-5
                   transition hover:border-gray-300 hover:bg-gray-50
                 "
               >
                 <Link
-                  href={`/service/${categoryPage}/${service.id}`}
+                  href={`/service/${categoryPage}/${service.id}?from=${encodeURIComponent(
+                    `/service/${categoryPage}`,
+                  )}`}
                   className="
                     text-[18px] font-medium text-[#1D70B8]
                     transition-colors hover:underline

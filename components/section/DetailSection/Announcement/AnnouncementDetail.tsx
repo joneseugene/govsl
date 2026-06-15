@@ -101,7 +101,7 @@ export default function AnnouncementDetailPage({ id }: Props) {
         )}
 
         <SectionHeading
-          level="h2"
+          level="h4"
           title={announcement.title || 'Announcement'}
           description={announcement.description}
           descriptionClassName="text-gray-400"

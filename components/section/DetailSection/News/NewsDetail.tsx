@@ -18,9 +18,6 @@ export default function NewsDetailClient({ id }: Props) {
   const router = useRouter();
   const [qrUrl, setQrUrl] = useState('');
 
-  useEffect(() => {
-    setQrUrl(`${window.location.origin}/news/${id}`);
-  }, [id]);
 
   const {
     data: news,
@@ -35,6 +32,10 @@ export default function NewsDetailClient({ id }: Props) {
     refetchOnReconnect: false,
     retry: 1,
   });
+
+  useEffect(() => {
+    setQrUrl(`${window.location.origin}/news/${id}`);
+  }, [id]);
 
   if (isLoading) {
   return (
@@ -154,7 +155,7 @@ if (isError || !news) {
             <span className="text-sm font-medium text-[#008A3C]">✓ Verified</span>
           </div>
 
-          {ministry && <p className="mb-2 font-body text-[19px] text-[#505A5F]">{ministry}</p>}
+          {ministry && <p className="mb-2 font-body text-[16px] text-[#505A5F]">{ministry}</p>}
 
           {formattedDate && (
             <p className="mb-2 font-body text-[19px] text-[#505A5F]">Published: {formattedDate}</p>
@@ -166,7 +167,7 @@ if (isError || !news) {
         </div>
 
         <SectionHeading
-          level="h2"
+          level="h5"
           title={headline}
           description={summary}
           descriptionClassName="text-gray-400"

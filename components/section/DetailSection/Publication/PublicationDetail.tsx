@@ -161,17 +161,17 @@ export default function PublicationDetailClient({ id }: PublicationDetailClientP
           </div>
 
           {/* MINISTRY */}
-          {mdas?.name && <p className="mb-2 text-[19px] text-[#505A5F]">{mdas.name}</p>}
+          {mdas?.name && <p className="mb-2 text-[15px] text-[#505A5F]">{mdas.name}</p>}
 
           {/* DATE */}
           {formattedDate && (
-            <p className="mb-2 text-[19px] text-[#505A5F]">Published: {formattedDate}</p>
+            <p className="mb-2 text-[15px] text-[#505A5F]">Published: {formattedDate}</p>
           )}
         </div>
 
         {/* TITLE */}
         <SectionHeading
-          level="h2"
+          level="h5"
           title={title}
           description={description}
           descriptionClassName="text-gray-400"

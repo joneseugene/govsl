@@ -1,65 +1,51 @@
-import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
-import AllGovernmentNewsClient from './GovernmentNewsAll.client';
-import { getQueryClient, toPlain } from '@/libs/functions';
+import AllGovernmentNewsClient from "./GovernmentNewsAll.client";
 import {
   getAllGovernmentNews,
   getGovernmentNewsMdaOptions,
-  governmentNewsAllQueryKey,
-  governmentNewsMdaOptionsQueryKey,
-} from '@/libs/query/all/news_all.query';
+} from "@/libs/query/all/news_all.query";
+
+export const revalidate = 120;
 
 type SearchParams = {
   page?: string;
   search?: string;
   ministryId?: string;
+  from?: string;
+};
+
+type Props = {
+  searchParams?: Promise<SearchParams>;
 };
 
 export default async function AllGovernmentNewsServer({
   searchParams,
-}: {
-  searchParams: Promise<SearchParams>;
-}) {
+}: Props) {
   const params = await searchParams;
 
-  const safePage = Math.max(1, Number(params.page ?? 1) || 1);
-  const search = params.search?.trim() || undefined;
+  const safePage = Math.max(1, Number(params?.page ?? 1) || 1);
+  const search = params?.search?.trim() || "";
 
-  const ministryId =
-    params.ministryId && params.ministryId !== 'all' ? params.ministryId : undefined;
-
-  const queryClient = getQueryClient();
+  const ministryId = params?.ministryId ?? "all";
 
   const queryParams = {
     page: safePage,
-    search,
-    ministryId,
+    search: search || undefined,
+    ministryId: ministryId !== "all" ? ministryId : undefined,
   };
 
-  await Promise.all([
-    queryClient.prefetchQuery({
-      queryKey: governmentNewsAllQueryKey(queryParams),
-      queryFn: async () => {
-        const data = await getAllGovernmentNews(queryParams);
-        return toPlain(data);
-      },
-    }),
-
-    queryClient.prefetchQuery({
-      queryKey: governmentNewsMdaOptionsQueryKey,
-      queryFn: async () => {
-        const data = await getGovernmentNewsMdaOptions();
-        return toPlain(data);
-      },
-    }),
+  const [result, ministries] = await Promise.all([
+    getAllGovernmentNews(queryParams),
+    getGovernmentNewsMdaOptions(),
   ]);
 
   return (
-    <HydrationBoundary state={toPlain(dehydrate(queryClient))}>
-      <AllGovernmentNewsClient
-        currentPage={safePage}
-        search={search}
-        ministryId={params.ministryId ?? 'all'}
-      />
-    </HydrationBoundary>
+    <AllGovernmentNewsClient
+      currentPage={safePage}
+      search={search}
+      ministryId={ministryId}
+      newsItems={result.data ?? []}
+      total={result.total ?? 0}
+      ministries={ministries ?? []}
+    />
   );
 }

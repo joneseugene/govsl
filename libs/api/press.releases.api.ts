@@ -1,6 +1,7 @@
-import { model } from '@/supabase/model';
-import { baseQuery } from './base.api';
-import { PressReleaseInterface } from '../interface/press.releases.interface';
+import { model } from "@/supabase/model";
+import { baseQuery } from "./base.api";
+import { PressReleaseInterface } from "../interface/press.releases.interface";
+import { toPlain } from "../functions";
 
 export async function getPressReleases(params?: {
   status?: string;
@@ -24,13 +25,16 @@ export async function getPressReleases(params?: {
       status: params?.status,
     },
     search: params?.search,
-    searchFields: ['title', 'description', 'legacy_id'],
+    searchFields: ["title", "description", "legacy_id"],
     ministry: params?.ministryId,
     page: params?.page ?? 1,
     limit: params?.limit ?? 5,
   });
 
-  return result;
+  return toPlain({
+    data: result.data ?? [],
+    total: result.total ?? 0,
+  });
 }
 
 export async function getPressReleaseById(id: string) {
@@ -42,5 +46,5 @@ export async function getPressReleaseById(id: string) {
     page: 1,
   });
 
-  return result.data[0] ?? null;
+  return toPlain(result.data?.[0] ?? null);
 }

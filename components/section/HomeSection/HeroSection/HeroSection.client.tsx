@@ -32,7 +32,6 @@ export default function HeroSectionClient() {
         const data = await getSearchSuggestions(q);
         setSuggestions(data);
       } catch (error) {
-        console.error('Search error:', error);
         setSuggestions([]);
       } finally {
         setLoading(false);
@@ -53,7 +52,7 @@ export default function HeroSectionClient() {
   };
 
   /**
-   * 🧠 SELECT SUGGESTION
+   * SELECT SUGGESTION
    */
   const handleSelect = (item: Suggestion) => {
     if (item.link) {

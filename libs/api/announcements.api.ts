@@ -2,6 +2,8 @@ import { model } from '@/supabase/model';
 import { AnnouncementInterface } from '../interface/announcements.interface';
 import { baseQuery } from './base.api';
 import { announcementTypeMap } from '../consts/general.const';
+
+
 export async function getAnnouncements(params?: {
   status?: string;
   page?: number;
@@ -18,6 +20,12 @@ export async function getAnnouncements(params?: {
       announcement_type: params?.category,
     },
     search: params?.search,
+    searchFields: [
+      'title',
+      'description',
+      'content',
+      'announcement_type',
+    ],
     ministry: params?.ministryId,
     page: params?.page ?? 1,
     limit: params?.limit ?? 5,

@@ -6,28 +6,25 @@ import { HomeSection } from '../../../ui/HomeSections';
 import { ViewAllButton } from '../../../ui/ViewAllUI';
 import { homeSections } from '@/libs/consts/home.const';
 import { AnnouncementItem } from './AnnouncementItem';
-import {
-  announcementQueryKey,
-  getHomeAnnouncementTypes,
-} from '@/libs/query/home/announcement.query';
-import { useQuery } from '@tanstack/react-query';
 
-export default function AnnouncementSectionClient() {
+type Props = {
+  initialData: any;
+};
+
+export default function AnnouncementSectionClient({ initialData }: Props) {
   const router = useRouter();
 
-  const {
-    data: items = [],
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: announcementQueryKey,
-    queryFn: getHomeAnnouncementTypes,
-    staleTime: 1000 * 60 * 2,
-    gcTime: 1000 * 60 * 60,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-    retry: 1,
-  });
+  const items = Array.isArray(initialData)
+  ? initialData
+  : Array.isArray(initialData?.data)
+    ? initialData.data
+    : initialData && typeof initialData === 'object'
+      ? Object.values(initialData)
+      : [];
+
+
+  const isLoading = false;
+  const isError = false;
 
   return (
     <HomeSection id={homeSections.announcement.id} className="bg-white">
@@ -54,7 +51,7 @@ export default function AnnouncementSectionClient() {
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:gap-6">
-            {items.map((item, index) => (
+            {items.map((item: any, index: number) => (
               <AnnouncementItem
                 key={`${item.announcement_type}-${index}`}
                 item={item}
@@ -65,7 +62,13 @@ export default function AnnouncementSectionClient() {
         )}
 
         <div className="mt-1 flex">
-          <ViewAllButton onClick={() => router.push(homeSections.announcement.routes.all)}>
+          <ViewAllButton
+            onClick={() =>
+              router.push(
+                `${homeSections.announcement.routes.all}?from=%2F%23${homeSections.announcement.id}`,
+              )
+            }
+          >
             See all Announcements
           </ViewAllButton>
         </div>

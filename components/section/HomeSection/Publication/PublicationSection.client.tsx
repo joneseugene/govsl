@@ -6,23 +6,19 @@ import { homeSections } from '@/libs/consts/home.const';
 import { ViewAllButton } from '../../../ui/ViewAllUI';
 import { PublicationItem } from './PublicationItem';
 import { useRouter } from 'next/navigation';
-import { getHomePublications, publicationQueryKey } from '@/libs/query/home/publication.query';
-import { useQuery } from '@tanstack/react-query';
 
-export default function PublicationSectionClient() {
+type Props = {
+  initialData: any;
+};
+
+export default function PublicationSectionClient({ initialData }: Props) {
   const router = useRouter();
 
-  const { data, isLoading, isError } = useQuery({
-    queryKey: publicationQueryKey,
-    queryFn: getHomePublications,
-    staleTime: 1000 * 60 * 2,
-    gcTime: 1000 * 60 * 60,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-    retry: 1,
-  });
-
-  const items = data?.data ?? [];
+  const items = Array.isArray(initialData?.data)
+  ? initialData.data
+  : initialData?.data && typeof initialData.data === 'object'
+    ? Object.values(initialData.data)
+    : [];
 
   return (
     <HomeSection id={homeSections.publication.id}>
@@ -35,15 +31,7 @@ export default function PublicationSectionClient() {
           descriptionSizeClassName="text-[16px]"
         />
 
-        {isLoading ? (
-          <div className="space-y-8 py-12 text-center">
-            <p className="text-[19px] italic text-[#505A5F]">Loading publications...</p>
-          </div>
-        ) : isError ? (
-          <div className="space-y-8 py-12 text-center">
-            <p className="text-[19px] italic text-[#505A5F]">Publications could not be loaded.</p>
-          </div>
-        ) : items.length === 0 ? (
+        {items.length === 0 ? (
           <div className="space-y-8 py-12 text-center">
             <p className="text-[19px] italic text-[#505A5F]">
               No recent publications available at this time.
@@ -52,16 +40,28 @@ export default function PublicationSectionClient() {
         ) : (
           <>
             <div className="mb-12 space-y-12 sm:space-y-14">
-              {items.map((item) => (
-                <PublicationItem
-                  key={item.id}
-                  item={item}
-                  onNavigate={(path) => router.push(path)}
-                />
-              ))}
+              {items.map((item: any, index: number) => (
+  <PublicationItem
+    key={
+      item.id ??
+      item.legacy_id ??
+      item.reference_number ??
+      item.slug ??
+      `${item.title}-${index}`
+    }
+    item={item}
+    onNavigate={(path) => router.push(path)}
+  />
+))}
             </div>
 
-            <ViewAllButton onClick={() => router.push(homeSections.publication.routes.all)}>
+            <ViewAllButton
+              onClick={() =>
+                router.push(
+                  `${homeSections.publication.routes.all}?from=%2F%23${homeSections.publication.id}`,
+                )
+              }
+            >
               See all Publications & Reports
             </ViewAllButton>
           </>

@@ -115,14 +115,14 @@ export default function MdaDetailPage({ id }: Props) {
 
         <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
           <SectionHeading
-            level="h4"
+            level="h5"
             title={mda.name}
             fontWeight="font-normal"
             description="Ministries, Departments and Agencies"
             descriptionClassName="text-gray-400"
             descriptionSizeClassName="text-[16px]"
             showBack
-            onBack={() => router.push('/mda')}
+            onBack={() => router.back()}
           />
         </div>
 

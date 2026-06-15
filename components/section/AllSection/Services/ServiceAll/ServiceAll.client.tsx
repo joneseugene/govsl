@@ -1,116 +1,126 @@
-'use client';
+"use client";
 
-import { useRouter } from 'next/navigation';
-import { useEffect, useMemo, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { HomeSection } from '@/components/ui/HomeSections';
-import { SectionHeading } from '@/components/ui/SectionHeading';
-import { FilterDropdown } from '@/components/ui/FilterDropdown';
-import { Search2 } from '@/components/ui/SearchUI2';
-import { Pagination } from '@/components/ui/PaginationUI';
-import { Breadcrumb } from '@/components/ui/Breadcrumb';
-import { useDebounce } from '@/libs/hook/useDebounce';
-import { ServiceCard } from './ServiceCard';
-import {
-  ServiceCategory,
-  getAllServiceCategories,
-  serviceAllQueryKey,
-} from '@/libs/query/all/service_all.query';
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
+
+import { HomeSection } from "@/components/ui/HomeSections";
+import { SectionHeading } from "@/components/ui/SectionHeading";
+import { FilterDropdown } from "@/components/ui/FilterDropdown";
+import { Search2 } from "@/components/ui/SearchUI2";
+import { Pagination } from "@/components/ui/PaginationUI";
+import { Breadcrumb } from "@/components/ui/Breadcrumb";
+import { useDebounce } from "@/libs/hook/useDebounce";
+import { ServiceCard } from "./ServiceCard";
+import { ServiceCategory } from "@/libs/query/all/service_all.query";
 
 type Props = {
   currentPage: number;
   search?: string;
   category?: string;
+  services: ServiceCategory[];
 };
 
-export default function AllServicesClient({ currentPage, search, category }: Props) {
+export default function AllServicesClient({
+  currentPage,
+  search,
+  category,
+  services,
+}: Props) {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
-  const [searchQuery, setSearchQuery] = useState(search ?? '');
-  const [selectedCategory, setSelectedCategory] = useState(category ?? 'all');
+  const [searchQuery, setSearchQuery] = useState(search ?? "");
+  const [selectedCategory, setSelectedCategory] = useState(category ?? "all");
 
   const debouncedSearch = useDebounce(searchQuery, 500);
+  const from = searchParams.get("from");
 
-  const {
-    data: result,
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: serviceAllQueryKey,
-    queryFn: getAllServiceCategories,
-    staleTime: 1000 * 60 * 2,
-    gcTime: 1000 * 60 * 60 * 2,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-    retry: 1,
-  });
+  const handleBack = () => {
+    if (from) {
+      window.location.href = from;
+      return;
+    }
 
-  const items: ServiceCategory[] = result?.data ?? [];
+    router.replace("/");
+  };
 
   const itemsPerPage = 6;
 
   const filtered = useMemo(() => {
     const q = searchQuery.toLowerCase().trim();
 
-    return items.filter((item) => {
+    return services.filter((item) => {
       const matchesSearch = item.category.toLowerCase().includes(q);
-
-      const matchesCategory = selectedCategory === 'all' || item.category === selectedCategory;
+      const matchesCategory =
+        selectedCategory === "all" || item.category === selectedCategory;
 
       return matchesSearch && matchesCategory;
     });
-  }, [items, searchQuery, selectedCategory]);
+  }, [services, searchQuery, selectedCategory]);
 
   const totalPages = Math.ceil(filtered.length / itemsPerPage);
 
-  const paginated = filtered.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  const paginated = filtered.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   const categoryOptions = useMemo(() => {
     return [
-      { value: 'all', label: 'All Categories' },
-      ...items.map((c) => ({
+      { value: "all", label: "All Categories" },
+      ...services.map((c) => ({
         value: c.category,
         label: c.category,
       })),
     ];
-  }, [items]);
+  }, [services]);
 
   useEffect(() => {
     const params = new URLSearchParams();
 
-    params.set('page', '1');
+    params.set("page", "1");
+
+    if (from) {
+      params.set("from", from);
+    }
 
     if (debouncedSearch.trim()) {
-      params.set('search', debouncedSearch.trim());
+      params.set("search", debouncedSearch.trim());
     }
 
-    if (selectedCategory !== 'all') {
-      params.set('category', selectedCategory);
+    if (selectedCategory !== "all") {
+      params.set("category", selectedCategory);
     }
 
-    router.replace(`/service?${params.toString()}`);
-  }, [debouncedSearch, selectedCategory, router]);
+    router.replace(`/service?${params.toString()}`, {
+      scroll: false,
+    });
+  }, [debouncedSearch, selectedCategory, router, from]);
 
   const updatePage = (page: number) => {
     const params = new URLSearchParams();
 
-    params.set('page', page.toString());
+    params.set("page", page.toString());
+
+    if (from) {
+      params.set("from", from);
+    }
 
     if (searchQuery.trim()) {
-      params.set('search', searchQuery.trim());
+      params.set("search", searchQuery.trim());
     }
 
-    if (selectedCategory !== 'all') {
-      params.set('category', selectedCategory);
+    if (selectedCategory !== "all") {
+      params.set("category", selectedCategory);
     }
 
-    router.push(`/service?${params.toString()}`, {
+    router.replace(`/service?${params.toString()}`, {
       scroll: false,
     });
   };
 
   const handleView = (item: ServiceCategory) => {
-    const page = item.category_page || 'services';
+    const page = item.category_page || "services";
     router.push(`/service/${page}`);
   };
 
@@ -118,19 +128,19 @@ export default function AllServicesClient({ currentPage, search, category }: Pro
     <HomeSection>
       <div className="mx-auto max-w-5xl">
         <Breadcrumb
-          items={[{ label: 'Home', page: '/' }, { label: 'Categories' }]}
+          items={[{ label: "Home", page: "/" }, { label: "Categories" }]}
           onNavigate={(page) => router.push(page)}
           variant="government"
         />
 
         <SectionHeading
-          level="h3"
+          level="h5"
           title="Government Services"
           description="Browse government services by category"
           descriptionClassName="text-gray-400"
           descriptionSizeClassName="text-[16px]"
           showBack
-          onBack={() => router.back()}
+          onBack={handleBack}
         />
 
         <div className="mb-6 flex flex-col gap-4 sm:flex-row">
@@ -152,15 +162,7 @@ export default function AllServicesClient({ currentPage, search, category }: Pro
         </p>
 
         <div className="space-y-5">
-          {isLoading ? (
-            <div className="rounded-xl bg-white p-10 text-center text-gray-500">
-              Loading services...
-            </div>
-          ) : isError ? (
-            <div className="rounded-xl bg-white p-10 text-center text-gray-500">
-              Services could not be loaded.
-            </div>
-          ) : paginated.length === 0 ? (
+          {paginated.length === 0 ? (
             <div className="rounded-xl bg-white p-10 text-center text-gray-500">
               No services found.
             </div>
@@ -169,7 +171,9 @@ export default function AllServicesClient({ currentPage, search, category }: Pro
               <div key={item.category} className="h-full">
                 <ServiceCard
                   name={item.category}
-                  description={`${item.count} service${item.count !== 1 ? 's' : ''} available`}
+                  description={`${item.count} service${
+                    item.count !== 1 ? "s" : ""
+                  } available`}
                   category={item.category}
                   onClick={() => handleView(item)}
                 />

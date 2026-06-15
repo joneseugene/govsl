@@ -6,30 +6,28 @@ import { ViewAllButton } from '../../../ui/ViewAllUI';
 import { MdaItem } from './MdaItem';
 import { homeSections } from '@/libs/consts/home.const';
 import { useRouter } from 'next/navigation';
-import { getHomeMdas, mdaQueryKey } from '@/libs/query/home/mda.query';
-import { useQuery } from '@tanstack/react-query';
 
-export default function MDASectionClient() {
+type Props = {
+  initialData: any;
+};
+
+export default function MDASectionClient({ initialData }: Props) {
   const router = useRouter();
 
-  const {
-    data: items = [],
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: mdaQueryKey,
-    queryFn: getHomeMdas,
-    staleTime: 1000 * 60 * 2,
-    gcTime: 1000 * 60 * 60 * 2,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-    retry: 1,
-  });
+  const items = Array.isArray(initialData)
+  ? initialData
+  : Array.isArray(initialData?.data)
+    ? initialData.data
+    : initialData && typeof initialData === 'object'
+      ? Object.values(initialData)
+      : [];
+
+  const isLoading = false;
+  const isError = false;
 
   return (
     <HomeSection id={homeSections.mda.id} className="bg-white px-4">
       <div className="mx-auto max-w-5xl">
-        {/* Header */}
         <SectionHeading
           level="h3"
           title="Ministries, Departments & Agencies"
@@ -37,7 +35,6 @@ export default function MDASectionClient() {
           descriptionSizeClassName="text-[16px]"
         />
 
-        {/* List of MDAs */}
         <div className="space-y-6 sm:space-y-8 md:space-y-10">
           {isLoading ? (
             <div className="py-16 text-center text-[18px] italic text-[#505A5F]">
@@ -53,7 +50,7 @@ export default function MDASectionClient() {
             </div>
           ) : (
             <div className="space-y-6 sm:space-y-8 md:space-y-10">
-              {items.map((item) => (
+              {items.map((item: any) => (
                 <MdaItem
                   key={item.id}
                   item={item}
@@ -65,9 +62,14 @@ export default function MDASectionClient() {
           )}
         </div>
 
-        {/* View All */}
         <div className="mt-6 text-center">
-          <ViewAllButton onClick={() => router.push(homeSections.mda.routes.all)}>
+          <ViewAllButton
+            onClick={() =>
+              router.push(
+                `${homeSections.mda.routes.all}?from=%2F%23${homeSections.mda.id}`,
+              )
+            }
+          >
             See all Ministries, Departments & Agencies
           </ViewAllButton>
         </div>

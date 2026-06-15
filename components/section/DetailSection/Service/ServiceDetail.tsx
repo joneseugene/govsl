@@ -1,72 +1,41 @@
-'use client';
+"use client";
 
-import { Breadcrumb } from '@/components/ui/Breadcrumb';
-import { SectionHeading } from '@/components/ui/SectionHeading';
-import { ChevronDown } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { getServiceDetail, serviceDetailQueryKey } from '@/libs/query/detail/service_detail.query';
+import { Breadcrumb } from "@/components/ui/Breadcrumb";
+import { SectionHeading } from "@/components/ui/SectionHeading";
+import { ChevronDown } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export interface ServiceDetailUIProps {
-  id: string;
   slug: string;
+  service: any;
 }
 
-export default function ServiceDetailUI({ id, slug }: ServiceDetailUIProps) {
+export default function ServiceDetailUI({
+  slug,
+  service,
+}: ServiceDetailUIProps) {
   const router = useRouter();
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
-
-  const {
-    data: service,
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: serviceDetailQueryKey(id),
-    queryFn: () => getServiceDetail(id),
-    staleTime: 1000 * 60 * 2,
-    gcTime: 1000 * 60 * 60,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-    retry: 1,
-  });
-
-  if (isLoading) {
-    return (
-      <section className="bg-white px-4 py-16">
-        <div className="mx-auto max-w-4xl text-center text-gray-500">Loading service...</div>
-      </section>
-    );
-  }
-
-  if (isError || !service) {
-    return (
-      <section className="bg-white px-4 py-16">
-        <div className="mx-auto max-w-4xl text-center text-gray-500">
-          Service could not be loaded.
-        </div>
-      </section>
-    );
-  }
 
   return (
     <section className="bg-white px-4 py-16">
       <div className="mx-auto max-w-4xl">
         <Breadcrumb
           items={[
-            { label: 'Home', page: '/' },
-            { label: 'Categories', page: '/service' },
-            { label: 'Services', page: `/service/${slug}` },
-            { label: `${service.name}` },
+            { label: "Home", page: "/" },
+            { label: "Categories", page: "/service" },
+            { label: "Services", page: `/service/${slug}` },
+            { label: service.name },
           ]}
           onNavigate={(page) => router.push(page)}
           variant="government"
         />
 
         <SectionHeading
-          level="h2"
-          title={service.name || 'Service Name'}
-          description={service.description || ''}
+          level="h5"
+          title={service.name || "Service Name"}
+          description={service.description || ""}
           descriptionClassName="text-gray-400"
           descriptionSizeClassName="text-[16px]"
           showBack
@@ -74,7 +43,7 @@ export default function ServiceDetailUI({ id, slug }: ServiceDetailUIProps) {
         />
 
         <p className="mb-10 text-sm text-green-700">
-          {service.verified ? '✓ Verified' : 'Unverified'}
+          {service.verified ? "✓ Verified" : "Unverified"}
           {service.updated_at && ` • Last updated: ${service.updated_at}`}
         </p>
 
@@ -118,10 +87,10 @@ export default function ServiceDetailUI({ id, slug }: ServiceDetailUIProps) {
 
         {service.documents_required?.length ? (
           <Section title="Documents Required">
-            {service.documents_required.map((doc, i) => (
+            {service.documents_required.map((doc: any, i: number) => (
               <div key={i} className="mb-4">
                 {doc.category && <p className="font-semibold">{doc.category}</p>}
-                <List items={doc.items} />
+                <List items={doc.items ?? []} />
               </div>
             ))}
           </Section>
@@ -132,14 +101,14 @@ export default function ServiceDetailUI({ id, slug }: ServiceDetailUIProps) {
             {service.online_application_url && (
               <button
                 type="button"
-                onClick={() => window.open(service.online_application_url, '_blank')}
+                onClick={() => window.open(service.online_application_url, "_blank")}
                 className="mb-4 rounded-lg bg-blue-600 px-6 py-3 text-white"
               >
                 Apply Online
               </button>
             )}
 
-            {service.application_steps.map((step) => (
+            {service.application_steps.map((step: any) => (
               <div key={step.step} className="mb-4 flex gap-4">
                 <div className="flex h-10 w-10 items-center justify-center border text-blue-600">
                   {step.step}
@@ -152,7 +121,7 @@ export default function ServiceDetailUI({ id, slug }: ServiceDetailUIProps) {
               </div>
             ))}
 
-            {service.important_notes?.map((note, i) => (
+            {service.important_notes?.map((note: string, i: number) => (
               <p key={i} className="mt-2 text-red-600">
                 <strong>Important:</strong> {note}
               </p>
@@ -162,7 +131,7 @@ export default function ServiceDetailUI({ id, slug }: ServiceDetailUIProps) {
 
         {service.fees?.length ? (
           <Section title="Fees">
-            {service.fees.map((fee, i) => (
+            {service.fees.map((fee: any, i: number) => (
               <div key={i} className="flex justify-between border-b py-2">
                 <span>{fee.description}</span>
                 <strong>{fee.amount}</strong>
@@ -173,7 +142,7 @@ export default function ServiceDetailUI({ id, slug }: ServiceDetailUIProps) {
 
         {service.locations?.length ? (
           <Section title="Where to Apply">
-            {service.locations.map((loc, i) => (
+            {service.locations.map((loc: any, i: number) => (
               <div key={i} className="mb-3 border p-4">
                 <h3 className="font-semibold">{loc.name}</h3>
                 <p>{loc.address}</p>
@@ -187,7 +156,7 @@ export default function ServiceDetailUI({ id, slug }: ServiceDetailUIProps) {
 
         {service.faqs?.length ? (
           <Section title="FAQs">
-            {service.faqs.map((faq, i) => (
+            {service.faqs.map((faq: any, i: number) => (
               <div key={i} className="mb-2 border">
                 <button
                   type="button"
@@ -195,7 +164,7 @@ export default function ServiceDetailUI({ id, slug }: ServiceDetailUIProps) {
                   className="flex w-full justify-between p-3"
                 >
                   <span>{faq.question}</span>
-                  <ChevronDown className={expandedFaq === i ? 'rotate-180' : ''} />
+                  <ChevronDown className={expandedFaq === i ? "rotate-180" : ""} />
                 </button>
 
                 {expandedFaq === i && <p className="border-t p-3">{faq.answer}</p>}
@@ -206,7 +175,7 @@ export default function ServiceDetailUI({ id, slug }: ServiceDetailUIProps) {
 
         {service.related_services?.length ? (
           <Section title="Related Services">
-            {service.related_services.map((rel, i) => (
+            {service.related_services.map((rel: any, i: number) => (
               <button
                 key={i}
                 type="button"
@@ -223,7 +192,13 @@ export default function ServiceDetailUI({ id, slug }: ServiceDetailUIProps) {
   );
 }
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
+function Section({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
   return (
     <div className="mb-12 border-t pt-6">
       <h2 className="mb-4 text-2xl font-bold text-[#003366]">{title}</h2>

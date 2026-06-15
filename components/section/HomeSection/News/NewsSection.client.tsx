@@ -6,26 +6,23 @@ import { homeSections } from '@/libs/consts/home.const';
 import { ViewAllButton } from '../../../ui/ViewAllUI';
 import { NewsItem } from './NewsItem';
 import { useRouter } from 'next/navigation';
-import { getHomeNewsArticles, newsQueryKey } from '@/libs/query/home/news.query';
-import { useQuery } from '@tanstack/react-query';
 
-export default function NewsArticleSectionClient() {
+type Props = {
+  initialData: any;
+};
+
+export default function NewsArticleSectionClient({ initialData }: Props) {
   const router = useRouter();
-  const { data, isLoading, isError } = useQuery({
-    queryKey: newsQueryKey,
-    queryFn: getHomeNewsArticles,
-    staleTime: 1000 * 60 * 2,
-    gcTime: 1000 * 60 * 60,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-    retry: 1,
-  });
 
-  const items = data?.data ?? [];
+  const items = Array.isArray(initialData?.data)
+  ? initialData.data
+  : initialData?.data && typeof initialData.data === 'object'
+    ? Object.values(initialData.data)
+    : [];
 
   return (
     <HomeSection id={homeSections.news.id}>
-      <div className="max-w-5xl mx-auto">
+      <div className="mx-auto max-w-5xl">
         <SectionHeading
           level="h3"
           title="Government News & Updates"
@@ -34,28 +31,33 @@ export default function NewsArticleSectionClient() {
           descriptionSizeClassName="text-[16px]"
         />
 
-        {isLoading ? (
-          <div className="py-16 text-center text-[19px] italic text-[#505A5F]">
-            Loading government news...
-          </div>
-        ) : isError ? (
-          <div className="py-16 text-center text-[19px] italic text-[#505A5F]">
-            Government news could not be loaded.
-          </div>
-        ) : items.length === 0 ? (
+        {items.length === 0 ? (
           <div className="py-16 text-center text-[19px] italic text-[#505A5F]">
             No recent government news available.
           </div>
         ) : (
           <div className="space-y-12 sm:space-y-14">
-            {items.map((item) => (
-              <NewsItem key={item.id} item={item} onNavigate={(path) => router.push(path)} />
+            {items.map((item: any, index: number) => (
+              <NewsItem
+                key={
+                  item.id ??
+                  item.legacy_id ??
+                  item.reference_number ??
+                  item.slug ??
+                  `${item.title}-${index}`
+                }
+                item={item}
+                onNavigate={(path) => router.push(path)}
+              />
             ))}
           </div>
         )}
 
-        {/* View All */}
-        <ViewAllButton onClick={() => router.push(homeSections.news.routes.all)}>
+        <ViewAllButton
+          onClick={() =>
+            router.push(`${homeSections.news.routes.all}?from=%2F%23${homeSections.news.id}`)
+          }
+        >
           See all Government News & Updates
         </ViewAllButton>
       </div>

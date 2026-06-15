@@ -1,65 +1,51 @@
-import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
-import PublicationAllClient from './PublicationAll.client';
-import { getQueryClient, toPlain } from '@/libs/functions';
+import PublicationAllClient from "./PublicationAll.client";
 import {
   getAllPublications,
   getPublicationMdaOptions,
-  publicationAllQueryKey,
-  publicationMdaOptionsQueryKey,
-} from '@/libs/query/all/publication_all.query';
+} from "@/libs/query/all/publication_all.query";
+
+export const revalidate = 120;
 
 type SearchParams = {
   page?: string;
   search?: string;
   ministryId?: string;
+  from?: string;
+};
+
+type Props = {
+  searchParams?: Promise<SearchParams>;
 };
 
 export default async function PublicationAllServer({
   searchParams,
-}: {
-  searchParams: Promise<SearchParams>;
-}) {
+}: Props) {
   const params = await searchParams;
 
-  const safePage = Math.max(1, Number(params.page ?? 1) || 1);
-  const search = params.search?.trim() || undefined;
+  const safePage = Math.max(1, Number(params?.page ?? 1) || 1);
+  const search = params?.search?.trim() || "";
 
-  const ministryId =
-    params.ministryId && params.ministryId !== 'all' ? params.ministryId : undefined;
-
-  const queryClient = getQueryClient();
+  const ministryId = params?.ministryId ?? "all";
 
   const queryParams = {
     page: safePage,
-    search,
-    ministryId,
+    search: search || undefined,
+    ministryId: ministryId !== "all" ? ministryId : undefined,
   };
 
-  await Promise.all([
-    queryClient.prefetchQuery({
-      queryKey: publicationAllQueryKey(queryParams),
-      queryFn: async () => {
-        const data = await getAllPublications(queryParams);
-        return toPlain(data);
-      },
-    }),
-
-    queryClient.prefetchQuery({
-      queryKey: publicationMdaOptionsQueryKey,
-      queryFn: async () => {
-        const data = await getPublicationMdaOptions();
-        return toPlain(data);
-      },
-    }),
+  const [result, ministries] = await Promise.all([
+    getAllPublications(queryParams),
+    getPublicationMdaOptions(),
   ]);
 
   return (
-    <HydrationBoundary state={toPlain(dehydrate(queryClient))}>
-      <PublicationAllClient
-        currentPage={safePage}
-        search={search}
-        ministryId={params.ministryId ?? 'all'}
-      />
-    </HydrationBoundary>
+    <PublicationAllClient
+      currentPage={safePage}
+      search={search}
+      ministryId={ministryId}
+      publications={result.data ?? []}
+      total={result.total ?? 0}
+      ministries={ministries ?? []}
+    />
   );
 }

@@ -2,7 +2,7 @@ import { Components } from 'react-markdown';
 
 export const markdownComponents: Partial<Components> = {
   p: ({ children }) => (
-    <span className="text-[19px] leading-[1.58] text-gray-700 block mb-3 last:mb-0">
+    <span className="text-[15px] leading-[1.58] text-gray-700 block mb-3 last:mb-0">
       {children}
     </span>
   ),

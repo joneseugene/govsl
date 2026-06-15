@@ -1,25 +1,11 @@
 import AnnouncementSectionClient from './AnnouncementSection.client';
-import { getQueryClient, toPlain } from '@/libs/functions';
-import {
-  announcementQueryKey,
-  getHomeAnnouncementTypes,
-} from '@/libs/query/home/announcement.query';
-import { HydrationBoundary, dehydrate } from '@tanstack/react-query';
+import { toPlain } from '@/libs/functions';
+import { getHomeAnnouncementTypes } from '@/libs/query/home/announcement.query';
+
+export const revalidate = 120;
 
 export default async function AnnouncementSectionServer() {
-  const queryClient = getQueryClient();
+  const data = await getHomeAnnouncementTypes();
 
-  await queryClient.prefetchQuery({
-    queryKey: announcementQueryKey,
-    queryFn: async () => {
-      const data = await getHomeAnnouncementTypes();
-      return toPlain(data);
-    },
-  });
-
-  return (
-    <HydrationBoundary state={toPlain(dehydrate(queryClient))}>
-      <AnnouncementSectionClient />
-    </HydrationBoundary>
-  );
+  return <AnnouncementSectionClient initialData={toPlain(data)} />;
 }

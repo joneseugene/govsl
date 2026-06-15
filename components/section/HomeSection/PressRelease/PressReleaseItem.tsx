@@ -71,7 +71,7 @@ export function PressReleaseItem({
       </button>
 
       {/* Excerpt – markdown supported */}
-      <div className="mt-4 text-sm">
+      <div className="mt-4 text-xs">
         <ReactMarkdown components={markdownComponents}>{description}</ReactMarkdown>
       </div>
 
@@ -85,7 +85,7 @@ export function PressReleaseItem({
               clipRule="evenodd"
             />
           </svg>
-          Official & Verified
+          Verified
         </div>
       )}
     </div>

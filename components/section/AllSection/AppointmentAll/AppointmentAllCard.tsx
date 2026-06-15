@@ -52,6 +52,7 @@ export function AppointmentNoticeCard({
         <span
           className="
             font-medium text-[#1D70B8]
+            group-hover:cursor-pointer
             group-hover:underline
             group-hover:underline-offset-4
             transition-colors

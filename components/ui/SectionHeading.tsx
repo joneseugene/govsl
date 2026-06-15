@@ -56,7 +56,7 @@ export function SectionHeading({
             onClick={onBack}
             className="
               flex items-center justify-center
-              w-9 h-9
+              w-9 h-9 mb-3
               hover:bg-gray-100 hover:text-[#003366]
               hover:cursor-pointer
               transition
