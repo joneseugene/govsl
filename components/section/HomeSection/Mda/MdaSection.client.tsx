@@ -8,19 +8,23 @@ import { MdaItem } from './MdaItem';
 import { homeSections } from '@/libs/consts/home.const';
 import { useRouter } from 'next/navigation';
 
+type MDAResponse =
+  | MDAInterface[]
+  | {
+      data?: MDAInterface[];
+    };
+
 type Props = {
-  initialData: MDAInterface;
+  initialData: MDAResponse;
 };
 
 export default function MDASectionClient({ initialData }: Props) {
   const router = useRouter();
 
-  const items = Array.isArray(initialData)
-  ? initialData
-  : Array.isArray(initialData)
+  const items: MDAInterface[] = Array.isArray(initialData)
     ? initialData
-    : initialData && typeof initialData === 'object'
-      ? Object.values(initialData)
+    : Array.isArray(initialData?.data)
+      ? initialData.data
       : [];
 
   const isLoading = false;
@@ -51,7 +55,7 @@ export default function MDASectionClient({ initialData }: Props) {
             </div>
           ) : (
             <div className="space-y-6 sm:space-y-8 md:space-y-10">
-              {items.map((item: MDAInterface) => (
+              {items.map((item) => (
                 <MdaItem
                   key={item.id}
                   item={item}
@@ -66,9 +70,7 @@ export default function MDASectionClient({ initialData }: Props) {
         <div className="mt-6 text-center">
           <ViewAllButton
             onClick={() =>
-              router.push(
-                `${homeSections.mda.routes.all}?from=%2F%23${homeSections.mda.id}`,
-              )
+              router.push(`${homeSections.mda.routes.all}?from=%2F%23${homeSections.mda.id}`)
             }
           >
             See all Ministries, Departments & Agencies
