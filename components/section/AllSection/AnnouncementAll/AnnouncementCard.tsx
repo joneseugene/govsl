@@ -46,23 +46,21 @@ export function AnnouncementCard({ item, onNavigate, className = '' }: Announcem
         "
       >
         {/* META */}
-        <div className="mb-4 flex flex-wrap items-center gap-3">
-          {/* TYPE BADGE */}
-          {item.announcement_type && (
-            <span className={`rounded-full px-3 py-1 text-xs font-semibold ${typeColor}`}>
-              {typeLabel}
-            </span>
-          )}
+        <div className="mb-1 flex flex-wrap items-center gap-2 text-sm text-gray-500">
+          {/* TYPE */}
+          {item.announcement_type && <span className="font-medium">{typeLabel}</span>}
+
+          {/* DIVIDER */}
+          {item.announcement_type && item.mdas?.name && <span>|</span>}
 
           {/* MDA */}
-          {item.mdas?.name && (
-            <span className="rounded-full bg-[#F3F2F1] px-3 py-1 text-xs font-medium text-[#003366]">
-              {item.mdas.name}
-            </span>
-          )}
+          {item.mdas?.name && <span className="font-medium text-[#003366]">{item.mdas.name}</span>}
+
+          {/* DIVIDER */}
+          {(item.announcement_type || item.mdas?.name) && item.date && <span>|</span>}
 
           {/* DATE */}
-          {item.date && <span className="text-sm text-gray-500">{formatDate(item.date)}</span>}
+          {item.date && <span>{formatDate(item.date)}</span>}
         </div>
 
         {/* TITLE */}
