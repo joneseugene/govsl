@@ -35,7 +35,7 @@ export function AppointmentNoticeCard({
       type="button"
       onClick={handleClick}
       className={`
-        group relative overflow-hidden text-left
+        group relative overflow-hidden text-left mb-4
         focus:outline-none
         ${className}
       `}
