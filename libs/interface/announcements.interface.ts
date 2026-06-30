@@ -4,7 +4,9 @@ import { MDAInterface } from './mda/mdas.interface';
 
 export interface AnnouncementInterface {
   id: string;
+  reference_number?: string;
   announcement_type: string;
+  category?: string;
   title?: string;
   description?: string;
   content?: string;
@@ -12,7 +14,7 @@ export interface AnnouncementInterface {
   date?: string;
   deadline?: Date;
   location?: string;
-  attachment?: AttachmentInterface[];
+  attachments?: AttachmentInterface[];
   job_title?: string;
   employment_type?: string;
   job_summary?: string;
@@ -31,6 +33,6 @@ export interface AnnouncementInterface {
   expiry_date?: string;
   contact_info?: string;
   ministry_id?: string;
-  reference_number?: string;
+  pdf_url?: string;
   mdas?: MDASummary | null;
 }

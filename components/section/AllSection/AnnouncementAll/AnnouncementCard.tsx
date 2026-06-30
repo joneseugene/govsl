@@ -51,12 +51,6 @@ export function AnnouncementCard({ item, onNavigate, className = '' }: Announcem
           {item.announcement_type && <span className="font-medium">{typeLabel}</span>}
 
           {/* DIVIDER */}
-          {item.announcement_type && item.mdas?.name && <span>|</span>}
-
-          {/* MDA */}
-          {item.mdas?.name && <span className="font-medium text-[#003366]">{item.mdas.name}</span>}
-
-          {/* DIVIDER */}
           {(item.announcement_type || item.mdas?.name) && item.date && <span>|</span>}
 
           {/* DATE */}
@@ -76,7 +70,7 @@ export function AnnouncementCard({ item, onNavigate, className = '' }: Announcem
         </h5>
 
         {/* DESCRIPTION */}
-        <p className="mb-4 text-xs text-gray-700">
+        <p className="mb-4 text-sm text-gray-700">
           <ReactMarkdown components={markdownComponents}>{description}</ReactMarkdown>
         </p>
       </button>

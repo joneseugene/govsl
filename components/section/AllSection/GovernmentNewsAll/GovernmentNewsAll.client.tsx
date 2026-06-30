@@ -1,23 +1,22 @@
-"use client";
+'use client';
 
-import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useMemo, useState } from 'react';
 
-import { HomeSection } from "@/components/ui/HomeSections";
-import { SectionHeading } from "@/components/ui/SectionHeading";
-import { Search2 } from "@/components/ui/SearchUI2";
-import { FilterDropdown } from "@/components/ui/FilterDropdown";
-import { Pagination } from "@/components/ui/PaginationUI";
-import { NewsCard } from "@/components/section/AllSection/GovernmentNewsAll/NewsCard";
-import { Breadcrumb } from "@/components/ui/Breadcrumb";
-import { useDebounce } from "@/libs/hook/useDebounce";
-import { NewsArticleInterface } from "@/libs/interface/news.articles.interface";
+import { HomeSection } from '@/components/ui/HomeSections';
+import { SectionHeading } from '@/components/ui/SectionHeading';
+import { Search2 } from '@/components/ui/SearchUI2';
+import { FilterDropdown } from '@/components/ui/FilterDropdown';
+import { Pagination } from '@/components/ui/PaginationUI';
+import { NewsCard } from '@/components/section/AllSection/GovernmentNewsAll/NewsCard';
+import { Breadcrumb } from '@/components/ui/Breadcrumb';
+import { useDebounce } from '@/libs/hook/useDebounce';
+import { NewsArticleInterface } from '@/libs/interface/news.articles.interface';
 
 type MinistryOption = {
   id: string;
   name: string;
 };
-
 
 type Props = {
   currentPage: number;
@@ -39,11 +38,11 @@ export default function AllGovernmentNewsClient({
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const [searchQuery, setSearchQuery] = useState(search ?? "");
-  const [selectedMinistry, setSelectedMinistry] = useState(ministryId ?? "all");
+  const [searchQuery, setSearchQuery] = useState(search ?? '');
+  const [selectedMinistry, setSelectedMinistry] = useState(ministryId ?? 'all');
 
   const debouncedSearch = useDebounce(searchQuery, 500);
-  const from = searchParams.get("from");
+  const from = searchParams.get('from');
 
   const items = newsItems;
 
@@ -56,46 +55,51 @@ export default function AllGovernmentNewsClient({
       return;
     }
 
-    router.replace("/");
+    router.replace('/');
   };
 
   useEffect(() => {
     const params = new URLSearchParams();
 
-    params.set("page", "1");
+    params.set('page', '1');
 
     if (from) {
-      params.set("from", from);
+      params.set('from', from);
     }
 
     if (debouncedSearch.trim()) {
-      params.set("search", debouncedSearch.trim());
+      params.set('search', debouncedSearch.trim());
     }
 
-    if (selectedMinistry !== "all") {
-      params.set("ministryId", selectedMinistry);
+    if (selectedMinistry !== 'all') {
+      params.set('ministryId', selectedMinistry);
     }
 
-    router.replace(`/news?${params.toString()}`, {
+    const nextUrl = `/news?${params.toString()}`;
+    const currentUrl = `/news?${searchParams.toString()}`;
+
+    if (nextUrl === currentUrl) return;
+
+    router.replace(nextUrl, {
       scroll: false,
     });
-  }, [debouncedSearch, selectedMinistry, router, from]);
+  }, [debouncedSearch, selectedMinistry, router, from, searchParams]);
 
   const updatePage = (page: number) => {
     const params = new URLSearchParams();
 
-    params.set("page", page.toString());
+    params.set('page', page.toString());
 
     if (from) {
-      params.set("from", from);
+      params.set('from', from);
     }
 
     if (searchQuery.trim()) {
-      params.set("search", searchQuery.trim());
+      params.set('search', searchQuery.trim());
     }
 
-    if (selectedMinistry !== "all") {
-      params.set("ministryId", selectedMinistry);
+    if (selectedMinistry !== 'all') {
+      params.set('ministryId', selectedMinistry);
     }
 
     router.replace(`/news?${params.toString()}`, {
@@ -105,7 +109,7 @@ export default function AllGovernmentNewsClient({
 
   const ministryOptions = useMemo(() => {
     return [
-      { value: "all", label: "All Ministries" },
+      { value: 'all', label: 'All Ministries' },
       ...ministries.map((m) => ({
         value: m.id,
         label: m.name,
@@ -117,7 +121,7 @@ export default function AllGovernmentNewsClient({
     <HomeSection>
       <div className="mx-auto max-w-5xl">
         <Breadcrumb
-          items={[{ label: "Home", page: "/" }, { label: "News and Articles" }]}
+          items={[{ label: 'Home', page: '/' }, { label: 'News and Articles' }]}
           onNavigate={(page) => router.push(page)}
           variant="government"
         />
@@ -163,7 +167,7 @@ export default function AllGovernmentNewsClient({
                 ministry={item.mdas?.name}
                 date={item.date}
                 title={item.title}
-                summary={item.summary ?? ""}
+                summary={item.summary ?? ''}
                 onReadMore={(id) => router.push(`/news/${id}`)}
               />
             ))

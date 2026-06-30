@@ -1,5 +1,5 @@
-import { getNewsArticles } from "@/libs/api/news.articles.api";
-import { getMDAOptions } from "@/libs/api/mdas.api";
+import { getNewsArticles } from '@/libs/api/news.articles.api';
+import { getMDAOptions } from '@/libs/api/mdas.api';
 
 export type GovernmentNewsAllParams = {
   page: number;
@@ -7,28 +7,22 @@ export type GovernmentNewsAllParams = {
   ministryId?: string;
 };
 
-export const governmentNewsAllQueryKey = (
-  params: GovernmentNewsAllParams
-) => [
-  "all-government-news",
+export const governmentNewsAllQueryKey = (params: GovernmentNewsAllParams) => [
+  'all-government-news',
   params.page,
-  params.search ?? "",
-  params.ministryId ?? "all",
+  params.search ?? '',
+  params.ministryId ?? 'all',
 ];
 
-export const governmentNewsMdaOptionsQueryKey = [
-  "government-news-mda-options",
-];
+export const governmentNewsMdaOptionsQueryKey = ['government-news-mda-options'];
 
-export async function getAllGovernmentNews(
-  params: GovernmentNewsAllParams
-) {
+export async function getAllGovernmentNews(params: GovernmentNewsAllParams) {
   return getNewsArticles({
     page: params.page,
     limit: 5,
     search: params.search,
     ministryId: params.ministryId,
-    status: "published",
+    status: 'approved',
   });
 }
 
