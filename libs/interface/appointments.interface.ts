@@ -4,6 +4,7 @@ export interface AppointmentInterface {
   id: string;
   type?: string;
   title?: string;
+  description?: string;
   reference_number?: string;
   office_name?: string;
   office_address?: string[];

@@ -1,6 +1,7 @@
 'use client';
 
 import { homeSections } from '@/libs/consts/home.const';
+import { formatDate } from '@/libs/functions';
 import { AppointmentInterface } from '@/libs/interface/appointments.interface';
 
 interface AppointmentItemProps {
@@ -41,42 +42,45 @@ export function AppointmentItem({
         type="button"
         onClick={handleClick}
         className="
-          w-full rounded text-left
-          focus:outline-none focus-visible:ring-2
-          focus-visible:ring-[#1D70B8]/50
-        "
+        w-full rounded text-left
+        focus:outline-none focus-visible:ring-2
+        focus-visible:ring-[#1D70B8]/50
+      "
       >
+        <div className="mb-1 flex flex-wrap items-center gap-2 text-sm font-medium text-gray-500">
+          {item.reference_number && <span>{item.reference_number}</span>}
+
+          {item.reference_number && item.appointment_date && <span>|</span>}
+
+          {item.appointment_date && <span>{formatDate(item.appointment_date)}</span>}
+        </div>
+
         <h5
-          className={`font-medium
-          text-[18px] sm:text-[16px] md:text-[18px] lg:text-[20px]
-          text-[#1D70B8] group-hover:cursor-pointer
-          group-hover:underline group-hover:underline-offset-4
-          decoration-2 transition-colors
-          ${isCompact ? 'text-lg sm:text-xl' : 'text-[18px] sm:text-[20px] md:text-[22px]'}
+          className={`
+          mb-1 font-semibold uppercase text-[#1D70B8]
+          group-hover:cursor-pointer group-hover:underline
+          group-hover:underline-offset-4 decoration-2 transition-colors
+          ${isCompact ? 'text-base' : 'text-[18px] sm:text-[20px]'}
         `}
         >
-          {item.reference_number || 'Appointment Notice'}
+          {item.title}
         </h5>
-      </button>
 
-      {showVerified && (
-        <div
-          className={`
-            mt-1 flex items-center gap-1.5
-            font-medium text-[#008A3C]
-            ${isCompact ? 'text-sm' : 'text-[15px]'}
-          `}
-        >
-          <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-            <path
-              fillRule="evenodd"
-              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-              clipRule="evenodd"
-            />
-          </svg>
-          Official & Verified
-        </div>
-      )}
+        {item.mdas?.name && (
+          <p className="mb-3 text-sm font-medium text-gray-700">{item.mdas.name}</p>
+        )}
+
+        {item.description && (
+          <p className="mb-3 line-clamp-2 text-sm leading-6 text-gray-600">{item.description}</p>
+        )}
+
+        {item.linked_letter_ids?.length ? (
+          <p className="mt-3 text-sm font-medium">
+            {item.linked_letter_ids.length} appointee
+            {item.linked_letter_ids.length > 1 ? 's' : ''}
+          </p>
+        ) : null}
+      </button>
     </div>
   );
 }

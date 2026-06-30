@@ -1,26 +1,25 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 
-import { HomeSection } from "@/components/ui/HomeSections";
-import { SectionHeading } from "@/components/ui/SectionHeading";
-import { Pagination } from "@/components/ui/PaginationUI";
-import { AppointmentNoticeCard } from "@/components/section/AllSection/AppointmentAll/AppointmentAllCard";
-import { Breadcrumb } from "@/components/ui/Breadcrumb";
-import { Search2 } from "@/components/ui/SearchUI2";
-import { Tabs } from "@/components/ui/TabUI";
-import { useDebounce } from "@/libs/hook/useDebounce";
-import { AppointmentInterface } from "@/libs/interface/appointments.interface";
+import { HomeSection } from '@/components/ui/HomeSections';
+import { SectionHeading } from '@/components/ui/SectionHeading';
+import { Pagination } from '@/components/ui/PaginationUI';
+import { AppointmentNoticeCard } from '@/components/section/AllSection/AppointmentAll/AppointmentAllCard';
+import { Breadcrumb } from '@/components/ui/Breadcrumb';
+import { Search2 } from '@/components/ui/SearchUI2';
+import { Tabs } from '@/components/ui/TabUI';
+import { useDebounce } from '@/libs/hook/useDebounce';
+import { AppointmentInterface } from '@/libs/interface/appointments.interface';
 
 const CATEGORY_OPTIONS = [
-  { value: "all", label: "All" },
-  { value: "executive", label: "Executive" },
-  { value: "ministerial", label: "Ministerial" },
-  { value: "board", label: "Board" },
-  { value: "diplomatic", label: "Diplomatic" },
+  { value: 'all', label: 'All' },
+  { value: 'executive', label: 'Executive' },
+  { value: 'ministerial', label: 'Ministerial' },
+  { value: 'board', label: 'Board' },
+  { value: 'diplomatic', label: 'Diplomatic' },
 ];
-
 
 type MinistryOption = {
   id: string;
@@ -47,14 +46,11 @@ export default function AppointmentAllClient({
 }: AppointmentAllClientProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-
-  const [searchQuery, setSearchQuery] = useState(search ?? "");
-  const [selectedCategory, setSelectedCategory] = useState(category ?? "all");
-  const [selectedMinistry, setSelectedMinistry] = useState(ministryId ?? "all");
-
+  const [searchQuery, setSearchQuery] = useState(search ?? '');
+  const [selectedCategory, setSelectedCategory] = useState(category ?? 'all');
+  const [selectedMinistry, setSelectedMinistry] = useState(ministryId ?? 'all');
   const debouncedSearch = useDebounce(searchQuery, 500);
-  const from = searchParams.get("from");
-
+  const from = searchParams.get('from');
   const items = appointments;
   const itemsPerPage = 10;
   const totalPages = Math.ceil(total / itemsPerPage);
@@ -65,28 +61,28 @@ export default function AppointmentAllClient({
       return;
     }
 
-    router.replace("/");
+    router.replace('/');
   };
 
   useEffect(() => {
     const params = new URLSearchParams();
 
-    params.set("page", "1");
+    params.set('page', '1');
 
     if (from) {
-      params.set("from", from);
+      params.set('from', from);
     }
 
     if (debouncedSearch.trim()) {
-      params.set("search", debouncedSearch.trim());
+      params.set('search', debouncedSearch.trim());
     }
 
-    if (selectedCategory !== "all") {
-      params.set("category", selectedCategory);
+    if (selectedCategory !== 'all') {
+      params.set('category', selectedCategory);
     }
 
-    if (selectedMinistry !== "all") {
-      params.set("ministryId", selectedMinistry);
+    if (selectedMinistry !== 'all') {
+      params.set('ministryId', selectedMinistry);
     }
 
     router.replace(`/appointment?${params.toString()}`, {
@@ -97,22 +93,22 @@ export default function AppointmentAllClient({
   const updatePage = (page: number) => {
     const params = new URLSearchParams();
 
-    params.set("page", page.toString());
+    params.set('page', page.toString());
 
     if (from) {
-      params.set("from", from);
+      params.set('from', from);
     }
 
     if (searchQuery.trim()) {
-      params.set("search", searchQuery.trim());
+      params.set('search', searchQuery.trim());
     }
 
-    if (selectedCategory !== "all") {
-      params.set("category", selectedCategory);
+    if (selectedCategory !== 'all') {
+      params.set('category', selectedCategory);
     }
 
-    if (selectedMinistry !== "all") {
-      params.set("ministryId", selectedMinistry);
+    if (selectedMinistry !== 'all') {
+      params.set('ministryId', selectedMinistry);
     }
 
     router.replace(`/appointment?${params.toString()}`, {
@@ -124,7 +120,7 @@ export default function AppointmentAllClient({
     <HomeSection className="bg-[#F8FAFC]">
       <div className="mx-auto max-w-6xl">
         <Breadcrumb
-          items={[{ label: "Home", page: "/" }, { label: "Appointments" }]}
+          items={[{ label: 'Home', page: '/' }, { label: 'Appointments' }]}
           onNavigate={(page) => router.push(page)}
           variant="government"
         />
@@ -156,10 +152,8 @@ export default function AppointmentAllClient({
 
         <div className="mb-8 flex items-center justify-between">
           <p className="text-sm font-medium text-slate-600">
-            Showing{" "}
-            <span className="font-semibold text-[#003366]">{items.length}</span>{" "}
-            of <span className="font-semibold text-[#003366]">{total}</span>{" "}
-            notices
+            Showing <span className="font-semibold text-[#003366]">{items.length}</span> of{' '}
+            <span className="font-semibold text-[#003366]">{total}</span> notices
           </p>
         </div>
 
@@ -171,7 +165,7 @@ export default function AppointmentAllClient({
           <div className="grid grid-cols-1 gap-5 lg:gap-6">
             {items.map((notice, index) => (
               <AppointmentNoticeCard
-                key={`${notice.id ?? "appointment"}-${notice.reference_number ?? index}`}
+                key={`${notice.id ?? 'appointment'}-${notice.reference_number ?? index}`}
                 item={notice}
                 onNavigate={(path) => router.push(path)}
               />

@@ -1,6 +1,7 @@
 'use client';
 
 import { homeSections } from '@/libs/consts/home.const';
+import { formatDate } from '@/libs/functions';
 import { AppointmentInterface } from '@/libs/interface/appointments.interface';
 
 interface AppointmentNoticeCardProps {
@@ -22,9 +23,7 @@ export function AppointmentNoticeCard({
     if (!referenceNumber) return;
 
     if (useHomeSections) {
-      onNavigate(
-        homeSections.appointment.routes.detail(referenceNumber)
-      );
+      onNavigate(homeSections.appointment.routes.detail(referenceNumber));
       return;
     }
 
@@ -41,37 +40,45 @@ export function AppointmentNoticeCard({
         ${className}
       `}
     >
-      {/* Reference Number */}
-      <div
-        className="
-          flex flex-wrap items-center
-          gap-3 text-sm sm:text-[15px]
-          text-slate-500
-        "
-      >
-        <span
-          className="
-            font-medium text-[#1D70B8]
-            group-hover:cursor-pointer
-            group-hover:underline
-            group-hover:underline-offset-4
-            transition-colors
-          "
-        >
-          {item.reference_number || 'Appointment Notice'}
-        </span>
+      {/* Reference + Date */}
+      <div className="mb-1 flex flex-wrap items-center gap-2 text-sm font-medium text-gray-500">
+        {item.reference_number && <span>{item.reference_number}</span>}
+
+        {item.reference_number && item.appointment_date && <span>|</span>}
+
+        {item.appointment_date && <span>{formatDate(item.appointment_date)}</span>}
       </div>
 
-      {/* Verified */}
-      <div
+      {/* Title */}
+      <h5
         className="
-          mt-1 flex items-center gap-2
-          text-sm font-medium text-[#008A3C]
+          mb-1 text-[18px] font-semibold uppercase text-[#1D70B8]
+          group-hover:cursor-pointer
+          group-hover:underline
+          group-hover:underline-offset-4
+          decoration-2 transition-colors
         "
       >
-        <div className="h-2 w-2 rounded-full bg-[#008A3C]" />
-        Official & Verified
-      </div>
+        {item.title}
+      </h5>
+
+      {/* MDA */}
+      {item.mdas?.name && (
+        <p className="mb-3 text-sm font-medium text-gray-700">{item.mdas.name}</p>
+      )}
+
+      {/* Description */}
+      {item.description && (
+        <p className="mb-3 line-clamp-2 text-sm leading-6 text-gray-600">{item.description}</p>
+      )}
+
+      {/* Appointees Count */}
+      {item.linked_letter_ids?.length ? (
+        <p className="text-sm font-medium">
+          {item.linked_letter_ids.length} appointee
+          {item.linked_letter_ids.length > 1 ? 's' : ''}
+        </p>
+      ) : null}
     </button>
   );
 }

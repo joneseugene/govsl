@@ -53,13 +53,6 @@ export function AnnouncementItem({ item, onNavigate, className = '' }: Announcem
           ${className}
         `}
       >
-        {/* TYPE BADGE */}
-        <span
-          className={`mb-4 inline-flex rounded-full px-3 py-1 text-xs font-semibold ${typeColor}`}
-        >
-          {typeLabel}
-        </span>
-
         {/* TITLE */}
         <h5 className="mb-3 text-xl font-bold text-[#1D70B8] group-hover:cursor-pointer">
           {item.title}
