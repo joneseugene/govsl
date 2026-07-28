@@ -115,7 +115,6 @@ export default function PressReleasesAllClient({
       <div className="mx-auto max-w-5xl">
         <Breadcrumb
           items={[{ label: "Home", page: "/" }, { label: "Press Releases" }]}
-          onNavigate={(page) => router.push(page)}
           variant="government"
         />
 

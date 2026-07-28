@@ -63,7 +63,6 @@ export default function HelpPage() {
       <div className="mx-auto max-w-3xl">
         <Breadcrumb
           items={[{ label: 'Home', page: '/' }, { label: 'Help & Support' }]}
-          onNavigate={(page) => router.push(page)}
           variant="government"
         />
 

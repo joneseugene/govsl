@@ -51,7 +51,6 @@ export default function ServicesSlugClient({ categoryPage, services, meta }: Pro
               label: 'Services',
             },
           ]}
-          onNavigate={(page) => router.push(page)}
           variant="government"
         />
 

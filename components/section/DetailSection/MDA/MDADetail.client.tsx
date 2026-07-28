@@ -109,7 +109,6 @@ export default function MdaDetailPage({ id }: Props) {
             { label: 'MDAs', page: '/mda' },
             { label: mda.acronym || mda.name },
           ]}
-          onNavigate={(page) => router.push(page)}
           variant="government"
         />
 

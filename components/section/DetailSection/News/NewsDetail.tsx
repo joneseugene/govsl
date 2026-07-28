@@ -141,7 +141,6 @@ if (isError || !news) {
               { label: 'News and Articles', page: '/news' },
               { label: headline || id },
             ]}
-            onNavigate={(page) => router.push(page)}
             variant="government"
           />
 

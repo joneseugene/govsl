@@ -40,7 +40,6 @@ export default function TransparencyPage() {
       <div className="mx-auto max-w-3xl">
         <Breadcrumb
           items={[{ label: 'Home', page: '/' }, { label: 'Transparency Dashboard' }]}
-          onNavigate={(page) => router.push(page)}
           variant="government"
         />
 

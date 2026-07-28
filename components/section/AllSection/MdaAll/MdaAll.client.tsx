@@ -140,7 +140,6 @@ export default function AllMDAClient({
       <div className="mx-auto max-w-5xl">
         <Breadcrumb
           items={[{ label: "Home", page: "/" }, { label: "MDAs" }]}
-          onNavigate={(page) => router.push(page)}
           variant="government"
         />
 

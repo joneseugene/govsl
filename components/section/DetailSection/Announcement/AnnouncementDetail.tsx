@@ -76,7 +76,6 @@ export default function AnnouncementDetailPage({ id }: Props) {
             { label: 'Announcements', page: '/announcement' },
             { label: announcement.title || 'Announcement' },
           ]}
-          onNavigate={(page) => router.push(page)}
           variant="government"
         />
 

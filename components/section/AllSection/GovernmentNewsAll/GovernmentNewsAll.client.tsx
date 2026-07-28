@@ -122,7 +122,6 @@ export default function AllGovernmentNewsClient({
       <div className="mx-auto max-w-5xl">
         <Breadcrumb
           items={[{ label: 'Home', page: '/' }, { label: 'News and Articles' }]}
-          onNavigate={(page) => router.push(page)}
           variant="government"
         />
 

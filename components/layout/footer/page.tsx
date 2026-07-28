@@ -8,10 +8,6 @@ import { FooterLinks } from './FooterLinks';
 export default function Footer() {
   const router = useRouter();
 
-  const onNavigate = (page: string) => {
-    router.push(`/${page}`);
-  };
-
   return (
     <footer className="border-t-2 border-[#003366]/20 bg-[#f8f8f8] text-[#0b0c0c]">
       <div className="mx-auto max-w-6xl px-5 py-14 md:py-16">
@@ -46,7 +42,7 @@ export default function Footer() {
         </div>
 
         {/* Links */}
-        <FooterLinks links={footerNavLinks} onNavigate={onNavigate} />
+        <FooterLinks links={footerNavLinks} />
       </div>
 
       {/* Green accent bar */}

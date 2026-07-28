@@ -60,7 +60,6 @@ export default function ServiceDetailUI({ slug, service }: ServiceDetailUIProps)
             { label: 'Services', page: `/service/${slug}` },
             { label: service.name ?? '---' },
           ]}
-          onNavigate={(page) => router.push(page)}
           variant="government"
         />
 

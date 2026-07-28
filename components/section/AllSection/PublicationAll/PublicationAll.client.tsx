@@ -120,7 +120,6 @@ export default function PublicationAllClient({
             { label: "Home", page: "/" },
             { label: "Publications and Reports" },
           ]}
-          onNavigate={(page) => router.push(page)}
           variant="government"
         />
 

@@ -121,7 +121,6 @@ export default function AppointmentAllClient({
       <div className="mx-auto max-w-6xl">
         <Breadcrumb
           items={[{ label: 'Home', page: '/' }, { label: 'Appointments' }]}
-          onNavigate={(page) => router.push(page)}
           variant="government"
         />
 

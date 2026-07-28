@@ -95,7 +95,6 @@ export function PressReleaseDetailUI({ id, pdfUrl }: PressReleaseDetailUIProps) 
                 { label: 'Press Release', page: '/press-release' },
                 { label: `${reference}` },
               ]}
-              onNavigate={(page) => router.push(page)}
               variant="government"
             />
           </div>

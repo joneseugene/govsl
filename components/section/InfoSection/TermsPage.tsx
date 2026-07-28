@@ -13,7 +13,6 @@ export default function TermsPage() {
       <div className="mx-auto max-w-3xl">
         <Breadcrumb
           items={[{ label: 'Home', page: '/' }, { label: 'Terms & Conditions' }]}
-          onNavigate={(page) => router.push(page)}
           variant="government"
         />
 

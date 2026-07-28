@@ -129,7 +129,6 @@ export default function AllServicesClient({
       <div className="mx-auto max-w-5xl">
         <Breadcrumb
           items={[{ label: "Home", page: "/" }, { label: "Categories" }]}
-          onNavigate={(page) => router.push(page)}
           variant="government"
         />
 

@@ -13,7 +13,6 @@ export default function LicencePage() {
       <div className="mx-auto max-w-3xl">
         <Breadcrumb
           items={[{ label: 'Home', page: '/' }, { label: 'Open Government Licence' }]}
-          onNavigate={(page) => router.push(page)}
           variant="government"
         />
 

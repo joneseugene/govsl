@@ -13,7 +13,6 @@ export default function AccessibilityPage() {
       <div className="mx-auto max-w-3xl">
         <Breadcrumb
           items={[{ label: 'Home', page: '/' }, { label: 'Accessibility' }]}
-          onNavigate={(page) => router.push(page)}
           variant="government"
         />
 

@@ -145,7 +145,6 @@ export default function PublicationDetailClient({ id }: PublicationDetailClientP
                 label: `${id}`,
               },
             ]}
-            onNavigate={(page) => router.push(page)}
             variant="government"
           />
 

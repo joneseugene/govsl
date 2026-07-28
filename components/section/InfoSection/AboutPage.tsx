@@ -13,7 +13,6 @@ export default function AboutPage() {
       <div className="mx-auto max-w-3xl">
         <Breadcrumb
           items={[{ label: 'Home', page: '/' }, { label: 'About GOV.SL' }]}
-          onNavigate={(page) => router.push(page)}
           variant="government"
         />
 

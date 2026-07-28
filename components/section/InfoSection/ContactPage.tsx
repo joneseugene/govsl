@@ -14,7 +14,6 @@ export default function ContactPage() {
       <div className="mx-auto max-w-3xl">
         <Breadcrumb
           items={[{ label: 'Home', page: '/' }, { label: 'Contact Us' }]}
-          onNavigate={(page) => router.push(page)}
           variant="government"
         />
 
