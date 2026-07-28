@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { NewsArticleInterface } from "./libs/interface/news.articles.interface";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -127,12 +128,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     // Dynamic News
 
-    ...news.map((item: any) => ({
-      url: `${BASE_URL}/news/${item.slug}`,
-      lastModified:
-        item.updated_at
-          ? new Date(item.updated_at)
-          : now,
+    ...news.map((item: NewsArticleInterface) => ({
+      url: `${BASE_URL}/news/${item.id}`,
       changeFrequency: "weekly" as const,
       priority: 0.8,
     })),
