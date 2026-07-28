@@ -1,13 +1,12 @@
 'use client';
 
+import Image from "next/image";
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
-
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { Breadcrumb } from '@/components/ui/Breadcrumb';
 import { getQRCode } from '@/libs/functions';
-
 import { getNewsDetail, newsDetailQueryKey } from '@/libs/query/detail/news_detail.query';
 
 interface Props {
@@ -17,7 +16,6 @@ interface Props {
 export default function NewsDetailClient({ id }: Props) {
   const router = useRouter();
   const [qrUrl, setQrUrl] = useState('');
-
 
   const {
     data: news,
@@ -33,30 +31,6 @@ export default function NewsDetailClient({ id }: Props) {
     retry: 1,
   });
 
-  useEffect(() => {
-    setQrUrl(`${window.location.origin}/news/${id}`);
-  }, [id]);
-
-  if (isLoading) {
-  return (
-    <section className="bg-white px-4 py-20">
-      <div className="mx-auto max-w-5xl text-center text-gray-500">
-        Loading news article...
-      </div>
-    </section>
-  );
-}
-
-if (isError || !news) {
-  return (
-    <section className="bg-white px-4 py-20">
-      <div className="mx-auto max-w-5xl text-center text-gray-500">
-        News article could not be loaded.
-      </div>
-    </section>
-  );
-}
-
   const formattedDate = useMemo(() => {
     if (!news?.date) return null;
 
@@ -69,7 +43,29 @@ if (isError || !news) {
       month: 'long',
       year: 'numeric',
     });
-  }, [news?.date]);
+  }, [news]);
+
+  useEffect(() => {
+    setQrUrl(`${window.location.origin}/news/${id}`);
+  }, [id]);
+
+  if (isLoading) {
+    return (
+      <section className="bg-white px-4 py-20">
+        <div className="mx-auto max-w-5xl text-center text-gray-500">Loading news article...</div>
+      </section>
+    );
+  }
+
+  if (isError || !news) {
+    return (
+      <section className="bg-white px-4 py-20">
+        <div className="mx-auto max-w-5xl text-center text-gray-500">
+          News article could not be loaded.
+        </div>
+      </section>
+    );
+  }
 
   const renderContent = (text?: string) => {
     if (!text) {
@@ -122,7 +118,6 @@ if (isError || !news) {
       );
     });
   };
-
 
   const category = news.category ?? 'News';
   const ministry = news.mdas?.name ?? 'Government of Sierra Leone';
@@ -201,7 +196,7 @@ if (isError || !news) {
 
             {qrUrl && (
               <div className="border-2 border-[#0B0C0C] p-3">
-                <img src={getQRCode(qrUrl)} alt="QR Code" width={120} height={120} />
+                <Image src={getQRCode(qrUrl)} alt="QR Code" width={120} height={120} />
 
                 <div className="mt-2 text-center text-[11px] text-[#505A5F]">Scan to verify</div>
               </div>

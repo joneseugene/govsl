@@ -45,7 +45,7 @@ export default function AnnouncementDetailPage({ id }: Props) {
       month: 'long',
       year: 'numeric',
     });
-  }, [announcement?.date]);
+}, [announcement]);
 
   if (isLoading) {
     return (

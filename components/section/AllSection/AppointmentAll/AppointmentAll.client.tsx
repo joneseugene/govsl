@@ -48,7 +48,7 @@ export default function AppointmentAllClient({
   const searchParams = useSearchParams();
   const [searchQuery, setSearchQuery] = useState(search ?? '');
   const [selectedCategory, setSelectedCategory] = useState(category ?? 'all');
-  const [selectedMinistry, setSelectedMinistry] = useState(ministryId ?? 'all');
+  const [selectedMinistry] = useState(ministryId ?? 'all');
   const debouncedSearch = useDebounce(searchQuery, 500);
   const from = searchParams.get('from');
   const items = appointments;

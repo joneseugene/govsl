@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import Image from "next/image";
+import { useState, useRef, useEffect, useMemo } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
@@ -21,10 +22,7 @@ interface PressReleaseDetailUIProps {
 export function PressReleaseDetailUI({ id, pdfUrl }: PressReleaseDetailUIProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-
   const [loading] = useState(false);
-  const [qrUrl, setQrUrl] = useState<string | null>(null);
-
   const printRef = useRef<HTMLDivElement>(null);
 
   const {
@@ -56,9 +54,10 @@ export function PressReleaseDetailUI({ id, pdfUrl }: PressReleaseDetailUIProps) 
     router.replace('/press-release');
   };
 
-  useEffect(() => {
+  const qrUrl = useMemo(() => {
     const url = pdfUrl || `${window.location.origin}/press-release/${id}`;
-    setQrUrl(getQRCode(url));
+
+    return getQRCode(url);
   }, [id, pdfUrl]);
 
   if (isLoading) {
@@ -77,8 +76,7 @@ export function PressReleaseDetailUI({ id, pdfUrl }: PressReleaseDetailUIProps) 
     );
   }
 
-  const { title, mdas, content, reference_numbers, contact_info, date } =
-    pressRelease;
+  const { title, mdas, content, reference_numbers, contact_info, date } = pressRelease;
 
   const ministry = mdas?.name || 'Government of Sierra Leone';
   const acronym = mdas?.acronym || 'GoSL';
@@ -126,17 +124,13 @@ export function PressReleaseDetailUI({ id, pdfUrl }: PressReleaseDetailUIProps) 
         >
           <header className="mb-5 flex flex-col gap-4 border-b border-slate-200 pb-5 sm:flex-row sm:items-start sm:justify-between">
             <div className="min-w-0 text-left">
-              <div className="text-base font-bold text-[#0033A0] sm:text-lg">
-                {acronym}
-              </div>
+              <div className="text-base font-bold text-[#0033A0] sm:text-lg">{acronym}</div>
 
               <h1 className="mt-1 break-words text-sm font-bold uppercase text-slate-900">
                 {ministry}
               </h1>
 
-              <p className="mt-1 text-xs text-slate-700 sm:text-sm">
-                Public Relations Unit
-              </p>
+              <p className="mt-1 text-xs text-slate-700 sm:text-sm">Public Relations Unit</p>
 
               <p className="mt-1 text-xs text-slate-700 sm:text-sm">
                 Republic of Sierra Leone, West Africa
@@ -171,20 +165,16 @@ export function PressReleaseDetailUI({ id, pdfUrl }: PressReleaseDetailUIProps) 
           <footer className="mt-10 pt-4 sm:mt-16 sm:pt-8">
             <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
               <div className="max-w-sm text-xs text-slate-700">
-                <p className="mb-1 font-bold text-slate-900">
-                  Government of Sierra Leone
-                </p>
+                <p className="mb-1 font-bold text-slate-900">Government of Sierra Leone</p>
 
                 <p>This is an official document. Scan the QR code to verify.</p>
               </div>
 
               {qrUrl && (
                 <div className="w-fit border-2 p-3">
-                  <img src={qrUrl} alt="QR Code" width={100} height={100} />
+                  <Image src={qrUrl} alt="QR Code" width={100} height={100} />
 
-                  <div className="mt-1 text-center text-[9px]">
-                    Scan to verify
-                  </div>
+                  <div className="mt-1 text-center text-[9px]">Scan to verify</div>
                 </div>
               )}
             </div>

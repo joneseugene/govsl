@@ -210,7 +210,7 @@ export function AppointmentDetail({ referenceNumber }: AppointmentDetailProps) {
 
         {qrUrl && (
           <div className="absolute bottom-[22mm] right-[22mm] text-center">
-            <img src={qrUrl} width={90} height={90} alt="Verification QR code" />
+            <Image src={qrUrl} width={90} height={90} alt="Verification QR code" />
             <p className="mt-1 text-[10px] text-slate-500">Scan to verify</p>
           </div>
         )}
