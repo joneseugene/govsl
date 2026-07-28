@@ -9,7 +9,7 @@ export interface NewsCardProps {
   onReadMore: (id: string) => void;
 }
 
-export function NewsCard({ id, ministry, date, title, summary, onReadMore }: NewsCardProps) {
+export function NewsCard({ id, ministry, date, title, onReadMore }: NewsCardProps) {
   const formattedDate = date
     ? new Date(date).toLocaleDateString('en-GB', {
         day: 'numeric',

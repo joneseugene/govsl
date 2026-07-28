@@ -5,7 +5,7 @@ interface ServiceCardProps {
   onClick: () => void;
 }
 
-export function ServiceCard({ name, description, category, onClick }: ServiceCardProps) {
+export function ServiceCard({ name, description, onClick }: ServiceCardProps) {
   return (
     <div
       className="

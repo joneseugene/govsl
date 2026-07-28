@@ -11,7 +11,7 @@ import {
   getAppointmentDetail,
 } from '@/libs/query/detail/appointment_detail.query';
 import { useQuery } from '@tanstack/react-query';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface AppointmentDetailProps {
   referenceNumber: string;
@@ -19,7 +19,7 @@ interface AppointmentDetailProps {
 
 export function AppointmentDetail({ referenceNumber }: AppointmentDetailProps) {
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
   const [qrUrl, setQrUrl] = useState('');
 
   const printRef = useRef<HTMLDivElement>(null);

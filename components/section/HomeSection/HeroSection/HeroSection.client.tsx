@@ -31,7 +31,7 @@ export default function HeroSectionClient() {
       try {
         const data = await getSearchSuggestions(q);
         setSuggestions(data);
-      } catch (error) {
+      } catch {
         setSuggestions([]);
       } finally {
         setLoading(false);

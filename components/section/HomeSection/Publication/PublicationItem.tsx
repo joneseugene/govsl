@@ -19,9 +19,7 @@ export function PublicationItem({
   const id = item.id;
   const title = item.title;
   const ministry_name = item.mdas?.name?.trim() || 'Government of Sierra Leone';
-  const date = item?.date;
   const fileType = item.file_type;
-  const fileSize = item.file_size;
   const isCompact = variant === 'compact';
 
   return (

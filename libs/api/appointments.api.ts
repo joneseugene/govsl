@@ -5,7 +5,6 @@ import {
   AppointmentInterface,
 } from '../interface/appointments.interface';
 import { createServerSupabaseClient } from '@/supabase/server';
-import { createClient } from '@/supabase/client';
 
 export async function getAppointments(params?: {
   status?: string;

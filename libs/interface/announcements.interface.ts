@@ -1,6 +1,5 @@
 import { AttachmentInterface } from './attachments.interface';
 import { MDASummary } from './mda/mda.summary.interface';
-import { MDAInterface } from './mda/mdas.interface';
 
 export interface AnnouncementInterface {
   id: string;

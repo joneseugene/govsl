@@ -9,7 +9,7 @@ interface AnnouncementCardProps {
   className?: string;
 }
 
-export function AnnouncementCard({ item, onNavigate, className = '' }: AnnouncementCardProps) {
+export function AnnouncementCard({ item, onNavigate }: AnnouncementCardProps) {
   const title = item.title || 'Untitled Announcement';
 
   const description = item.description || 'No description available';
@@ -24,15 +24,6 @@ export function AnnouncementCard({ item, onNavigate, className = '' }: Announcem
         : type === 'event'
           ? 'Government Event'
           : 'Announcement';
-
-  const typeColor =
-    type === 'vacancy'
-      ? 'bg-blue-50 text-blue-700'
-      : type === 'notice'
-        ? 'bg-amber-50 text-amber-700'
-        : type === 'event'
-          ? 'bg-green-50 text-green-700'
-          : 'bg-gray-100 text-gray-700';
 
   return (
     <div className="h-full">

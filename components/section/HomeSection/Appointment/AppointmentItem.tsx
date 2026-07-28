@@ -17,7 +17,6 @@ export function AppointmentItem({
   item,
   onNavigate,
   className = '',
-  showVerified = true,
   variant = 'default',
   useHomeSections = true,
 }: AppointmentItemProps) {

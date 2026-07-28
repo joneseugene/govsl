@@ -10,13 +10,7 @@ interface MdaItemProps {
   variant?: 'default' | 'compact';
 }
 
-export function MdaItem({
-  item,
-  onNavigate,
-  className = '',
-  showUnderline = true,
-  variant = 'default',
-}: MdaItemProps) {
+export function MdaItem({ item, onNavigate, variant = 'default' }: MdaItemProps) {
   const isCompact = variant === 'compact';
 
   //Params

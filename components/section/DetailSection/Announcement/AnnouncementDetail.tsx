@@ -22,7 +22,6 @@ export default function AnnouncementDetailPage({ id }: Props) {
   const {
     data: announcement,
     isLoading,
-    isFetching,
     isError,
   } = useQuery({
     queryKey: announcementDetailQueryKey(id),
@@ -45,7 +44,7 @@ export default function AnnouncementDetailPage({ id }: Props) {
       month: 'long',
       year: 'numeric',
     });
-}, [announcement]);
+  }, [announcement]);
 
   if (isLoading) {
     return (

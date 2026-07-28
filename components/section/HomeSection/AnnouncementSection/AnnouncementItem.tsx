@@ -9,24 +9,6 @@ interface AnnouncementItemProps {
 export function AnnouncementItem({ item, onNavigate, className = '' }: AnnouncementItemProps) {
   const type = item.announcement_type?.toLowerCase();
 
-  const typeLabel =
-    type === 'vacancy'
-      ? 'Job Vacancies'
-      : type === 'notice'
-        ? 'Public Notices & Tenders'
-        : type === 'event'
-          ? 'Government Events'
-          : 'All Announcements';
-
-  const typeColor =
-    type === 'vacancy'
-      ? 'bg-blue-50 text-blue-700'
-      : type === 'notice'
-        ? 'bg-amber-50 text-amber-700'
-        : type === 'event'
-          ? 'bg-green-50 text-green-700'
-          : 'bg-gray-100 text-gray-700';
-
   const handleClick = () => {
     const params = new URLSearchParams();
 

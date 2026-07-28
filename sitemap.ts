@@ -32,8 +32,7 @@ async function fetchData(endpoint: string) {
     const data = await response.json();
 
     return data.data || data || [];
-  } catch (error) {
-    console.error(`Failed fetching ${endpoint}`, error);
+  } catch {
 
     return [];
   }
@@ -42,7 +41,7 @@ async function fetchData(endpoint: string) {
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
 
-  const [news, mdas, services, publications, reports, announcements] = await Promise.all([
+  const [news, mdas, services, publications, announcements] = await Promise.all([
     fetchData('news'),
     fetchData('mdas'),
     fetchData('services'),

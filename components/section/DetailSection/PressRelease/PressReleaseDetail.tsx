@@ -1,7 +1,7 @@
 'use client';
 
-import Image from "next/image";
-import { useState, useRef, useEffect, useMemo } from 'react';
+import Image from 'next/image';
+import { useState, useRef, useMemo } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';

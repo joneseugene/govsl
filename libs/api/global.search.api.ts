@@ -1,5 +1,4 @@
 import { createServerSupabaseClient } from '@/supabase/server';
-import { baseQuery } from './base.api';
 import { createClient } from '@/supabase/client';
 
 // Global Search

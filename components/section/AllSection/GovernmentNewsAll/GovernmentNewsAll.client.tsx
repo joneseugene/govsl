@@ -2,7 +2,6 @@
 
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
-
 import { HomeSection } from '@/components/ui/HomeSections';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { Search2 } from '@/components/ui/SearchUI2';

@@ -1,7 +1,6 @@
 'use client';
 
 import { formatDate } from '@/libs/functions';
-import { useState, useEffect } from 'react';
 
 interface PublicationCardProps {
   id: string;
@@ -14,16 +13,7 @@ interface PublicationCardProps {
   onReadMore: (id: string) => void;
 }
 
-export function PublicationCard({
-  id,
-  title,
-  ministry,
-  date,
-  file_size,
-  category,
-  description,
-  onReadMore,
-}: PublicationCardProps) {
+export function PublicationCard({ id, title, ministry, date, onReadMore }: PublicationCardProps) {
   const mounted = typeof window !== 'undefined';
 
   if (!mounted) {
