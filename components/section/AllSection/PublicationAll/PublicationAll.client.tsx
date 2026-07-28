@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import { useEffect, useMemo, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 
-import { HomeSection } from "@/components/ui/HomeSections";
-import { SectionHeading } from "@/components/ui/SectionHeading";
-import { Search2 } from "@/components/ui/SearchUI2";
-import { FilterDropdown } from "@/components/ui/FilterDropdown";
-import { Pagination } from "@/components/ui/PaginationUI";
-import { PublicationCard } from "@/components/section/AllSection/PublicationAll/PublicationCard";
-import { Breadcrumb } from "@/components/ui/Breadcrumb";
-import { useDebounce } from "@/libs/hook/useDebounce";
-import { PublicationInterface } from "@/libs/interface/publications.interface";
+import { HomeSection } from '@/components/ui/HomeSections';
+import { SectionHeading } from '@/components/ui/SectionHeading';
+import { Search2 } from '@/components/ui/SearchUI2';
+import { FilterDropdown } from '@/components/ui/FilterDropdown';
+import { Pagination } from '@/components/ui/PaginationUI';
+import { PublicationCard } from '@/components/section/AllSection/PublicationAll/PublicationCard';
+import { Breadcrumb } from '@/components/ui/Breadcrumb';
+import { useDebounce } from '@/libs/hook/useDebounce';
+import { PublicationInterface } from '@/libs/interface/publications.interface';
 
 type MinistryOption = {
   id: string;
@@ -38,10 +38,10 @@ export default function PublicationAllClient({
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const from = searchParams.get("from");
+  const from = searchParams.get('from');
 
-  const [searchQuery, setSearchQuery] = useState(search ?? "");
-  const [selectedMinistry, setSelectedMinistry] = useState(ministryId ?? "all");
+  const [searchQuery, setSearchQuery] = useState(search ?? '');
+  const [selectedMinistry, setSelectedMinistry] = useState(ministryId ?? 'all');
 
   const debouncedSearch = useDebounce(searchQuery, 500);
 
@@ -55,24 +55,24 @@ export default function PublicationAllClient({
       return;
     }
 
-    router.replace("/");
+    router.replace('/');
   };
 
   useEffect(() => {
     const params = new URLSearchParams();
 
-    params.set("page", "1");
+    params.set('page', '1');
 
     if (from) {
-      params.set("from", from);
+      params.set('from', from);
     }
 
     if (debouncedSearch.trim()) {
-      params.set("search", debouncedSearch.trim());
+      params.set('search', debouncedSearch.trim());
     }
 
-    if (selectedMinistry !== "all") {
-      params.set("ministryId", selectedMinistry);
+    if (selectedMinistry !== 'all') {
+      params.set('ministryId', selectedMinistry);
     }
 
     router.replace(`/publication?${params.toString()}`, {
@@ -83,18 +83,18 @@ export default function PublicationAllClient({
   const updatePage = (page: number) => {
     const params = new URLSearchParams();
 
-    params.set("page", page.toString());
+    params.set('page', page.toString());
 
     if (from) {
-      params.set("from", from);
+      params.set('from', from);
     }
 
     if (searchQuery.trim()) {
-      params.set("search", searchQuery.trim());
+      params.set('search', searchQuery.trim());
     }
 
-    if (selectedMinistry !== "all") {
-      params.set("ministryId", selectedMinistry);
+    if (selectedMinistry !== 'all') {
+      params.set('ministryId', selectedMinistry);
     }
 
     router.replace(`/publication?${params.toString()}`, {
@@ -104,7 +104,7 @@ export default function PublicationAllClient({
 
   const ministryOptions = useMemo(() => {
     return [
-      { value: "all", label: "All Ministries" },
+      { value: 'all', label: 'All Ministries' },
       ...ministries.map((m) => ({
         value: m.id,
         label: m.name,
@@ -116,10 +116,7 @@ export default function PublicationAllClient({
     <HomeSection>
       <div className="mx-auto max-w-5xl">
         <Breadcrumb
-          items={[
-            { label: "Home", page: "/" },
-            { label: "Publications and Reports" },
-          ]}
+          items={[{ label: 'Home', page: '/' }, { label: 'Publications and Reports' }]}
           variant="government"
         />
 
@@ -161,10 +158,10 @@ export default function PublicationAllClient({
               <PublicationCard
                 key={pub.id}
                 id={pub.id}
-                ministry={pub.mdas?.name ?? ""}
+                ministry={pub.mdas?.name ?? ''}
                 date={pub.date}
                 title={pub.title}
-                description={pub.description ?? ""}
+                description={pub.description ?? ''}
                 onReadMore={(id) => router.push(`/publication/${id}`)}
               />
             ))

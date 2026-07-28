@@ -24,14 +24,7 @@ export function PublicationCard({
   description,
   onReadMore,
 }: PublicationCardProps) {
-  const [showFull, setShowFull] = useState(false);
-  const [mounted, setMounted] = useState(false);
-
-  const snippet = description ? description.slice(0, 120) : '';
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = typeof window !== 'undefined';
 
   if (!mounted) {
     return (
@@ -72,7 +65,6 @@ export function PublicationCard({
       >
         {title}
       </h5>
-
     </article>
   );
 }
