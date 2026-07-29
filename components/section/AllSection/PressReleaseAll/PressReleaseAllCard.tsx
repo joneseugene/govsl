@@ -25,7 +25,7 @@ export function PressReleaseAllCard({ release }: PressReleaseAllCardProps) {
 
       {/* Title */}
       <h5 
-      onClick={() => router.push(`/press-release/${release.id}`)}
+      onClick={() => router.push(`/press-releases/${release.id}`)}
       className={`font-medium
           text-[18px] sm:text-[16px] md:text-[18px] lg:text-[20px]
           text-[#1D70B8] group-hover:cursor-pointer

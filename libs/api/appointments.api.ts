@@ -34,6 +34,8 @@ export async function getAppointments(params?: {
     searchFields: ['title', 'position', 'reference_number', 'appointee_name', 'office_name'],
     page: params?.page ?? 1,
     limit: params?.limit ?? 5,
+    orderBy: 'created_at',
+    ascending: false,
   });
 
   return result;

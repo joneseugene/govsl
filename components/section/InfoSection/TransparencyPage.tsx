@@ -92,7 +92,7 @@ export default function TransparencyPage() {
             <p className="text-[17px] leading-relaxed text-[#4B5563]">
               Official publications, reports, and data releases can be found in the{' '}
               <button
-                onClick={() => router.push('/publication')}
+                onClick={() => router.push('/publications')}
                 className="font-medium text-[#1D70B8] underline underline-offset-2 hover:text-[#003366]"
               >
                 Publications

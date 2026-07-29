@@ -106,7 +106,7 @@ export default function MdaDetailPage({ id }: Props) {
         <Breadcrumb
           items={[
             { label: 'Home', page: '/' },
-            { label: 'MDAs', page: '/mda' },
+            { label: 'MDAs', page: '/mdas' },
             { label: mda.acronym || mda.name },
           ]}
           variant="government"
@@ -279,7 +279,7 @@ export default function MdaDetailPage({ id }: Props) {
                 <button
                   key={agency.id}
                   type="button"
-                  onClick={() => router.push(`/mda/${agency.id}`)}
+                  onClick={() => router.push(`/mdas/${agency.id}`)}
                   className="text-left"
                 >
                   <h3 className="line-clamp-2 font-body text-lg font-normal text-[#1D70B8]">

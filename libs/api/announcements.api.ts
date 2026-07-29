@@ -22,6 +22,8 @@ export async function getAnnouncements(params?: {
     searchFields: ['title', 'description', 'content', 'announcement_type'],
     page: params?.page ?? 1,
     limit: params?.limit ?? 5,
+    orderBy: 'created_at',
+    ascending: false,
   });
 
   return result;

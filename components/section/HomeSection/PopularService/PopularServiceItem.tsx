@@ -23,7 +23,7 @@ export function PopularCategoryItem({
   return (
     <button
       type="button"
-      onClick={() => onNavigate(`/service/${item.category_page}/${id}`)}
+      onClick={() => onNavigate(`/services/${item.category_page}/${id}`)}
       className="
           text-left w-full
           focus:outline-none focus-visible:ring-2

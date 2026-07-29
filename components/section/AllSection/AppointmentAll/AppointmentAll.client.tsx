@@ -85,7 +85,7 @@ export default function AppointmentAllClient({
       params.set('ministryId', selectedMinistry);
     }
 
-    router.replace(`/appointment?${params.toString()}`, {
+    router.replace(`/appointments?${params.toString()}`, {
       scroll: false,
     });
   }, [debouncedSearch, selectedCategory, selectedMinistry, router, from]);
@@ -111,7 +111,7 @@ export default function AppointmentAllClient({
       params.set('ministryId', selectedMinistry);
     }
 
-    router.replace(`/appointment?${params.toString()}`, {
+    router.replace(`/appointments?${params.toString()}`, {
       scroll: false,
     });
   };

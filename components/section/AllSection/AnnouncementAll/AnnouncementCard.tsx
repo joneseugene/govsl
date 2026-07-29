@@ -29,7 +29,7 @@ export function AnnouncementCard({ item, onNavigate }: AnnouncementCardProps) {
     <div className="h-full">
       <button
         type="button"
-        onClick={() => onNavigate(`/announcement/${item.id}`)}
+        onClick={() => onNavigate(`/announcements/${item.id}`)}
         className="
           text-left w-full
           focus:outline-none focus-visible:ring-2

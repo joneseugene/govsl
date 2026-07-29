@@ -15,7 +15,7 @@ export async function getHomeAnnouncementTypes(): Promise<AnnouncementTypeMapped
       total: items.reduce((acc, item) => acc + item.total, 0),
       title: 'All Announcements',
       description: 'Browse complete announcement archive',
-      route: '/announcement',
+      route: '/announcements',
     },
   ];
 }

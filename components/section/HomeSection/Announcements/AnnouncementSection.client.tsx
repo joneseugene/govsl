@@ -32,8 +32,7 @@ export default function AnnouncementSectionClient({ initialData }: Props) {
       <div className="mx-auto max-w-5xl">
         <SectionHeading
           level="h3"
-          title="Announcements"
-          description="Explore official government notices, opportunities, and public information."
+          title="More on GOV.SL"
           descriptionClassName="text-gray-400"
           descriptionSizeClassName="text-[16px]"
         />

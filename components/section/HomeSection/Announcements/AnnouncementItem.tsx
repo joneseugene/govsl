@@ -18,11 +18,11 @@ export function AnnouncementItem({ item, onNavigate, className = '' }: Announcem
       params.set('category', type);
     }
 
-    onNavigate(`/announcement?${params.toString()}`);
+    onNavigate(`/announcements?${params.toString()}`);
   };
 
   return (
-    <div className="h-full">
+    <div className="h-full mt-5">
       <button
         type="button"
         onClick={handleClick}
@@ -30,7 +30,6 @@ export function AnnouncementItem({ item, onNavigate, className = '' }: Announcem
           group flex h-full w-full flex-col justify-between
           border border-slate-50
           bg-white
-          p-5 sm:p-6
           text-left
           ${className}
         `}

@@ -72,7 +72,7 @@ export default function AnnouncementDetailPage({ id }: Props) {
         <Breadcrumb
           items={[
             { label: 'Home', page: '/' },
-            { label: 'Announcements', page: '/announcement' },
+            { label: 'Announcements', page: '/announcements' },
             { label: announcement.title || 'Announcement' },
           ]}
           variant="government"

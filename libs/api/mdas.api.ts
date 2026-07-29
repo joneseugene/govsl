@@ -5,21 +5,20 @@ import { baseQuery } from './base.api';
 
 export async function getMdas(params?: {
   status?: string;
+  page?: number;
   limit?: number;
   search?: string;
 }) {
-  const result = await baseQuery<MDAInterface>({
+  return baseQuery<MDAInterface>({
     table: model.mdas,
     select: '*',
     filters: {
       status: params?.status,
     },
     search: params?.search,
-    page: 1,
-    limit: 50,
+    page: params?.page ?? 1,
+    limit: params?.limit ?? 10,
   });
-
-  return shuffleArray(result.data).slice(0, params?.limit ?? 5);
 }
 
 export async function getMDAOptions() {

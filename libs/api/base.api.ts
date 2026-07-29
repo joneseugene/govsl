@@ -60,7 +60,6 @@ export async function baseQuery<T = unknown>(options: QueryOptions): Promise<Que
     const { data, error, count } = await query;
 
     if (error) {
-      console.error('BASE QUERY ERROR:', error.message);
       throw new Error(error.message);
     }
 
@@ -70,8 +69,6 @@ export async function baseQuery<T = unknown>(options: QueryOptions): Promise<Que
     };
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : 'Network error occurred';
-
-    console.error('BASE QUERY CATCH:', message);
 
     return {
       data: [],

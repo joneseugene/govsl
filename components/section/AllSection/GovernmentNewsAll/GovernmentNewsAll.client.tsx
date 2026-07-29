@@ -58,31 +58,30 @@ export default function AllGovernmentNewsClient({
   };
 
   useEffect(() => {
-    const params = new URLSearchParams();
+    const params = new URLSearchParams(searchParams.toString());
 
     params.set('page', '1');
+
+    if (debouncedSearch.trim()) {
+      params.set('search', debouncedSearch.trim());
+    } else {
+      params.delete('search');
+    }
+
+    if (selectedMinistry !== 'all') {
+      params.set('ministryId', selectedMinistry);
+    } else {
+      params.delete('ministryId');
+    }
 
     if (from) {
       params.set('from', from);
     }
 
-    if (debouncedSearch.trim()) {
-      params.set('search', debouncedSearch.trim());
-    }
-
-    if (selectedMinistry !== 'all') {
-      params.set('ministryId', selectedMinistry);
-    }
-
-    const nextUrl = `/news?${params.toString()}`;
-    const currentUrl = `/news?${searchParams.toString()}`;
-
-    if (nextUrl === currentUrl) return;
-
-    router.replace(nextUrl, {
+    router.replace(`/news?${params.toString()}`, {
       scroll: false,
     });
-  }, [debouncedSearch, selectedMinistry, router, from, searchParams]);
+  }, [debouncedSearch, selectedMinistry]);
 
   const updatePage = (page: number) => {
     const params = new URLSearchParams();

@@ -1,21 +1,32 @@
 'use client';
 
-import Image from "next/image";
-import { useEffect, useMemo, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import Image from 'next/image';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
+
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { Breadcrumb } from '@/components/ui/Breadcrumb';
+import { BackButton } from '@/components/ui/BackButton';
+import { PrintButton } from '@/components/ui/PrintButton';
+
 import { getQRCode } from '@/libs/functions';
 import { getNewsDetail, newsDetailQueryKey } from '@/libs/query/detail/news_detail.query';
+import { RichTextRenderer } from '@/components/ui/RichTextRenderer';
 
 interface Props {
   id: string;
 }
 
 export default function NewsDetailClient({ id }: Props) {
-  const router = useRouter();
+  const printRef = useRef<HTMLDivElement>(null);
+  const [loading] = useState(false);
+
   const [qrUrl, setQrUrl] = useState('');
+
+  useEffect(() => {
+    const url = `${window.location.origin}/news/${id}`;
+    setQrUrl(getQRCode(url));
+  }, [id]);
 
   const {
     data: news,
@@ -31,179 +42,189 @@ export default function NewsDetailClient({ id }: Props) {
     retry: 1,
   });
 
-  const formattedDate = useMemo(() => {
-    if (!news?.date) return null;
-
-    const parsed = new Date(news.date);
-
-    if (isNaN(parsed.getTime())) return null;
-
-    return parsed.toLocaleDateString('en-GB', {
-      day: '2-digit',
-      month: 'long',
-      year: 'numeric',
-    });
-  }, [news]);
-
-  useEffect(() => {
-    setQrUrl(`${window.location.origin}/news/${id}`);
-  }, [id]);
-
   if (isLoading) {
     return (
-      <section className="bg-white px-4 py-20">
-        <div className="mx-auto max-w-5xl text-center text-gray-500">Loading news article...</div>
+      <section className="bg-white px-4 py-20 text-center text-gray-500">
+        Loading news article...
       </section>
     );
   }
 
   if (isError || !news) {
     return (
-      <section className="bg-white px-4 py-20">
-        <div className="mx-auto max-w-5xl text-center text-gray-500">
-          News article could not be loaded.
-        </div>
+      <section className="bg-white px-4 py-20 text-center text-gray-500">
+        News article could not be loaded.
       </section>
     );
   }
-
-  const renderContent = (text?: string) => {
-    if (!text) {
-      return <p className="text-[#505A5F]">No content available.</p>;
-    }
-
-    return text.split('\n\n').map((paragraph, index) => {
-      const trimmed = paragraph.trim();
-
-      if (!trimmed) return null;
-
-      if (trimmed.startsWith('**') && trimmed.endsWith(':**')) {
-        return (
-          <h2 key={index} className="mb-4 mt-12 font-heading text-3xl font-normal text-[#003366]">
-            {trimmed.replace(/\*\*/g, '').replace(':', '')}
-          </h2>
-        );
-      }
-
-      if (trimmed.startsWith('**') && trimmed.endsWith('**')) {
-        return (
-          <h3 key={index} className="mb-3 mt-8 font-heading text-2xl font-normal text-[#003366]">
-            {trimmed.replace(/\*\*/g, '')}
-          </h3>
-        );
-      }
-
-      if (trimmed.startsWith('•')) {
-        const items = trimmed
-          .split('\n')
-          .map((item) => item.trim())
-          .filter(Boolean);
-
-        return (
-          <ul
-            key={index}
-            className="mb-6 list-inside list-disc space-y-2 font-body text-[19px] leading-relaxed text-[#0B0C0C]"
-          >
-            {items.map((item, itemIndex) => (
-              <li key={itemIndex}>{item.replace(/^•\s*/, '')}</li>
-            ))}
-          </ul>
-        );
-      }
-
-      return (
-        <p key={index} className="mb-6 font-body text-[19px] leading-relaxed text-[#0B0C0C]">
-          {trimmed}
-        </p>
-      );
-    });
-  };
 
   const category = news.category ?? 'News';
   const ministry = news.mdas?.name ?? 'Government of Sierra Leone';
   const headline = news.headline ?? news.title;
   const summary = news.summary;
   const content = news.content ?? '';
-  const location = news.location;
 
   return (
     <section className="bg-white px-4 py-20">
       <div className="mx-auto max-w-5xl">
-        <div className="mb-6">
-          <Breadcrumb
-            items={[
-              { label: 'Home', page: '/' },
-              { label: 'News and Articles', page: '/news' },
-              { label: headline || id },
-            ]}
-            variant="government"
-          />
-
-          <div className="mb-3 flex flex-wrap items-center gap-3">
-            {category && (
-              <span className="bg-[#F3F2F1] px-3 py-1 text-xs font-medium uppercase tracking-wide text-[#0B0C0C]">
-                {category}
-              </span>
-            )}
-
-            <span className="text-sm font-medium text-[#008A3C]">✓ Verified</span>
+        {/* NON PRINT AREA */}
+        <div className="no-print">
+          <div className="mb-6">
+            <Breadcrumb
+              items={[
+                { label: 'Home', page: '/' },
+                { label: 'News and Articles', page: '/news' },
+                { label: headline || id },
+              ]}
+              variant="government"
+            />
           </div>
 
-          {ministry && <p className="mb-2 font-body text-[16px] text-[#505A5F]">{ministry}</p>}
+          {/* Actions */}
+          <div className="mb-6 flex gap-3">
+            <BackButton
+              fallback="/news"
+              className="
+                rounded-md
+                bg-[#003366]
+                px-4 py-2
+                text-sm
+                font-medium
+                text-white
+                hover:bg-[#002244]
+              "
+            />
 
-          {formattedDate && (
-            <p className="mb-2 font-body text-[19px] text-[#505A5F]">Published: {formattedDate}</p>
-          )}
-
-          {location && (
-            <p className="mb-2 font-body text-[19px] text-[#505A5F]">Location: {location}</p>
-          )}
+            <PrintButton contentRef={printRef} loading={loading} />
+          </div>
         </div>
 
-        <SectionHeading
-          level="h5"
-          title={headline}
-          description={summary}
-          descriptionClassName="text-gray-400"
-          descriptionSizeClassName="text-[16px]"
-          showBack
-          onBack={() => router.back()}
-        />
-
-        {summary && (
-          <div className="mb-12 border border-[#B1B4B6] bg-[#F3F2F1] p-5">
-            <p className="font-body text-[19px] leading-relaxed text-[#0B0C0C]">
-              <strong>Summary:</strong> {summary}
-            </p>
+        {/* PRINT AREA */}
+        <div
+          ref={printRef}
+          className="
+    bg-white
+    print:mx-auto
+    print:w-full
+    print:max-w-[210mm]
+    print:min-h-[297mm]
+    print:px-[20mm]
+    print:py-[25mm]
+    print:text-black
+  "
+        >
+          {/* Header */}
+          <div
+            className="
+              mb-8
+              border-b
+              border-[#B1B4B6]
+              pb-6
+              print:mb-6
+            "
+          >
+            <SectionHeading
+              level="h5"
+              title={headline}
+              descriptionClassName="text-gray-400"
+              descriptionSizeClassName="text-[16px]"
+            />
           </div>
-        )}
 
-        <article className="font-body text-[19px] leading-relaxed">
-          {renderContent(content)}
-        </article>
+          {/* Metadata */}
+          <div className="mb-6">
+            <div className="mb-3 flex gap-3">
+              <span
+                className="
+                  bg-[#F3F2F1]
+                  px-3
+                  py-1
+                  text-xs
+                  font-medium
+                  uppercase
+                "
+              >
+                {category}
+              </span>
 
-        <div className="mt-16 border-t border-[#B1B4B6] pt-6">
-          <div className="flex flex-col justify-between gap-8 md:flex-row md:items-end">
-            <div className="max-w-xl text-[#505A5F]">
-              <p className="mb-2 font-heading text-[19px] font-normal text-[#003366]">
-                Government of Sierra Leone
-              </p>
-
-              <p className="font-body leading-relaxed">
-                This is an official government news publication.
-              </p>
+              <span className="text-sm font-medium text-[#008A3C]">✓ Verified</span>
             </div>
 
-            {qrUrl && (
-              <div className="border-2 border-[#0B0C0C] p-3">
-                <Image src={getQRCode(qrUrl)} alt="QR Code" width={120} height={120} />
+            <p className="text-[#505A5F]">{ministry}</p>
 
-                <div className="mt-2 text-center text-[11px] text-[#505A5F]">Scan to verify</div>
-              </div>
+            {news.date && (
+              <p className="text-[#505A5F]">
+                Published:{' '}
+                {new Date(news.date).toLocaleDateString('en-US', {
+                  day: '2-digit',
+                  month: 'long',
+                  year: 'numeric',
+                })}
+              </p>
             )}
           </div>
 
-          <div className="mt-8 h-2 w-full bg-linear-to-r from-green-700 via-blue-800 to-yellow-400" />
+          {/* Summary */}
+          {summary && (
+            <div
+              className="
+                mb-10
+                border
+                border-[#B1B4B6]
+                bg-[#F3F2F1]
+                p-5
+                print:bg-white
+              "
+            >
+              <strong>Summary:</strong> {summary}
+            </div>
+          )}
+
+          {/* Content */}
+          <article
+            className="
+              text-[19px]
+              leading-relaxed
+              print:text-[14px]
+            "
+          >
+            <RichTextRenderer content={content} emptyMessage="No publication content available." />
+          </article>
+
+          {/* Footer */}
+          <footer
+            className="
+              mt-16
+              border-t
+              border-[#B1B4B6]
+              pt-6
+              print:mt-10
+            "
+          >
+            <div
+              className="
+                flex
+                flex-col
+                gap-8
+                md:flex-row
+                md:justify-between
+              "
+            >
+              <div>
+                <p className="font-bold text-[#003366]">Government of Sierra Leone</p>
+
+                <p>This is an official government news publication.</p>
+              </div>
+
+              {qrUrl && (
+                <div className="border-2 p-3">
+                  <Image src={qrUrl} alt="QR Code" width={120} height={120} />
+
+                  <p className="text-center text-xs">Scan to verify</p>
+                </div>
+              )}
+            </div>
+          </footer>
         </div>
       </div>
     </section>

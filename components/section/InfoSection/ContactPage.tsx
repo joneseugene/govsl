@@ -77,7 +77,7 @@ export default function ContactPage() {
             <p className="text-[15px] text-[#4B5563]">
               For enquiries directed at a specific Ministry, Department, or Agency, please visit the{' '}
               <button
-                onClick={() => router.push('/mda')}
+                onClick={() => router.push('/mdas')}
                 className="font-medium text-[#1D70B8] underline underline-offset-2 hover:text-[#003366]"
               >
                 MDAs directory

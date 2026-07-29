@@ -92,7 +92,7 @@ export default function AllServicesClient({
       params.set("category", selectedCategory);
     }
 
-    router.replace(`/service?${params.toString()}`, {
+    router.replace(`/services?${params.toString()}`, {
       scroll: false,
     });
   }, [debouncedSearch, selectedCategory, router, from]);
@@ -114,14 +114,14 @@ export default function AllServicesClient({
       params.set("category", selectedCategory);
     }
 
-    router.replace(`/service?${params.toString()}`, {
+    router.replace(`/services?${params.toString()}`, {
       scroll: false,
     });
   };
 
   const handleView = (item: ServiceCategory) => {
     const page = item.category_page || "services";
-    router.push(`/service/${page}`);
+    router.push(`/services/${page}`);
   };
 
   return (

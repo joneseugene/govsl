@@ -28,6 +28,8 @@ export async function getPressReleases(params?: {
     searchFields: ['title', 'description', 'legacy_id'],
     page: params?.page ?? 1,
     limit: params?.limit ?? 5,
+    orderBy: 'created_at',
+    ascending: false,
   });
 
   return toPlain({

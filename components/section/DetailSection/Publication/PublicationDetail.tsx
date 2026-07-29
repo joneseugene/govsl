@@ -1,20 +1,20 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
-
 import { Breadcrumb } from '@/components/ui/Breadcrumb';
 import { SectionHeading } from '@/components/ui/SectionHeading';
-
 import { getQRCode } from '@/libs/functions';
-
 import {
   getPublicationDetail,
   publicationDetailQueryKey,
 } from '@/libs/query/detail/publication_detail.query';
 import { PublicationInterface } from '@/libs/interface/publications.interface';
+import { PublicationContent } from './PublicationContent';
+import { PrintButton } from '@/components/ui/PrintButton';
+import { BackButton } from '@/components/ui/BackButton';
 
 interface PublicationDetailClientProps {
   id: string;
@@ -22,6 +22,7 @@ interface PublicationDetailClientProps {
 
 export default function PublicationDetailClient({ id }: PublicationDetailClientProps) {
   const router = useRouter();
+  const printRef = useRef<HTMLDivElement>(null);
 
   const {
     data: publication,
@@ -43,18 +44,22 @@ export default function PublicationDetailClient({ id }: PublicationDetailClientP
     title = '',
     description = '',
     content = '',
+    abstract = '',
+    executive_summary = '',
+    financial_overview = '',
     file_url,
     status = '',
-    date,
+    publish_date,
     mdas,
+    reference_number,
   } = publicationData ?? {};
 
   /* ---------------- DATE ---------------- */
 
   const formattedDate = useMemo(() => {
-    if (!date) return null;
+    if (!publish_date) return null;
 
-    const parsed = new Date(date);
+    const parsed = new Date(publish_date);
 
     if (Number.isNaN(parsed.getTime())) {
       return null;
@@ -65,62 +70,11 @@ export default function PublicationDetailClient({ id }: PublicationDetailClientP
       month: 'long',
       year: 'numeric',
     });
-  }, [date]);
+  }, [publish_date]);
 
   /* ---------------- QR ---------------- */
 
-  const qrUrl = useMemo(() => {
-    return `/publication/${id}`;
-  }, [id]);
-
-  /* ---------------- CONTENT RENDERER ---------------- */
-
-  const renderContent = (text?: string) => {
-    if (!text) {
-      return <p className="text-[#505A5F]">No publication content available.</p>;
-    }
-
-    return text.split('\n\n').map((paragraph, index) => {
-      const trimmed = paragraph.trim();
-
-      if (trimmed.startsWith('**') && trimmed.endsWith(':**')) {
-        return (
-          <h2 key={index} className="mb-4 mt-12 text-3xl font-semibold text-[#003366]">
-            {trimmed.replace(/\*\*/g, '').replace(':', '')}
-          </h2>
-        );
-      }
-
-      if (trimmed.startsWith('**') && trimmed.endsWith('**')) {
-        return (
-          <h3 key={index} className="mb-3 mt-8 text-2xl font-semibold text-[#003366]">
-            {trimmed.replace(/\*\*/g, '')}
-          </h3>
-        );
-      }
-
-      if (trimmed.startsWith('•')) {
-        const items = trimmed
-          .split('\n')
-          .map((item) => item.trim())
-          .filter(Boolean);
-
-        return (
-          <ul key={index} className="mb-6 list-inside list-disc space-y-2 text-[#0B0C0C]">
-            {items.map((item, itemIndex) => (
-              <li key={itemIndex}>{item.replace(/^•\s*/, '')}</li>
-            ))}
-          </ul>
-        );
-      }
-
-      return (
-        <p key={index} className="mb-6 leading-relaxed text-[#0B0C0C]">
-          {trimmed}
-        </p>
-      );
-    });
-  };
+  const qrUrl = useMemo(() => `/publications/${id}`, [id]);
 
   /* ---------------- LOADING ---------------- */
 
@@ -132,7 +86,7 @@ export default function PublicationDetailClient({ id }: PublicationDetailClientP
     );
   }
 
-  if (isError || !publication) {
+  if (isError) {
     return (
       <section className="bg-white px-4 py-20">
         <div className="mx-auto max-w-5xl text-center text-gray-500">
@@ -153,82 +107,132 @@ export default function PublicationDetailClient({ id }: PublicationDetailClientP
             },
             {
               label: 'Publications',
-              page: '/publication',
+              page: '/publications',
             },
             {
-              label: id,
+              label: reference_number ?? '-',
             },
           ]}
           variant="government"
         />
 
-        <div className="mb-6">
-          <div className="mb-3 flex flex-wrap items-center gap-3">
-            {status && (
-              <span className="bg-[#F3F2F1] px-3 py-1 text-xs font-medium uppercase tracking-wide text-[#0B0C0C]">
-                {status}
-              </span>
-            )}
+        {/* Actions */}
+        <div className="mb-8 mt-6 flex flex-wrap gap-3 print:hidden">
+          <BackButton
+            fallback="/publication"
+            className="
+      inline-flex items-center
+      rounded-md
+      bg-[#003366]
+      px-4 py-2
+      text-sm
+      font-medium
+      text-white
+      transition
+      hover:bg-[#002244]
+    "
+          />
 
-            <span className="text-sm font-medium text-[#008A3C]">✓ Verified</span>
-          </div>
-
-          {mdas?.name && <p className="mb-2 text-[15px] text-[#505A5F]">{mdas.name}</p>}
-
-          {formattedDate && (
-            <p className="mb-2 text-[15px] text-[#505A5F]">Published: {formattedDate}</p>
-          )}
+          <PrintButton contentRef={printRef} loading={isLoading} />
         </div>
+        <div
+          ref={printRef}
+          className="
+    rounded-lg
+    bg-white
+    px-2
+    py-2
+    print:px-8
+    print:py-10
+    print:max-w-none
+  "
+        >
+          {/* Metadata */}
 
-        <SectionHeading
-          level="h5"
-          title={title}
-          description={description}
-          descriptionClassName="text-gray-400"
-          descriptionSizeClassName="text-[16px]"
-          showBack
-          onBack={() => router.back()}
-        />
+          <div className="mb-6">
+            <div className="mb-3 flex flex-wrap items-center gap-3">
+              {status && (
+                <span className="bg-[#F3F2F1] px-3 py-1 text-xs font-medium uppercase tracking-wide text-[#0B0C0C]">
+                  {status}
+                </span>
+              )}
 
-        {file_url && (
-          <div className="mb-10">
-            <a
-              href={file_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="
+              <span className="text-sm font-medium text-[#008A3C]">✓ Verified</span>
+            </div>
+
+            {mdas?.name && <p className="mb-2 text-[15px] text-[#505A5F]">{mdas.name}</p>}
+
+            {formattedDate && (
+              <p className="mb-2 text-[15px] text-[#505A5F]">Published: {formattedDate}</p>
+            )}
+          </div>
+
+          {/* Heading */}
+
+          <SectionHeading
+            level="h5"
+            title={title}
+            descriptionClassName="text-gray-400"
+            descriptionSizeClassName="text-[16px]"
+            showBack
+            onBack={() => router.back()}
+          />
+
+          {/* Attachment */}
+
+          {file_url && (
+            <div className="mb-10">
+              <a
+                href={file_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="
                 inline-flex items-center justify-center
-                rounded-md bg-[#003366]
+                rounded-md
+                bg-[#003366]
                 px-5 py-3
-                text-sm font-medium text-white
-                transition hover:bg-[#002244]
+                text-sm
+                font-medium
+                text-white
+                transition
+                hover:bg-[#002244]
               "
-            >
-              View Attached Publication
-            </a>
-          </div>
-        )}
+              >
+                View Attached Publication
+              </a>
+            </div>
+          )}
 
-        <div className="text-[19px] leading-relaxed">{renderContent(content)}</div>
+          {/* Publication Body */}
 
-        <div className="mt-16 border-t border-[#B1B4B6] pt-6">
-          <div className="flex flex-col justify-between gap-8 md:flex-row md:items-end">
-            <div className="max-w-xl text-[#505A5F]">
-              <p className="mb-2 text-[19px] font-bold text-[#003366]">
-                Government of Sierra Leone
-              </p>
+          <PublicationContent
+            abstract={abstract}
+            executiveSummary={executive_summary}
+            description={content || description}
+            financialOverview={financial_overview}
+          />
 
-              <p className="leading-relaxed">This is an official government publication.</p>
+          {/* Footer */}
+
+          <div className="mt-16 border-t border-[#B1B4B6] pt-6">
+            <div className="flex flex-col justify-between gap-8 md:flex-row md:items-end">
+              <div className="max-w-xl text-[#505A5F]">
+                <p className="mb-2 text-[19px] font-bold text-[#003366]">
+                  Government of Sierra Leone
+                </p>
+
+                <p className="leading-relaxed">This is an official government publication.</p>
+              </div>
+
+              <div className="border-2 border-[#0B0C0C] p-3">
+                <Image src={getQRCode(qrUrl)} alt="QR Code" width={120} height={120} />
+
+                <div className="mt-2 text-center text-[11px] text-[#505A5F]">Scan to verify</div>
+              </div>
             </div>
 
-            <div className="border-2 border-[#0B0C0C] p-3">
-              <Image src={getQRCode(qrUrl)} alt="QR Code" width={120} height={120} />
-
-              <div className="mt-2 text-center text-[11px] text-[#505A5F]">Scan to verify</div>
-            </div>
+            <div className="mt-8 h-2 w-full bg-linear-to-r from-green-700 via-blue-800 to-yellow-400" />
           </div>
-
-          <div className="mt-8 h-2 w-full bg-linear-to-r from-green-700 via-blue-800 to-yellow-400" />
         </div>
       </div>
     </section>

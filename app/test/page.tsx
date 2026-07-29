@@ -23,7 +23,7 @@ export default async function TestSection() {
             <div key={service.id} className="p-4 hover:bg-gray-50 transition">
               {/* Clickable Title */}
               <Link
-                href={`/service/${service.id}`}
+                href={`/services/${service.id}`}
                 className="
             text-lg font-semibold text-blue-950
             hover:underline hover:text-blue-800

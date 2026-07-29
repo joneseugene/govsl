@@ -19,13 +19,14 @@ export const publicationMdaOptionsQueryKey = [
 ];
 
 export async function getAllPublications(params: PublicationAllParams) {
-  return getPublications({
+  const result = await getPublications({
     page: params.page,
     limit: 5,
     search: params.search,
     ministryId: params.ministryId,
-    status: "published",
+    status: "approved",
   });
+  return result;
 }
 
 export async function getPublicationMdaOptions() {

@@ -6,5 +6,6 @@ export const publicationDetailQueryKey = (id: string) => [
 ];
 
 export async function getPublicationDetail(id: string) {
-  return getPublicationById(id);
+  const publication = await getPublicationById(id);
+  return publication;
 }

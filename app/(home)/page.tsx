@@ -8,7 +8,7 @@ import PublicationSectionServer from '@/components/section/HomeSection/Publicati
 import PopularServicesSectionServer from '@/components/section/HomeSection/PopularService/PopularServiceSection.server';
 import MDASectionServer from '@/components/section/HomeSection/Mda/MdaSection.server';
 import Footer from '@/components/layout/footer/page';
-import AnnouncementSectionServer from '@/components/section/HomeSection/AnnouncementSection/AnnouncementSection.server';
+import AnnouncementSectionServer from '@/components/section/HomeSection/Announcements/AnnouncementSection.server';
 
 export default function Page() {
   return (
@@ -16,7 +16,6 @@ export default function Page() {
       <Header links={homeNavLinks} />
 
       <main>
-        {/* Main SEO Heading */}
         <h1 className="sr-only">Government of Sierra Leone Official Public Information Portal</h1>
 
         <HeroSection />

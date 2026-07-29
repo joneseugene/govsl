@@ -83,7 +83,7 @@ export default function PressReleasesAllClient({
       params.set("ministryId", selectedMinistry);
     }
 
-    router.replace(`/press-release?${params.toString()}`, {
+    router.replace(`/press-releases?${params.toString()}`, {
       scroll: false,
     });
   }, [debouncedSearch, selectedMinistry, router, from]);
@@ -105,7 +105,7 @@ export default function PressReleasesAllClient({
       params.set("ministryId", selectedMinistry);
     }
 
-    router.replace(`/press-release?${params.toString()}`, {
+    router.replace(`/press-releases?${params.toString()}`, {
       scroll: false,
     });
   };

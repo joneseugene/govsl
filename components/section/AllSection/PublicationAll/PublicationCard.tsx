@@ -14,18 +14,6 @@ interface PublicationCardProps {
 }
 
 export function PublicationCard({ id, title, ministry, date, onReadMore }: PublicationCardProps) {
-  const mounted = typeof window !== 'undefined';
-
-  if (!mounted) {
-    return (
-      <article className="group">
-        <h2 className="text-xl font-semibold">{title}</h2>
-        <p className="text-gray-500">
-          {ministry} • {formatDate(date)}
-        </p>
-      </article>
-    );
-  }
 
   return (
     <article className="group">

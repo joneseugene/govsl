@@ -31,7 +31,7 @@ export default function ServicesSlugClient({ categoryPage, services, meta }: Pro
       return;
     }
 
-    router.replace('/service');
+    router.replace('/services');
   };
 
   return (
@@ -45,7 +45,7 @@ export default function ServicesSlugClient({ categoryPage, services, meta }: Pro
             },
             {
               label: 'Categories',
-              page: '/service',
+              page: '/services',
             },
             {
               label: 'Services',
@@ -57,7 +57,6 @@ export default function ServicesSlugClient({ categoryPage, services, meta }: Pro
         <SectionHeading
           level="h5"
           title={meta?.name || 'Category'}
-          description={meta?.description || ''}
           descriptionClassName="text-gray-400"
           descriptionSizeClassName="text-[16px]"
           showBack
@@ -79,8 +78,8 @@ export default function ServicesSlugClient({ categoryPage, services, meta }: Pro
                 "
               >
                 <Link
-                  href={`/service/${categoryPage}/${service.id}?from=${encodeURIComponent(
-                    `/service/${categoryPage}`,
+                  href={`/services/${categoryPage}/${service.id}?from=${encodeURIComponent(
+                    `/services/${categoryPage}`,
                   )}`}
                   className="
                     text-[18px] font-medium text-[#1D70B8]

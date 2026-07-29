@@ -19,10 +19,10 @@ export const homeNavLinks = [
     href: '/news',
   },
   {
-    label: 'Reports',
+    label: 'Publications',
     id: 'publication',
     key: 'publication',
-    href: '/reports',
+    href: '/publications',
   },
   {
     label: 'Services',

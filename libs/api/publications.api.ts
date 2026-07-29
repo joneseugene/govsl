@@ -23,7 +23,7 @@ export async function getPublications(params?: {
       )
     `,
     filters: {
-      status: params?.status ?? 'published',
+      status: params?.status ?? 'approved',
       mda_id: params?.ministryId,
       category: params?.category,
     },
@@ -31,6 +31,8 @@ export async function getPublications(params?: {
     searchFields: ['title', 'description', 'content'],
     page: params?.page ?? 1,
     limit: params?.limit ?? 5,
+    orderBy: 'created_at',
+    ascending: false,
   });
 }
 
@@ -38,7 +40,7 @@ export async function getPublicationById(id: string) {
   const result = await baseQuery<PublicationInterface>({
     table: model.publications,
     select: `*, mdas(id,name,acronym,type)`,
-    filters: { id, status: 'published' },
+    filters: { id, status: 'approved' },
     limit: 1,
     page: 1,
   });

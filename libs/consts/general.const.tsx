@@ -69,24 +69,24 @@ export const announcementTypeMap: Record<
   vacancy: {
     title: 'Job Vacancies',
     description: 'Public sector employment opportunities',
-    route: '/announcement/vacancy',
+    route: '/announcements/vacancy',
   },
 
   notice: {
     title: 'Public Notices & Tenders',
     description: 'Government procurement and official notices',
-    route: '/announcement/notice',
+    route: '/announcements/notice',
   },
 
   event: {
     title: 'Government Events',
     description: 'Upcoming public events and ceremonies',
-    route: '/announcement/event',
+    route: '/announcements/event',
   },
 
   all: {
     title: 'All Announcements',
     description: 'Browse complete announcement archive',
-    route: '/announcement',
+    route: '/announcements',
   },
 };

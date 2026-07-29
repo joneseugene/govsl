@@ -20,7 +20,7 @@ export function MdaItem({ item, onNavigate, variant = 'default' }: MdaItemProps)
   return (
     <button
       type="button"
-      onClick={() => onNavigate(`/mda/${id}`)}
+      onClick={() => onNavigate(`/mdas/${id}`)}
       className="
           text-left w-full
           focus:outline-none focus-visible:ring-2

@@ -75,7 +75,7 @@ export default function PublicationAllClient({
       params.set('ministryId', selectedMinistry);
     }
 
-    router.replace(`/publication?${params.toString()}`, {
+    router.replace(`/publications?${params.toString()}`, {
       scroll: false,
     });
   }, [debouncedSearch, selectedMinistry, router, from]);
@@ -97,7 +97,7 @@ export default function PublicationAllClient({
       params.set('ministryId', selectedMinistry);
     }
 
-    router.replace(`/publication?${params.toString()}`, {
+    router.replace(`/publications?${params.toString()}`, {
       scroll: false,
     });
   };
@@ -159,10 +159,10 @@ export default function PublicationAllClient({
                 key={pub.id}
                 id={pub.id}
                 ministry={pub.mdas?.name ?? ''}
-                date={pub.date}
+                date={pub.publish_date}
                 title={pub.title}
                 description={pub.description ?? ''}
-                onReadMore={(id) => router.push(`/publication/${id}`)}
+                onReadMore={(id) => router.push(`/publications/${id}`)}
               />
             ))
           )}

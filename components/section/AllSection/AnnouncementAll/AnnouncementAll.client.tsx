@@ -89,7 +89,7 @@ export default function AllAnnouncementClient({
       params.set("category", selectedCategory);
     }
 
-    router.replace(`/announcement?${params.toString()}`, {
+    router.replace(`/announcements?${params.toString()}`, {
       scroll: false,
     });
   }, [debouncedSearch, selectedMinistry, selectedCategory, router, from]);
@@ -115,7 +115,7 @@ export default function AllAnnouncementClient({
       params.set("category", selectedCategory);
     }
 
-    router.replace(`/announcement?${params.toString()}`, {
+    router.replace(`/announcements?${params.toString()}`, {
       scroll: false,
     });
   };

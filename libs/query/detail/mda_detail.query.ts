@@ -9,10 +9,11 @@ export async function getMdaDetail(id: string) {
 }
 
 export async function getRelatedMdas(id: string) {
-  const allMdas = await getMdas({
+  const result = await getMdas({
     status: 'active',
-    limit: 100,
+    page: 1,
+    limit: 1000,
   });
 
-  return allMdas.filter((item) => item.parent_ministry_id === id);
+  return result.data.filter((item) => item.parent_ministry_id === id);
 }

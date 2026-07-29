@@ -61,7 +61,7 @@ export function AppointmentDetail({ referenceNumber }: AppointmentDetailProps) {
 
         <button
           type="button"
-          onClick={() => router.push('/appointment')}
+          onClick={() => router.push('/appointments')}
           className="mt-4 text-[#1D70B8] underline"
         >
           Back
@@ -93,7 +93,7 @@ export function AppointmentDetail({ referenceNumber }: AppointmentDetailProps) {
       return;
     }
 
-    router.push('/appointment');
+    router.push('/appointments');
   };
 
   return (

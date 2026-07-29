@@ -1,15 +1,15 @@
-import { getMdas } from '@/libs/api/mdas.api';
+import { getMdas } from "@/libs/api/mdas.api";
 
 export type MdaAllParams = {
+  page: number;
   search?: string;
 };
-
-export const mdaAllQueryKey = (params: MdaAllParams) => ['all-mdas', params.search ?? ''];
 
 export async function getAllMdas(params: MdaAllParams) {
   return getMdas({
     status: 'active',
+    page: params.page,
+    limit: 10,
     search: params.search,
-    limit: 300,
   });
 }

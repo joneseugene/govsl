@@ -56,8 +56,8 @@ export default function ServiceDetailUI({ slug, service }: ServiceDetailUIProps)
         <Breadcrumb
           items={[
             { label: 'Home', page: '/' },
-            { label: 'Categories', page: '/service' },
-            { label: 'Services', page: `/service/${slug}` },
+            { label: 'Categories', page: '/services' },
+            { label: 'Services', page: `/services/${slug}` },
             { label: service.name ?? '---' },
           ]}
           variant="government"
@@ -70,7 +70,7 @@ export default function ServiceDetailUI({ slug, service }: ServiceDetailUIProps)
           descriptionClassName="text-gray-400"
           descriptionSizeClassName="text-[16px]"
           showBack
-          onBack={() => router.push(`/service/${slug}`)}
+          onBack={() => router.push(`/services/${slug}`)}
         />
 
         <p className="mb-10 text-sm text-green-700">
@@ -210,7 +210,7 @@ export default function ServiceDetailUI({ slug, service }: ServiceDetailUIProps)
               <button
                 key={i}
                 type="button"
-                onClick={() => router.push(`/service/${rel.page}`)}
+                onClick={() => router.push(`/services/${rel.page}`)}
                 className="mb-2 block text-blue-600 underline"
               >
                 {rel.name}
