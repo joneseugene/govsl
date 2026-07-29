@@ -2,9 +2,8 @@
 
 import { useRouter } from 'next/navigation';
 import { PressReleaseInterface } from '@/libs/interface/press.releases.interface';
-import ReactMarkdown from 'react-markdown';
-import { markdownComponents } from '@/libs/consts/general.const';
 import { formatDate } from '@/libs/functions';
+import { MarkdownRenderer } from '@/components/ui/MarkdownRenderer';
 
 export interface PressReleaseAllCardProps {
   release: PressReleaseInterface;
@@ -37,7 +36,7 @@ export function PressReleaseAllCard({ release }: PressReleaseAllCardProps) {
 
       {/* Description */}
       <p className="mb-4 text-xs text-gray-700">
-        <ReactMarkdown components={markdownComponents}>{release.description}</ReactMarkdown>
+        <MarkdownRenderer content={release.description} />
       </p>
     </article>
   );

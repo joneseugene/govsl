@@ -16,6 +16,7 @@ import {
   getPressReleaseDetail,
   pressReleaseDetailQueryKey,
 } from '@/libs/query/detail/press_release_detail.query';
+import { MarkdownRenderer } from '@/components/ui/MarkdownRenderer';
 
 interface PressReleaseDetailUIProps {
   id: string;
@@ -165,9 +166,6 @@ export function PressReleaseDetailUI({
           >
 
             <div className="min-w-0 text-left">
-              <div className="text-base font-bold text-[#0033A0] sm:text-lg">
-                {acronym}
-              </div>
 
               <h1 className="mt-1 break-words text-sm font-bold uppercase text-slate-900">
                 {ministry}
@@ -229,19 +227,21 @@ export function PressReleaseDetailUI({
 
           {/* Content */}
           <div
-            className="
-              prose
-              prose-sm
-              max-w-none
-              break-words
-              leading-7
-              text-slate-800
-              sm:prose-base
-            "
-          >
-            <ReactMarkdown>
-              {content}
-            </ReactMarkdown>
+  className="
+    prose
+    prose-sm
+    max-w-none
+    leading-7
+    text-slate-800
+    break-words
+    [overflow-wrap:anywhere]
+    [&_*]:max-w-full
+    [&_pre]:overflow-x-auto
+    [&_code]:break-all
+    sm:prose-base
+  "
+>
+            <MarkdownRenderer content={content} />
           </div>
 
 

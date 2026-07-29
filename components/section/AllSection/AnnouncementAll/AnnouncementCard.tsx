@@ -1,7 +1,6 @@
 import { formatDate } from '@/libs/functions';
-import ReactMarkdown from 'react-markdown';
 import { AnnouncementInterface } from '@/libs/interface/announcements.interface';
-import { markdownComponents } from '@/libs/consts/general.const';
+import { MarkdownRenderer } from '@/components/ui/MarkdownRenderer';
 
 interface AnnouncementCardProps {
   item: AnnouncementInterface;
@@ -62,7 +61,7 @@ export function AnnouncementCard({ item, onNavigate }: AnnouncementCardProps) {
 
         {/* DESCRIPTION */}
         <p className="mb-4 text-sm text-gray-700">
-          <ReactMarkdown components={markdownComponents}>{description}</ReactMarkdown>
+          <MarkdownRenderer content={description} />
         </p>
       </button>
     </div>

@@ -27,7 +27,7 @@ export function PrintButton({
       type="button"
       onClick={handlePrint}
       disabled={loading}
-      className={`flex-1 rounded-md bg-[#008A3C] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#006D2F] disabled:cursor-not-allowed disabled:opacity-70 sm:flex-none ${className}`}
+      className={`rounded-md bg-[#008A3C] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#006D2F] disabled:cursor-not-allowed disabled:opacity-70 sm:flex-none ${className}`}
     >
       {loading ? loadingLabel : label}
     </button>

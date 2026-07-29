@@ -1,8 +1,7 @@
-import { markdownComponents } from '@/libs/consts/general.const';
+import { MarkdownRenderer } from '@/components/ui/MarkdownRenderer';
 import { homeSections } from '@/libs/consts/home.const';
 import { formatDate } from '@/libs/functions';
 import { PressReleaseInterface } from '@/libs/interface/press.releases.interface';
-import ReactMarkdown from 'react-markdown';
 
 interface PressReleaseItemProps {
   item: PressReleaseInterface;
@@ -72,7 +71,7 @@ export function PressReleaseItem({
 
       {/* Excerpt – markdown supported */}
       <div className="mt-4 text-xs">
-        <ReactMarkdown components={markdownComponents}>{description}</ReactMarkdown>
+        <MarkdownRenderer content={description} />
       </div>
 
       {/* Verified badge */}
