@@ -21,12 +21,7 @@ export default function NewsDetailClient({ id }: Props) {
   const printRef = useRef<HTMLDivElement>(null);
   const [loading] = useState(false);
 
-  const [qrUrl, setQrUrl] = useState('');
-
-  useEffect(() => {
-    const url = `${window.location.origin}/news/${id}`;
-    setQrUrl(getQRCode(url));
-  }, [id]);
+  const qrUrl = getQRCode(`${process.env.NEXT_PUBLIC_BASE_URL}/news/${id}`);
 
   const {
     data: news,

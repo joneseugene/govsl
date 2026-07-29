@@ -1,5 +1,4 @@
 import { model } from '@/supabase/model';
-import { shuffleArray } from '../functions';
 import { MDAInterface } from '../interface/mda/mdas.interface';
 import { baseQuery } from './base.api';
 
