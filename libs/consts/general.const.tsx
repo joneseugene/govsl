@@ -1,6 +1,3 @@
-import { Components } from 'react-markdown';
-
-
 // Category Description
 export const SERVICE_CATEGORY_DESCRIPTIONS: Record<string, string> = {
   'category-business':

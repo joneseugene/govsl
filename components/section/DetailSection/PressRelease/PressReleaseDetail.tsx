@@ -2,7 +2,6 @@
 
 import Image from 'next/image';
 import { useMemo, useRef, useState } from 'react';
-import ReactMarkdown from 'react-markdown';
 import { useQuery } from '@tanstack/react-query';
 
 import { CustomDivider } from '../../../ui/CustomDivider';
@@ -23,10 +22,7 @@ interface PressReleaseDetailUIProps {
   pdfUrl?: string;
 }
 
-export function PressReleaseDetailUI({
-  id,
-  pdfUrl,
-}: PressReleaseDetailUIProps) {
+export function PressReleaseDetailUI({ id, pdfUrl }: PressReleaseDetailUIProps) {
   const printRef = useRef<HTMLDivElement>(null);
   const [loading] = useState(false);
 
@@ -45,8 +41,7 @@ export function PressReleaseDetailUI({
   });
 
   const qrUrl = useMemo(() => {
-    const url =
-      pdfUrl || `${window.location.origin}/press-releases/${id}`;
+    const url = pdfUrl || `${window.location.origin}/press-releases/${id}`;
 
     return getQRCode(url);
   }, [id, pdfUrl]);
@@ -67,26 +62,16 @@ export function PressReleaseDetailUI({
     );
   }
 
-  const {
-    title,
-    mdas,
-    content,
-    reference_number,
-    contact_info,
-    date,
-  } = pressRelease;
+  const { title, mdas, content, reference_number, contact_info, date } = pressRelease;
 
   const ministry = mdas?.name || 'Government of Sierra Leone';
-  const acronym = mdas?.acronym || 'GoSL';
   const reference = reference_number || '-';
 
   return (
     <div className="min-h-screen bg-slate-50">
-
       {/* Header Actions */}
       <div className="no-print border-b border-slate-200 bg-slate-50">
         <div className="mx-auto max-w-5xl px-4 py-4 sm:px-6">
-
           {/* Breadcrumb */}
           <div className="mb-4">
             <Breadcrumb
@@ -116,19 +101,13 @@ export function PressReleaseDetailUI({
               "
             />
 
-            <PrintButton
-              contentRef={printRef}
-              loading={loading}
-            />
+            <PrintButton contentRef={printRef} loading={loading} />
           </div>
-
         </div>
       </div>
 
-
       {/* Printable Content */}
       <main className="mx-auto w-full max-w-5xl px-3 py-4 sm:px-6 sm:py-8">
-
         <article
           ref={printRef}
           className="
@@ -148,7 +127,6 @@ export function PressReleaseDetailUI({
             print:py-[25mm]
           "
         >
-
           {/* Document Header */}
           <header
             className="
@@ -164,22 +142,17 @@ export function PressReleaseDetailUI({
               sm:justify-between
             "
           >
-
             <div className="min-w-0 text-left">
-
               <h1 className="mt-1 break-words text-sm font-bold uppercase text-slate-900">
                 {ministry}
               </h1>
 
-              <p className="mt-1 text-xs text-slate-700 sm:text-sm">
-                Public Relations Unit
-              </p>
+              <p className="mt-1 text-xs text-slate-700 sm:text-sm">Public Relations Unit</p>
 
               <p className="mt-1 text-xs text-slate-700 sm:text-sm">
                 Republic of Sierra Leone, West Africa
               </p>
             </div>
-
 
             <div
               className="
@@ -194,15 +167,9 @@ export function PressReleaseDetailUI({
             >
               <div>{formatDate(date)}</div>
 
-              {reference && (
-                <div className="mt-1 break-all">
-                  Ref: {reference}
-                </div>
-              )}
+              {reference && <div className="mt-1 break-all">Ref: {reference}</div>}
             </div>
-
           </header>
-
 
           {/* Title */}
           <h2
@@ -221,13 +188,11 @@ export function PressReleaseDetailUI({
             {title || 'Untitled'}
           </h2>
 
-
           <CustomDivider />
-
 
           {/* Content */}
           <div
-  className="
+            className="
     prose
     prose-sm
     max-w-none
@@ -240,10 +205,9 @@ export function PressReleaseDetailUI({
     [&_code]:break-all
     sm:prose-base
   "
->
+          >
             <MarkdownRenderer content={content} />
           </div>
-
 
           {/* Contact */}
           {contact_info && (
@@ -253,13 +217,10 @@ export function PressReleaseDetailUI({
             </p>
           )}
 
-
           <CustomDivider className="mt-8" />
-
 
           {/* Footer */}
           <footer className="mt-10 pt-4 sm:mt-16 sm:pt-8">
-
             <div
               className="
                 flex
@@ -270,48 +231,25 @@ export function PressReleaseDetailUI({
                 sm:justify-between
               "
             >
-
               <div className="max-w-sm text-xs text-slate-700">
+                <p className="mb-1 font-bold text-slate-900">Government of Sierra Leone</p>
 
-                <p className="mb-1 font-bold text-slate-900">
-                  Government of Sierra Leone
-                </p>
-
-                <p>
-                  This is an official document. Scan the QR code to verify.
-                </p>
-
+                <p>This is an official document. Scan the QR code to verify.</p>
               </div>
-
 
               {qrUrl && (
                 <div className="w-fit border-2 p-3">
+                  <Image src={qrUrl} alt="QR Code" width={100} height={100} />
 
-                  <Image
-                    src={qrUrl}
-                    alt="QR Code"
-                    width={100}
-                    height={100}
-                  />
-
-                  <div className="mt-1 text-center text-[9px]">
-                    Scan to verify
-                  </div>
-
+                  <div className="mt-1 text-center text-[9px]">Scan to verify</div>
                 </div>
               )}
-
             </div>
 
-
             <CustomDivider className="mt-5" />
-
           </footer>
-
         </article>
-
       </main>
-
     </div>
   );
 }
